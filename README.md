@@ -1,0 +1,4 @@
+SmartDsp
+========
+
+C++ DSP library.
