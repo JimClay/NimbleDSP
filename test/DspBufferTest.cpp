@@ -11,10 +11,11 @@ TEST(DspBufferInit, Size) {
 }
 
 TEST(DspBufferInit, Array) {
-    short expectedData[8] = {1, 3, 5, 7, 2, 4, 6, 8};
-	DspBuffer<int> buf(expectedData, 8, FREQUENCY_DOMAIN);
+    short expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements, FREQUENCY_DOMAIN);
     
-    EXPECT_EQ(8, buf.buf.size());
+    EXPECT_EQ(numElements, buf.buf.size());
     for (int i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf.buf[i]);
     }
@@ -22,11 +23,11 @@ TEST(DspBufferInit, Array) {
 }
 
 TEST(DspBufferInit, Vector) {
-    short array[8] = {1, 3, 5, 7, 2, 4, 6, 9};
+    short array[] = {1, 3, 5, 7, 2, 4, 6, 9};
     std::vector<int> expectedData (array, array + sizeof(array) / sizeof(array[0]) );
 	DspBuffer<int> buf(expectedData);
     
-    EXPECT_EQ(8, buf.buf.size());
+    EXPECT_EQ(expectedData.size(), buf.buf.size());
     for (int i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf.buf[i]);
     }
