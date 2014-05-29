@@ -42,6 +42,8 @@ public:
     DspBuffer<T> & operator--();
     DspBuffer<T> operator--(int dummy);
     
+    DspBuffer<T> & operator-();
+    
     DspBuffer<T> & operator+=(const DspBuffer<T> &rhs);
     DspBuffer<T> & operator+=(const T &rhs);
     DspBuffer<T> & operator-=(const DspBuffer<T> &rhs);
@@ -107,6 +109,15 @@ DspBuffer<T> DspBuffer<T>::operator--(int dummy)
     DspBuffer<T> tmp(*this);
     operator--();
     return tmp;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::operator-()
+{
+    for (int i=0; i<buf.size(); i++) {
+        buf[i] = -buf[i];
+    }
+    return *this;
 }
 
 template <class T>
