@@ -53,12 +53,14 @@ TEST(DspBufferOperators, PostIncrement) {
     int expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
 	DspBuffer<int> buf(expectedData, numElements);
+	DspBuffer<int> buf2(0);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
-    buf = buf++ * 2;
+    buf2 = buf++ * 2;
     for (int i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(expectedData[i]*2+1, buf.buf[i]);
+        EXPECT_EQ(expectedData[i]*2, buf2[i]);
+        EXPECT_EQ(expectedData[i]+1, buf[i]);
     }
     EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
@@ -81,12 +83,14 @@ TEST(DspBufferOperators, PostDecrement) {
     int expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
 	DspBuffer<int> buf(expectedData, numElements);
+	DspBuffer<int> buf2(0);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
-    buf = buf-- * 2;
+    buf2 = buf-- * 2;
     for (int i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(expectedData[i]*2-1, buf.buf[i]);
+        EXPECT_EQ(expectedData[i]*2, buf2[i]);
+        EXPECT_EQ(expectedData[i]-1, buf[i]);
     }
     EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
