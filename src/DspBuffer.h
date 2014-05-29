@@ -59,7 +59,9 @@ public:
     T& operator[](int index) {return buf[index];};
     const T& operator[](int index) const {return buf[index];};
     
+    // Methods
     const int size() const {return buf.size();};
+    const T mean() const;
 };
 
 
@@ -309,5 +311,15 @@ inline bool operator==(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {
 
 template <class T>
 inline bool operator!=(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {return !(lhs == rhs);}
+
+template <class T>
+const T DspBuffer<T>::mean() const {
+    assert(buf.size() > 0);
+    T sum = 0;
+    for (int i=0; i<buf.size(); i++) {
+        sum += buf[i];
+    }
+    return sum / buf.size();
+}
 
 #endif
