@@ -204,3 +204,179 @@ TEST(DspBufferOperators, MinusScalar) {
         EXPECT_EQ(expectedData[i] - 15, buf2.buf[i]);
     }
 }
+
+TEST(DspBufferOperators, MultiplyEqualsBuf) {
+    int expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    int expectedData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(expectedData2, numElements);
+    
+    EXPECT_EQ(numElements, buf1.buf.size());
+    
+    buf1 *= buf2;
+    for (int i=0; i<buf1.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]*expectedData2[i], buf1.buf[i]);
+        EXPECT_EQ(expectedData2[i], buf2.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, MultiplyEqualsScalar) {
+    int expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(numElements, buf.buf.size());
+    
+    buf *= 11;
+    EXPECT_EQ(numElements, buf.buf.size());
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]*11, buf.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, MultiplyBuf) {
+    int expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    int expectedData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(expectedData2, numElements);
+    DspBuffer<int> buf3(0);
+    
+    buf3 = buf1 * buf2;
+    EXPECT_EQ(numElements, buf3.buf.size());
+    for (int i=0; i<buf3.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]*expectedData2[i], buf3.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, MultiplyScalar) {
+    int expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(0);
+    
+    buf2 = buf1 * 15;
+    EXPECT_EQ(numElements, buf2.buf.size());
+    for (int i=0; i<buf2.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i] * 15, buf2.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, DivideEqualsBuf) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int expectedData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(expectedData2, numElements);
+    
+    EXPECT_EQ(numElements, buf1.buf.size());
+    
+    buf1 /= buf2;
+    for (int i=0; i<buf1.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]/expectedData2[i], buf1.buf[i]);
+        EXPECT_EQ(expectedData2[i], buf2.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, DivideEqualsScalar) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(numElements, buf.buf.size());
+    
+    buf /= 11;
+    EXPECT_EQ(numElements, buf.buf.size());
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]/11, buf.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, DivideBuf) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int expectedData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(expectedData2, numElements);
+    DspBuffer<int> buf3(0);
+    
+    buf3 = buf1 / buf2;
+    EXPECT_EQ(numElements, buf3.buf.size());
+    for (int i=0; i<buf3.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]/expectedData2[i], buf3.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, DivideScalar) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(0);
+    
+    buf2 = buf1 / 15;
+    EXPECT_EQ(numElements, buf2.buf.size());
+    for (int i=0; i<buf2.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i] / 15, buf2.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, ModuloEqualsBuf) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int expectedData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(expectedData2, numElements);
+    
+    EXPECT_EQ(numElements, buf1.buf.size());
+    
+    buf1 %= buf2;
+    for (int i=0; i<buf1.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]%expectedData2[i], buf1.buf[i]);
+        EXPECT_EQ(expectedData2[i], buf2.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, ModuloEqualsScalar) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(numElements, buf.buf.size());
+    
+    buf %= 11;
+    EXPECT_EQ(numElements, buf.buf.size());
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]%11, buf.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, ModuloBuf) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int expectedData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(expectedData2, numElements);
+    DspBuffer<int> buf3(0);
+    
+    buf3 = buf1 % buf2;
+    EXPECT_EQ(numElements, buf3.buf.size());
+    for (int i=0; i<buf3.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i]%expectedData2[i], buf3.buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, ModuloScalar) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(0);
+    
+    buf2 = buf1 % 15;
+    EXPECT_EQ(numElements, buf2.buf.size());
+    for (int i=0; i<buf2.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i] % 15, buf2.buf[i]);
+    }
+}
+
+

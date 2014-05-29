@@ -47,6 +47,13 @@ public:
     DspBuffer<T> & operator-=(const DspBuffer<T> &rhs);
     DspBuffer<T> & operator-=(const T &rhs);
     
+    DspBuffer<T> & operator*=(const DspBuffer<T> &rhs);
+    DspBuffer<T> & operator*=(const T &rhs);
+    DspBuffer<T> & operator/=(const DspBuffer<T> &rhs);
+    DspBuffer<T> & operator/=(const T &rhs);
+    DspBuffer<T> & operator%=(const DspBuffer<T> &rhs);
+    DspBuffer<T> & operator%=(const T &rhs);
+    
 };
 
 
@@ -167,6 +174,108 @@ template <class T>
 inline DspBuffer<T> operator-(DspBuffer<T> lhs, const T& rhs)
 {
     lhs -= rhs;
+    return lhs;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::operator*=(const DspBuffer<T> &rhs)
+{
+    assert(buf.size() == rhs.buf.size());
+    assert(domain == rhs.domain);
+    for (int i=0; i<buf.size(); i++) {
+        buf[i] *= rhs.buf[i];
+    }
+    return *this;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::operator*=(const T &rhs)
+{
+    for (int i=0; i<buf.size(); i++) {
+        buf[i] *= rhs;
+    }
+    return *this;
+}
+
+template <class T>
+inline DspBuffer<T> operator*(DspBuffer<T> lhs, const DspBuffer<T>& rhs)
+{
+    lhs *= rhs;
+    return lhs;
+}
+
+template <class T>
+inline DspBuffer<T> operator*(DspBuffer<T> lhs, const T& rhs)
+{
+    lhs *= rhs;
+    return lhs;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::operator/=(const DspBuffer<T> &rhs)
+{
+    assert(buf.size() == rhs.buf.size());
+    assert(domain == rhs.domain);
+    for (int i=0; i<buf.size(); i++) {
+        buf[i] /= rhs.buf[i];
+    }
+    return *this;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::operator/=(const T &rhs)
+{
+    for (int i=0; i<buf.size(); i++) {
+        buf[i] /= rhs;
+    }
+    return *this;
+}
+
+template <class T>
+inline DspBuffer<T> operator/(DspBuffer<T> lhs, const DspBuffer<T>& rhs)
+{
+    lhs /= rhs;
+    return lhs;
+}
+
+template <class T>
+inline DspBuffer<T> operator/(DspBuffer<T> lhs, const T& rhs)
+{
+    lhs /= rhs;
+    return lhs;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::operator%=(const DspBuffer<T> &rhs)
+{
+    assert(buf.size() == rhs.buf.size());
+    assert(domain == rhs.domain);
+    for (int i=0; i<buf.size(); i++) {
+        buf[i] %= rhs.buf[i];
+    }
+    return *this;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::operator%=(const T &rhs)
+{
+    for (int i=0; i<buf.size(); i++) {
+        buf[i] %= rhs;
+    }
+    return *this;
+}
+
+template <class T>
+inline DspBuffer<T> operator%(DspBuffer<T> lhs, const DspBuffer<T>& rhs)
+{
+    lhs %= rhs;
+    return lhs;
+}
+
+template <class T>
+inline DspBuffer<T> operator%(DspBuffer<T> lhs, const T& rhs)
+{
+    lhs %= rhs;
     return lhs;
 }
 
