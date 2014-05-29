@@ -2,12 +2,6 @@
 #include "DspBuffer.h"
 #include "gtest/gtest.h"
 
-#define EPSILON .00000001
-bool FloatsEqual(double val1, double val2) {
-    if ((val1 < val2 + EPSILON) && (val1 > val2 - EPSILON))
-        return true;
-    return false;
-}
 
 TEST(DspBufferInit, Size) {
 	DspBuffer<int> buf(50);
@@ -440,7 +434,7 @@ TEST(DspBufferStatistics, Mean) {
     int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
 	DspBuffer<int> buf(expectedData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(450.0, buf.mean()));
+    EXPECT_EQ(450, buf.mean());
 }
 
 
