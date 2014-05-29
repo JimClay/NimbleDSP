@@ -437,4 +437,20 @@ TEST(DspBufferStatistics, Mean) {
     EXPECT_EQ(450, buf.mean());
 }
 
+TEST(DspBufferStatistics, Var) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(60000, buf.var());
+}
+
+TEST(DspBufferStatistics, StdDev) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(244, buf.stdDev());
+}
+
 

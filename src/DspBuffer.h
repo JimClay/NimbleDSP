@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <cassert>
+#include <cmath>
 
 const int DEFAULT_BUF_LEN = 0;
 enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
@@ -62,6 +63,8 @@ public:
     // Methods
     const int size() const {return buf.size();};
     const T mean() const;
+    const T var() const;
+    const T stdDev() const;
 };
 
 
@@ -320,6 +323,23 @@ const T DspBuffer<T>::mean() const {
         sum += buf[i];
     }
     return sum / buf.size();
+}
+
+template <class T>
+const T DspBuffer<T>::var() const {
+    assert(buf.size() > 1);
+    T meanVal = mean();
+    T sum = 0;
+    for (int i=0; i<buf.size(); i++) {
+        T varDiff = buf[i] - meanVal;
+        sum += varDiff * varDiff;
+    }
+    return sum / (buf.size() - 1);
+}
+
+template <class T>
+const T DspBuffer<T>::stdDev() const {
+    return sqrt(var());
 }
 
 #endif
