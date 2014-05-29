@@ -56,6 +56,10 @@ public:
     DspBuffer<T> & operator%=(const DspBuffer<T> &rhs);
     DspBuffer<T> & operator%=(const T &rhs);
     
+    T& operator[](int index);
+    const T& operator[](int index) const;
+    
+    const int size() const {return buf.size();};
 };
 
 
@@ -290,5 +294,29 @@ inline DspBuffer<T> operator%(DspBuffer<T> lhs, const T& rhs)
     return lhs;
 }
 
+template <class T>
+T& DspBuffer<T>::operator[](int index) {
+    return buf[index];
+}
+
+template <class T>
+const T& DspBuffer<T>::operator[](int index) const {
+    return buf[index];
+}
+
+template <class T>
+inline bool operator==(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {
+    if (lhs.size() != rhs.size())
+        return false;
+    
+    for (int i=0; i<lhs.size(); i++) {
+        if (lhs[i] != rhs[i])
+            return false;
+    }
+    return true;
+}
+
+template <class T>
+inline bool operator!=(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {return !(lhs == rhs);}
 
 #endif

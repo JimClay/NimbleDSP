@@ -393,4 +393,36 @@ TEST(DspBufferOperators, UnaryMinus) {
     }
 }
 
+TEST(DspBufferOperators, Indexing) {
+    int expectedData[] = {2, 4, 6, 8, 3, 5, 7, 9};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(numElements);
+    
+    for (int i=0; i<numElements; i++) {
+        buf[i] = expectedData[i];
+    }
+    
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferOperators, Equality) {
+    int expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    int expectedData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
+    int expectedData3[] = {0, 2, 4, 6, 1, 3, 5, 7, 8};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+    int numElements3 = sizeof(expectedData3)/sizeof(expectedData3[0]);
+	DspBuffer<int> buf1(expectedData, numElements);
+	DspBuffer<int> buf2(expectedData2, numElements);
+	DspBuffer<int> buf3(expectedData3, numElements3);
+    
+    EXPECT_EQ(false, buf1 == buf2);
+    EXPECT_EQ(true, buf1 != buf2);
+    EXPECT_EQ(false, buf3 == buf2);
+    EXPECT_EQ(true, buf3 != buf2);
+    EXPECT_EQ(true, buf1 == buf1);
+    EXPECT_EQ(false, buf1 != buf1);
+}
+
 
