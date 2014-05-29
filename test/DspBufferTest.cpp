@@ -42,9 +42,9 @@ TEST(DspBufferOperators, PreIncrement) {
     
     EXPECT_EQ(numElements, buf.buf.size());
     
-    ++buf;
+    buf = ++buf * 2;
     for (int i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(expectedData[i]+1, buf.buf[i]);
+        EXPECT_EQ((expectedData[i]+1)*2, buf.buf[i]);
     }
     EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
@@ -56,9 +56,9 @@ TEST(DspBufferOperators, PostIncrement) {
     
     EXPECT_EQ(numElements, buf.buf.size());
     
-    buf++;
+    buf = buf++ * 2;
     for (int i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(expectedData[i]+1, buf.buf[i]);
+        EXPECT_EQ(expectedData[i]*2+1, buf.buf[i]);
     }
     EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
@@ -70,9 +70,9 @@ TEST(DspBufferOperators, PreDecrement) {
     
     EXPECT_EQ(numElements, buf.buf.size());
     
-    --buf;
+    buf = --buf * 2;
     for (int i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(expectedData[i]-1, buf.buf[i]);
+        EXPECT_EQ((expectedData[i]-1)*2, buf.buf[i]);
     }
     EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
@@ -84,9 +84,9 @@ TEST(DspBufferOperators, PostDecrement) {
     
     EXPECT_EQ(numElements, buf.buf.size());
     
-    buf--;
+    buf = buf-- * 2;
     for (int i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(expectedData[i]-1, buf.buf[i]);
+        EXPECT_EQ(expectedData[i]*2-1, buf.buf[i]);
     }
     EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
