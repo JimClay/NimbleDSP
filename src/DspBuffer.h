@@ -368,9 +368,7 @@ const T DspBuffer<T>::median() {
 
 template <class T>
 void DspBuffer<T>::rotate(int numToShift) {
-    if (size() < 2)
-        return;
-    
+    numToShift = size() - numToShift;
     while (numToShift < 0)
         numToShift += size();
     
@@ -379,15 +377,8 @@ void DspBuffer<T>::rotate(int numToShift) {
     
     if (numToShift == 0)
         return;
-    
-    scratchBuf = buf;
-    int from, to;
-    for (from=0,to=numToShift; to<size(); from++,to++) {
-        buf[to] = scratchBuf[from];
-    }
-    for (to=0; from<size(); from++,to++) {
-        buf[to] = scratchBuf[from];
-    }
+
+    std::rotate(buf.begin(), buf.begin()+numToShift, buf.end());
 }
 
 template <class T>
