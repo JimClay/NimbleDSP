@@ -2,6 +2,7 @@
 #include "DspBuffer.h"
 #include "gtest/gtest.h"
 
+using namespace SmartDsp;
 
 TEST(DspBufferInit, Size) {
 	DspBuffer<int> buf(50);

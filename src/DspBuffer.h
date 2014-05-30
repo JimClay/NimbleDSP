@@ -6,6 +6,8 @@
 #include <cassert>
 #include <cmath>
 
+namespace SmartDsp {
+
 const int DEFAULT_BUF_LEN = 0;
 enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 
@@ -435,5 +437,7 @@ const int DspBuffer<T>::find(int val) const {
     }
     return -1;
 }
+
+};
 
 #endif
