@@ -72,6 +72,10 @@ public:
     
     void rotate(int numToShift);
     void reverse();
+    
+    const T max(int *maxLoc = NULL) const;
+    const T min(int *minLoc = NULL) const;
+    const int find(int val) const;
 };
 
 
@@ -384,6 +388,52 @@ void DspBuffer<T>::rotate(int numToShift) {
 template <class T>
 void DspBuffer<T>::reverse() {
     std::reverse(buf.begin(), buf.end());
+}
+
+template <class T>
+const T DspBuffer<T>::max(int *maxLoc) const {
+    assert(size() > 0);
+    T maxVal = buf[0];
+    int maxIndex = 0;
+    
+    for (int i=1; i<size(); i++) {
+        if (buf[i] > maxVal) {
+            maxVal = buf[i];
+            maxIndex = i;
+        }
+    }
+    if (maxLoc != NULL) {
+        *maxLoc = maxIndex;
+    }
+    return maxVal;
+}
+
+template <class T>
+const T DspBuffer<T>::min(int *minLoc) const {
+    assert(size() > 0);
+    T minVal = buf[0];
+    int minIndex = 0;
+    
+    for (int i=1; i<size(); i++) {
+        if (buf[i] < minVal) {
+            minVal = buf[i];
+            minIndex = i;
+        }
+    }
+    if (minLoc != NULL) {
+        *minLoc = minIndex;
+    }
+    return minVal;
+}
+
+template <class T>
+const int DspBuffer<T>::find(int val) const {
+    for (int i=0; i<size(); i++) {
+        if (buf[i] == val) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 #endif

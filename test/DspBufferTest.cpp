@@ -499,4 +499,33 @@ TEST(DspBufferMethods, Reverse) {
     }
 }
 
+TEST(DspBufferMethods, Max) {
+    int expectedData[] = {2, 4, 6, 8, 3, 5, 7, 3};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(8, buf.max());
+    int maxLoc;
+    EXPECT_EQ(8, buf.max(&maxLoc));
+    EXPECT_EQ(3, maxLoc);
+}
 
+TEST(DspBufferMethods, Min) {
+    int expectedData[] = {2, 4, 6, 8, 3, 5, 7, 3};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(2, buf.min());
+    int minLoc;
+    EXPECT_EQ(2, buf.min(&minLoc));
+    EXPECT_EQ(0, minLoc);
+}
+
+TEST(DspBufferMethods, Find) {
+    int expectedData[] = {2, 4, 6, 8, 3, 5, 7, 3};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(-1, buf.find(9));
+    EXPECT_EQ(4, buf.find(3));
+}
