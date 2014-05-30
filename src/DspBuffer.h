@@ -17,7 +17,10 @@ template <class T>
 class DspBuffer {
 
 private:
-    void initSize(int size, DomainType dataDomain = TIME_DOMAIN) {buf = std::vector<T>(size); domain = dataDomain;}
+    std::vector<T> scratchBuf;
+    
+    void initSize(int size, DomainType dataDomain = TIME_DOMAIN) {buf = std::vector<T>(size); domain = dataDomain;
+        scratchBuf = std::vector<T>(0);}
     template <class U>
     void initArray(U *array, int arrayLen, DomainType dataDomain = TIME_DOMAIN);
     
@@ -65,6 +68,10 @@ public:
     const T mean() const;
     const T var() const;
     const T stdDev() const;
+    const T median();
+    
+    void rotate(int numToShift);
+    void reverse();
 };
 
 
@@ -76,6 +83,7 @@ void DspBuffer<T>::initArray(U *array, int arrayLen, DomainType dataDomain) {
         buf[i] = (T) array[i];
     }
     domain = dataDomain;
+    scratchBuf = std::vector<T>(0);
 }
 
 template <class T>
@@ -340,6 +348,51 @@ const T DspBuffer<T>::var() const {
 template <class T>
 const T DspBuffer<T>::stdDev() const {
     return sqrt(var());
+}
+
+template <class T>
+const T DspBuffer<T>::median() {
+    assert(size() > 0);
+    scratchBuf = buf;
+    std::sort(scratchBuf.begin(), scratchBuf.end());
+    if (size() & 1) {
+        // Odd number of samples
+        return scratchBuf[size()/2];
+    }
+    else {
+        // Even number of samples.  Average the two in the middle.
+        int topHalfIndex = size()/2;
+        return (scratchBuf[topHalfIndex] + scratchBuf[topHalfIndex-1]) / 2;
+    }
+}
+
+template <class T>
+void DspBuffer<T>::rotate(int numToShift) {
+    if (size() < 2)
+        return;
+    
+    while (numToShift < 0)
+        numToShift += size();
+    
+    while (numToShift >= size())
+        numToShift -= size();
+    
+    if (numToShift == 0)
+        return;
+    
+    scratchBuf = buf;
+    int from, to;
+    for (from=0,to=numToShift; to<size(); from++,to++) {
+        buf[to] = scratchBuf[from];
+    }
+    for (to=0; from<size(); from++,to++) {
+        buf[to] = scratchBuf[from];
+    }
+}
+
+template <class T>
+void DspBuffer<T>::reverse() {
+    std::reverse(buf.begin(), buf.end());
 }
 
 #endif

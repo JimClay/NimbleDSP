@@ -453,4 +453,50 @@ TEST(DspBufferStatistics, StdDev) {
     EXPECT_EQ(244, buf.stdDev());
 }
 
+TEST(DspBufferStatistics, Median) {
+    int expectedData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(450, buf.median());
+    buf.buf.push_back(-10000);
+    EXPECT_EQ(400, buf.median());
+}
+
+TEST(DspBufferMethods, Rotate) {
+    int expectedData[] = {2, 4, 6, 8, 3, 5, 7, 9};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    buf.rotate(numElements);
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+    
+    buf.rotate(3);
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[((numElements - 3) + i) % numElements], buf[i]);
+    }
+    
+    buf.rotate(-1);
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[((numElements - 2) + i) % numElements], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, Reverse) {
+    int expectedData[] = {2, 4, 6, 8, 3, 5, 7, 9};
+    int numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    buf.reverse();
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[numElements-i-1], buf[i]);
+    }
+    buf.reverse();
+    for (int i=0; i<buf.buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
 
