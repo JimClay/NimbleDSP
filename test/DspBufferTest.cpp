@@ -530,3 +530,16 @@ TEST(DspBufferMethods, Find) {
     EXPECT_EQ(-1, buf.find(9));
     EXPECT_EQ(4, buf.find(3));
 }
+
+//TEST(DspBufferMethods, FFT) {
+//    int input[] = {-275, -75, 125, 325, -175, 25, 225, -175};
+//    int expectedReal[] = {0, -525, -800, 324, -200};
+//    int expectedImag[] = {0, -183, 200, -383, 0};
+//    unsigned numElements = sizeof(input)/sizeof(input[0]);
+//	DspBuffer<int> buf(input, numElements);
+//    
+//    DspBuffer< std::complex<int> > fftResult(0);
+//    fftResult = buf.fft();
+//    
+//    EXPECT_EQ(numElements/2, fftResult.size());
+//}

@@ -5,6 +5,10 @@
 #include <vector>
 #include <cassert>
 #include <cmath>
+#include <complex>
+#include "kiss_fft.h"
+#include "kiss_fftr.h"
+
 
 namespace SmartDsp {
 
@@ -78,6 +82,8 @@ public:
     const T max(unsigned *maxLoc = NULL) const;
     const T min(unsigned *minLoc = NULL) const;
     const int find(T val) const;
+    
+    //DspBuffer< std::complex<T> > fft(bool pad = false, bool scale = true);
 };
 
 
@@ -438,6 +444,37 @@ const int DspBuffer<T>::find(T val) const {
     return -1;
 }
 
+//template <class T>
+//DspBuffer< std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
+//{
+//    unsigned originalSize = size();
+//    unsigned fftLen = originalSize;
+//    
+//    if (padForSpeed) {
+//        fftLen = kiss_fftr_next_fast_size_real(originalSize);
+//        if (fftLen > originalSize) {
+//            buf.resize(fftLen, 0);
+//        }
+//    }
+//    DspBuffer< std::complex<T> > fftResult(fftLen);
+//    
+//    if (size() & 1) {
+//        // kissfft real FFT's (as opposed to complex) require even lengths.  If it isn't even
+//        // then we'll have to do a complex FFT.
+//        
+////        kiss_fft_cfg fftConfig = kiss_fft_alloc(fftLen, 0, NULL, NULL);
+////        kiss_fft(fftConfig, VECTOR_TO_ARRAY(buf), VECTOR_TO_ARRAY(fftResult));
+////        kiss_fft_free(fftConfig);
+//    }
+//    else {
+//        kiss_fftr_cfg fftConfig = kiss_fftr_alloc(fftLen, 0, NULL, NULL);
+//        kiss_fftr(fftConfig, VECTOR_TO_ARRAY(buf), VECTOR_TO_ARRAY(fftResult));
+//        kiss_fftr_free(fftConfig);
+//    }
+//    return fftResult;
+//}
+
+    
 };
 
 #endif
