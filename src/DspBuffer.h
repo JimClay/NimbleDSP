@@ -8,7 +8,7 @@
 
 namespace SmartDsp {
 
-const int DEFAULT_BUF_LEN = 0;
+const unsigned DEFAULT_BUF_LEN = 0;
 enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 
 
@@ -21,10 +21,10 @@ class DspBuffer {
 private:
     std::vector<T> scratchBuf;
     
-    void initSize(int size, DomainType dataDomain = TIME_DOMAIN) {buf = std::vector<T>(size); domain = dataDomain;
+    void initSize(unsigned size, DomainType dataDomain = TIME_DOMAIN) {buf = std::vector<T>(size); domain = dataDomain;
         scratchBuf = std::vector<T>(0);}
     template <class U>
-    void initArray(U *array, int arrayLen, DomainType dataDomain = TIME_DOMAIN);
+    void initArray(U *array, unsigned arrayLen, DomainType dataDomain = TIME_DOMAIN);
     
 public:
     // Members
@@ -33,11 +33,11 @@ public:
     
     // Constructors
     DspBuffer<T>(void) {initSize(DEFAULT_BUF_LEN);}
-    DspBuffer<T>(int size) {initSize(size);}
+    DspBuffer<T>(unsigned size) {initSize(size);}
     template <typename U>
     DspBuffer<T>(std::vector<U> data, DomainType dataDomain = TIME_DOMAIN) {initArray(VECTOR_TO_ARRAY(data), data.size(), dataDomain);}
     template <typename U>
-    DspBuffer<T>(U *data, int dataLen, DomainType dataDomain = TIME_DOMAIN) {initArray(data, dataLen, dataDomain);}
+    DspBuffer<T>(U *data, unsigned dataLen, DomainType dataDomain = TIME_DOMAIN) {initArray(data, dataLen, dataDomain);}
     
     DspBuffer<T>(const DspBuffer<T>& other) {buf = other.buf; domain = other.domain;}
     DspBuffer<T>& operator=(const DspBuffer<T>& rhs);
@@ -62,11 +62,11 @@ public:
     DspBuffer<T> & operator%=(const DspBuffer<T> &rhs);
     DspBuffer<T> & operator%=(const T &rhs);
     
-    T& operator[](int index) {return buf[index];};
-    const T& operator[](int index) const {return buf[index];};
+    T& operator[](unsigned index) {return buf[index];};
+    const T& operator[](unsigned index) const {return buf[index];};
     
     // Methods
-    const int size() const {return buf.size();};
+    const unsigned size() const {return buf.size();};
     const T mean() const;
     const T var() const;
     const T stdDev() const;
@@ -75,17 +75,17 @@ public:
     void rotate(int numToShift);
     void reverse();
     
-    const T max(int *maxLoc = NULL) const;
-    const T min(int *minLoc = NULL) const;
-    const int find(int val) const;
+    const T max(unsigned *maxLoc = NULL) const;
+    const T min(unsigned *minLoc = NULL) const;
+    const int find(T val) const;
 };
 
 
 template <class T>
 template <class U>
-void DspBuffer<T>::initArray(U *array, int arrayLen, DomainType dataDomain) {
+void DspBuffer<T>::initArray(U *array, unsigned arrayLen, DomainType dataDomain) {
     buf = std::vector<T>(arrayLen);
-    for (int i=0; i<arrayLen; i++) {
+    for (unsigned i=0; i<arrayLen; i++) {
         buf[i] = (T) array[i];
     }
     domain = dataDomain;
@@ -103,7 +103,7 @@ DspBuffer<T>& DspBuffer<T>::operator=(const DspBuffer<T>& rhs)
 template <class T>
 DspBuffer<T> & DspBuffer<T>::operator++()
 {
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] = buf[i] + 1;
     }
     return *this;
@@ -120,7 +120,7 @@ DspBuffer<T> DspBuffer<T>::operator++(int)
 template <class T>
 DspBuffer<T> & DspBuffer<T>::operator--()
 {
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] = buf[i] - 1;
     }
     return *this;
@@ -137,7 +137,7 @@ DspBuffer<T> DspBuffer<T>::operator--(int)
 template <class T>
 DspBuffer<T> & DspBuffer<T>::operator-()
 {
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] = -buf[i];
     }
     return *this;
@@ -148,7 +148,7 @@ DspBuffer<T> & DspBuffer<T>::operator+=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
     assert(domain == rhs.domain);
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] += rhs.buf[i];
     }
     return *this;
@@ -157,7 +157,7 @@ DspBuffer<T> & DspBuffer<T>::operator+=(const DspBuffer<T> &rhs)
 template <class T>
 DspBuffer<T> & DspBuffer<T>::operator+=(const T &rhs)
 {
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] += rhs;
     }
     return *this;
@@ -182,7 +182,7 @@ DspBuffer<T> & DspBuffer<T>::operator-=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
     assert(domain == rhs.domain);
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] -= rhs.buf[i];
     }
     return *this;
@@ -191,7 +191,7 @@ DspBuffer<T> & DspBuffer<T>::operator-=(const DspBuffer<T> &rhs)
 template <class T>
 DspBuffer<T> & DspBuffer<T>::operator-=(const T &rhs)
 {
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] -= rhs;
     }
     return *this;
@@ -216,7 +216,7 @@ DspBuffer<T> & DspBuffer<T>::operator*=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
     assert(domain == rhs.domain);
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] *= rhs.buf[i];
     }
     return *this;
@@ -225,7 +225,7 @@ DspBuffer<T> & DspBuffer<T>::operator*=(const DspBuffer<T> &rhs)
 template <class T>
 DspBuffer<T> & DspBuffer<T>::operator*=(const T &rhs)
 {
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] *= rhs;
     }
     return *this;
@@ -250,7 +250,7 @@ DspBuffer<T> & DspBuffer<T>::operator/=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
     assert(domain == rhs.domain);
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] /= rhs.buf[i];
     }
     return *this;
@@ -259,7 +259,7 @@ DspBuffer<T> & DspBuffer<T>::operator/=(const DspBuffer<T> &rhs)
 template <class T>
 DspBuffer<T> & DspBuffer<T>::operator/=(const T &rhs)
 {
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] /= rhs;
     }
     return *this;
@@ -284,7 +284,7 @@ DspBuffer<T> & DspBuffer<T>::operator%=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
     assert(domain == rhs.domain);
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] %= rhs.buf[i];
     }
     return *this;
@@ -293,7 +293,7 @@ DspBuffer<T> & DspBuffer<T>::operator%=(const DspBuffer<T> &rhs)
 template <class T>
 DspBuffer<T> & DspBuffer<T>::operator%=(const T &rhs)
 {
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         buf[i] %= rhs;
     }
     return *this;
@@ -319,7 +319,7 @@ inline bool operator==(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {
     if (lhs.size() != rhs.size())
         return false;
     
-    for (int i=0; i<lhs.size(); i++) {
+    for (unsigned i=0; i<lhs.size(); i++) {
         if (lhs[i] != rhs[i])
             return false;
     }
@@ -333,7 +333,7 @@ template <class T>
 const T DspBuffer<T>::mean() const {
     assert(buf.size() > 0);
     T sum = 0;
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         sum += buf[i];
     }
     return sum / buf.size();
@@ -344,7 +344,7 @@ const T DspBuffer<T>::var() const {
     assert(buf.size() > 1);
     T meanVal = mean();
     T sum = 0;
-    for (int i=0; i<buf.size(); i++) {
+    for (unsigned i=0; i<buf.size(); i++) {
         T varDiff = buf[i] - meanVal;
         sum += varDiff * varDiff;
     }
@@ -367,7 +367,7 @@ const T DspBuffer<T>::median() {
     }
     else {
         // Even number of samples.  Average the two in the middle.
-        int topHalfIndex = size()/2;
+        unsigned topHalfIndex = size()/2;
         return (scratchBuf[topHalfIndex] + scratchBuf[topHalfIndex-1]) / 2;
     }
 }
@@ -393,12 +393,12 @@ void DspBuffer<T>::reverse() {
 }
 
 template <class T>
-const T DspBuffer<T>::max(int *maxLoc) const {
+const T DspBuffer<T>::max(unsigned *maxLoc) const {
     assert(size() > 0);
     T maxVal = buf[0];
-    int maxIndex = 0;
+    unsigned maxIndex = 0;
     
-    for (int i=1; i<size(); i++) {
+    for (unsigned i=1; i<size(); i++) {
         if (buf[i] > maxVal) {
             maxVal = buf[i];
             maxIndex = i;
@@ -411,12 +411,12 @@ const T DspBuffer<T>::max(int *maxLoc) const {
 }
 
 template <class T>
-const T DspBuffer<T>::min(int *minLoc) const {
+const T DspBuffer<T>::min(unsigned *minLoc) const {
     assert(size() > 0);
     T minVal = buf[0];
-    int minIndex = 0;
+    unsigned minIndex = 0;
     
-    for (int i=1; i<size(); i++) {
+    for (unsigned i=1; i<size(); i++) {
         if (buf[i] < minVal) {
             minVal = buf[i];
             minIndex = i;
@@ -429,10 +429,10 @@ const T DspBuffer<T>::min(int *minLoc) const {
 }
 
 template <class T>
-const int DspBuffer<T>::find(int val) const {
-    for (int i=0; i<size(); i++) {
+const int DspBuffer<T>::find(T val) const {
+    for (unsigned i=0; i<size(); i++) {
         if (buf[i] == val) {
-            return i;
+            return (int) i;
         }
     }
     return -1;
