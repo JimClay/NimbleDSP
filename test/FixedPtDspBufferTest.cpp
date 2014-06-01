@@ -460,6 +460,14 @@ TEST(FixedPtDspBufferStatistics, Median) {
     EXPECT_EQ(400, buf.median());
 }
 
+TEST(FixedPtDspBufferStatistics, Mode) {
+    int expectedData[] = {7, 3, 2, 8, 3, 6, 1};
+    unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	FixedPtDspBuffer<int> buf(expectedData, numElements);
+    
+    EXPECT_EQ(3, buf.mode());
+}
+
 TEST(FixedPtDspBufferMethods, Rotate) {
     int expectedData[] = {2, 4, 6, 8, 3, 5, 7, 9};
     unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);

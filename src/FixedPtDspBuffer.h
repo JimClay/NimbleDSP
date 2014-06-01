@@ -48,6 +48,7 @@ public:
     const SMARTDSP_FLOAT_TYPE mean() const;
     const SMARTDSP_FLOAT_TYPE var() const;
     const SMARTDSP_FLOAT_TYPE stdDev() const;
+    const T mode();
 };
 
 
@@ -158,6 +159,37 @@ const SMARTDSP_FLOAT_TYPE FixedPtDspBuffer<T>::var() const {
 template <class T>
 const SMARTDSP_FLOAT_TYPE FixedPtDspBuffer<T>::stdDev() const {
     return (SMARTDSP_FLOAT_TYPE) sqrt(var());
+}
+
+template <class T>
+const T FixedPtDspBuffer<T>::mode() {
+    assert(this->size() > 0);
+    this->scratchBuf = this->buf;
+    std::sort(this->scratchBuf.begin(), this->scratchBuf.end());
+    
+    T modeVal = 0;
+    unsigned modeLen = 0;
+    T currentVal = this->scratchBuf[0];
+    unsigned currentLen = 1;
+    
+    for (unsigned i=1; i<this->size(); i++) {
+        if (this->scratchBuf[i] == currentVal) {
+            currentLen++;
+        }
+        else {
+            if (currentLen > modeLen) {
+                modeVal = currentVal;
+                modeLen = currentLen;
+            }
+            currentVal = this->scratchBuf[i];
+            currentLen = 1;
+        }
+    }
+    if (currentLen > modeLen) {
+        modeVal = currentVal;
+        modeLen = currentLen;
+    }
+    return modeVal;
 }
 
 

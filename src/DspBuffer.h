@@ -21,7 +21,7 @@ const unsigned DEFAULT_BUF_LEN = 0;
 template <class T>
 class DspBuffer {
 
-private:
+protected:
     std::vector<T> scratchBuf;
     
     void initSize(unsigned size) {buf = std::vector<T>(size); scratchBuf = std::vector<T>(0);}
