@@ -34,6 +34,11 @@ public:
     FixedPtDspBuffer<T>& operator=(const DspBuffer<T>& rhs);
     
     // Operators
+    FixedPtDspBuffer<T> & operator++();
+    FixedPtDspBuffer<T> operator++(int);
+    FixedPtDspBuffer<T> & operator--();
+    FixedPtDspBuffer<T> operator--(int);
+    
     FixedPtDspBuffer<T> & operator%=(const FixedPtDspBuffer<T> &rhs);
     FixedPtDspBuffer<T> & operator%=(const T &rhs);
     void pow(const SMARTDSP_FLOAT_TYPE exponent);
@@ -50,6 +55,40 @@ FixedPtDspBuffer<T>& FixedPtDspBuffer<T>::operator=(const DspBuffer<T>& rhs)
 {
     this->buf = rhs.buf;
     return *this;
+}
+
+template <class T>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator++()
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] = this->buf[i] + 1;
+    }
+    return *this;
+}
+
+template <class T>
+FixedPtDspBuffer<T> FixedPtDspBuffer<T>::operator++(int)
+{
+    FixedPtDspBuffer<T> tmp(*this);
+    operator++();
+    return tmp;
+}
+
+template <class T>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator--()
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] = this->buf[i] - 1;
+    }
+    return *this;
+}
+
+template <class T>
+FixedPtDspBuffer<T> FixedPtDspBuffer<T>::operator--(int)
+{
+    FixedPtDspBuffer<T> tmp(*this);
+    operator--();
+    return tmp;
 }
 
 template <class T>
