@@ -44,6 +44,23 @@ public:
     FixedPtDspBuffer<T> & operator%=(const T &rhs);
     void pow(const SMARTDSP_FLOAT_TYPE exponent);
     
+    FixedPtDspBuffer<T> & operator~();
+    template <class U>
+    FixedPtDspBuffer<T> & operator&=(const FixedPtDspBuffer<U> &rhs);
+    FixedPtDspBuffer<T> & operator&=(const T &rhs);
+    template <class U>
+    FixedPtDspBuffer<T> & operator|=(const FixedPtDspBuffer<U> &rhs);
+    FixedPtDspBuffer<T> & operator|=(const T &rhs);
+    template <class U>
+    FixedPtDspBuffer<T> & operator^=(const FixedPtDspBuffer<U> &rhs);
+    FixedPtDspBuffer<T> & operator^=(const T &rhs);
+    template <class U>
+    FixedPtDspBuffer<T> & operator>>=(const FixedPtDspBuffer<U> &rhs);
+    FixedPtDspBuffer<T> & operator>>=(const T &rhs);
+    template <class U>
+    FixedPtDspBuffer<T> & operator<<=(const FixedPtDspBuffer<U> &rhs);
+    FixedPtDspBuffer<T> & operator<<=(const T &rhs);
+    
     // Methods
     const SMARTDSP_FLOAT_TYPE mean() const;
     const SMARTDSP_FLOAT_TYPE var() const;
@@ -124,6 +141,185 @@ template <class T>
 inline FixedPtDspBuffer<T> operator%(FixedPtDspBuffer<T> lhs, const T& rhs)
 {
     lhs %= rhs;
+    return lhs;
+}
+
+template <class T>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator~()
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] = ~(this->buf[i]);
+    }
+    return *this;
+}
+
+template <class T>
+template <class U>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator&=(const FixedPtDspBuffer<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] &= rhs.buf[i];
+    }
+    return *this;
+}
+
+template <class T>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator&=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] &= rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline FixedPtDspBuffer<T> operator&(FixedPtDspBuffer<T> lhs, const FixedPtDspBuffer<U>& rhs)
+{
+    lhs &= rhs;
+    return lhs;
+}
+
+template <class T>
+inline FixedPtDspBuffer<T> operator&(FixedPtDspBuffer<T> lhs, const T& rhs)
+{
+    lhs &= rhs;
+    return lhs;
+}
+
+template <class T>
+template <class U>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator|=(const FixedPtDspBuffer<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] |= rhs.buf[i];
+    }
+    return *this;
+}
+
+template <class T>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator|=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] |= rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline FixedPtDspBuffer<T> operator|(FixedPtDspBuffer<T> lhs, const FixedPtDspBuffer<U>& rhs)
+{
+    lhs |= rhs;
+    return lhs;
+}
+
+template <class T>
+inline FixedPtDspBuffer<T> operator|(FixedPtDspBuffer<T> lhs, const T& rhs)
+{
+    lhs |= rhs;
+    return lhs;
+}
+
+template <class T>
+template <class U>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator^=(const FixedPtDspBuffer<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] ^= rhs.buf[i];
+    }
+    return *this;
+}
+
+template <class T>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator^=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] ^= rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline FixedPtDspBuffer<T> operator^(FixedPtDspBuffer<T> lhs, const FixedPtDspBuffer<U>& rhs)
+{
+    lhs ^= rhs;
+    return lhs;
+}
+
+template <class T>
+inline FixedPtDspBuffer<T> operator^(FixedPtDspBuffer<T> lhs, const T& rhs)
+{
+    lhs ^= rhs;
+    return lhs;
+}
+
+template <class T>
+template <class U>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator>>=(const FixedPtDspBuffer<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] >>= rhs.buf[i];
+    }
+    return *this;
+}
+
+template <class T>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator>>=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] >>= rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline FixedPtDspBuffer<T> operator>>(FixedPtDspBuffer<T> lhs, const FixedPtDspBuffer<U>& rhs)
+{
+    lhs >>= rhs;
+    return lhs;
+}
+
+template <class T>
+inline FixedPtDspBuffer<T> operator>>(FixedPtDspBuffer<T> lhs, const T& rhs)
+{
+    lhs >>= rhs;
+    return lhs;
+}
+
+template <class T>
+template <class U>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator<<=(const FixedPtDspBuffer<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] <<= rhs.buf[i];
+    }
+    return *this;
+}
+
+template <class T>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator<<=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i] <<= rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline FixedPtDspBuffer<T> operator<<(FixedPtDspBuffer<T> lhs, const FixedPtDspBuffer<U>& rhs)
+{
+    lhs <<= rhs;
+    return lhs;
+}
+
+template <class T>
+inline FixedPtDspBuffer<T> operator<<(FixedPtDspBuffer<T> lhs, const T& rhs)
+{
+    lhs <<= rhs;
     return lhs;
 }
 
