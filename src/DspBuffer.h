@@ -65,6 +65,7 @@ public:
     DspBuffer<T> & operator/=(const T &rhs);
     DspBuffer<T> & operator%=(const DspBuffer<T> &rhs);
     DspBuffer<T> & operator%=(const T &rhs);
+    void pow(const T exponent);
     
     T& operator[](unsigned index) {return buf[index];};
     const T& operator[](unsigned index) const {return buf[index];};
@@ -443,7 +444,14 @@ const int DspBuffer<T>::find(T val) const {
     }
     return -1;
 }
-
+    
+template <class T>
+void DspBuffer<T>::pow(const T exponent) {
+    for (unsigned i=0; i<size(); i++) {
+        buf[i] = std::pow(buf[i], exponent);
+    }
+}
+    
 //template <class T>
 //DspBuffer< std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
 //{

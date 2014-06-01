@@ -531,6 +531,17 @@ TEST(DspBufferMethods, Find) {
     EXPECT_EQ(4, buf.find(3));
 }
 
+TEST(DspBufferMethods, Pow) {
+    int expectedData[] = {2, 4, 6, 8, 3, 5, 7, 3};
+    unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	DspBuffer<int> buf(expectedData, numElements);
+    
+    buf.pow(3);
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(expectedData[i]*expectedData[i]*expectedData[i], buf[i]);
+    }
+}
+
 //TEST(DspBufferMethods, FFT) {
 //    int input[] = {-275, -75, 125, 325, -175, 25, 225, -175};
 //    int expectedReal[] = {0, -525, -800, 324, -200};
