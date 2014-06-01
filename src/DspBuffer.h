@@ -46,14 +46,18 @@ public:
     // Operators
     DspBuffer<T> & operator-();
     
-    DspBuffer<T> & operator+=(const DspBuffer<T> &rhs);
+    template <class U>
+    DspBuffer<T> & operator+=(const DspBuffer<U> &rhs);
     DspBuffer<T> & operator+=(const T &rhs);
-    DspBuffer<T> & operator-=(const DspBuffer<T> &rhs);
+    template <class U>
+    DspBuffer<T> & operator-=(const DspBuffer<U> &rhs);
     DspBuffer<T> & operator-=(const T &rhs);
     
-    DspBuffer<T> & operator*=(const DspBuffer<T> &rhs);
+    template <class U>
+    DspBuffer<T> & operator*=(const DspBuffer<U> &rhs);
     DspBuffer<T> & operator*=(const T &rhs);
-    DspBuffer<T> & operator/=(const DspBuffer<T> &rhs);
+    template <class U>
+    DspBuffer<T> & operator/=(const DspBuffer<U> &rhs);
     DspBuffer<T> & operator/=(const T &rhs);
     void pow(const T exponent);
     
@@ -105,7 +109,8 @@ DspBuffer<T> & DspBuffer<T>::operator-()
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator+=(const DspBuffer<T> &rhs)
+template <class U>
+DspBuffer<T> & DspBuffer<T>::operator+=(const DspBuffer<U> &rhs)
 {
     assert(size() == rhs.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -123,8 +128,8 @@ DspBuffer<T> & DspBuffer<T>::operator+=(const T &rhs)
     return *this;
 }
 
-template <class T>
-inline DspBuffer<T> operator+(DspBuffer<T> lhs, const DspBuffer<T>& rhs)
+template <class T, class U>
+inline DspBuffer<T> operator+(DspBuffer<T> lhs, const DspBuffer<U>& rhs)
 {
     lhs += rhs;
     return lhs;
@@ -138,7 +143,8 @@ inline DspBuffer<T> operator+(DspBuffer<T> lhs, const T& rhs)
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator-=(const DspBuffer<T> &rhs)
+template <class U>
+DspBuffer<T> & DspBuffer<T>::operator-=(const DspBuffer<U> &rhs)
 {
     assert(size() == rhs.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -156,8 +162,8 @@ DspBuffer<T> & DspBuffer<T>::operator-=(const T &rhs)
     return *this;
 }
 
-template <class T>
-inline DspBuffer<T> operator-(DspBuffer<T> lhs, const DspBuffer<T>& rhs)
+template <class T, class U>
+inline DspBuffer<T> operator-(DspBuffer<T> lhs, const DspBuffer<U>& rhs)
 {
     lhs -= rhs;
     return lhs;
@@ -171,7 +177,8 @@ inline DspBuffer<T> operator-(DspBuffer<T> lhs, const T& rhs)
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator*=(const DspBuffer<T> &rhs)
+template <class U>
+DspBuffer<T> & DspBuffer<T>::operator*=(const DspBuffer<U> &rhs)
 {
     assert(size() == rhs.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -189,8 +196,8 @@ DspBuffer<T> & DspBuffer<T>::operator*=(const T &rhs)
     return *this;
 }
 
-template <class T>
-inline DspBuffer<T> operator*(DspBuffer<T> lhs, const DspBuffer<T>& rhs)
+template <class T, class U>
+inline DspBuffer<T> operator*(DspBuffer<T> lhs, const DspBuffer<U>& rhs)
 {
     lhs *= rhs;
     return lhs;
@@ -204,7 +211,8 @@ inline DspBuffer<T> operator*(DspBuffer<T> lhs, const T& rhs)
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator/=(const DspBuffer<T> &rhs)
+template <class U>
+DspBuffer<T> & DspBuffer<T>::operator/=(const DspBuffer<U> &rhs)
 {
     assert(size() == rhs.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -222,8 +230,8 @@ DspBuffer<T> & DspBuffer<T>::operator/=(const T &rhs)
     return *this;
 }
 
-template <class T>
-inline DspBuffer<T> operator/(DspBuffer<T> lhs, const DspBuffer<T>& rhs)
+template <class T, class U>
+inline DspBuffer<T> operator/(DspBuffer<T> lhs, const DspBuffer<U>& rhs)
 {
     lhs /= rhs;
     return lhs;

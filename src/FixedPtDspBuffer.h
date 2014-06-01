@@ -39,7 +39,8 @@ public:
     FixedPtDspBuffer<T> & operator--();
     FixedPtDspBuffer<T> operator--(int);
     
-    FixedPtDspBuffer<T> & operator%=(const FixedPtDspBuffer<T> &rhs);
+    template <class U>
+    FixedPtDspBuffer<T> & operator%=(const FixedPtDspBuffer<U> &rhs);
     FixedPtDspBuffer<T> & operator%=(const T &rhs);
     void pow(const SMARTDSP_FLOAT_TYPE exponent);
     
@@ -92,7 +93,8 @@ FixedPtDspBuffer<T> FixedPtDspBuffer<T>::operator--(int)
 }
 
 template <class T>
-FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator%=(const FixedPtDspBuffer<T> &rhs)
+template <class U>
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator%=(const FixedPtDspBuffer<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
@@ -110,8 +112,8 @@ FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::operator%=(const T &rhs)
     return *this;
 }
 
-template <class T>
-inline FixedPtDspBuffer<T> operator%(FixedPtDspBuffer<T> lhs, const FixedPtDspBuffer<T>& rhs)
+template <class T, class U>
+inline FixedPtDspBuffer<T> operator%(FixedPtDspBuffer<T> lhs, const FixedPtDspBuffer<U>& rhs)
 {
     lhs %= rhs;
     return lhs;
