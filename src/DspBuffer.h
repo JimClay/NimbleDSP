@@ -13,7 +13,6 @@
 namespace SmartDsp {
 
 const unsigned DEFAULT_BUF_LEN = 0;
-enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 
 
 #define VECTOR_TO_ARRAY(x)      (&x[0])
@@ -25,25 +24,23 @@ class DspBuffer {
 private:
     std::vector<T> scratchBuf;
     
-    void initSize(unsigned size, DomainType dataDomain = TIME_DOMAIN) {buf = std::vector<T>(size); domain = dataDomain;
-        scratchBuf = std::vector<T>(0);}
+    void initSize(unsigned size) {buf = std::vector<T>(size); scratchBuf = std::vector<T>(0);}
     template <class U>
-    void initArray(U *array, unsigned arrayLen, DomainType dataDomain = TIME_DOMAIN);
+    void initArray(U *array, unsigned arrayLen);
     
 public:
     // Members
 	std::vector<T> buf;
-    DomainType domain;
     
     // Constructors
     DspBuffer<T>(void) {initSize(DEFAULT_BUF_LEN);}
     DspBuffer<T>(unsigned size) {initSize(size);}
     template <typename U>
-    DspBuffer<T>(std::vector<U> data, DomainType dataDomain = TIME_DOMAIN) {initArray(VECTOR_TO_ARRAY(data), data.size(), dataDomain);}
+    DspBuffer<T>(std::vector<U> data) {initArray(VECTOR_TO_ARRAY(data), data.size());}
     template <typename U>
-    DspBuffer<T>(U *data, unsigned dataLen, DomainType dataDomain = TIME_DOMAIN) {initArray(data, dataLen, dataDomain);}
+    DspBuffer<T>(U *data, unsigned dataLen) {initArray(data, dataLen);}
     
-    DspBuffer<T>(const DspBuffer<T>& other) {buf = other.buf; domain = other.domain;}
+    DspBuffer<T>(const DspBuffer<T>& other) {buf = other.buf;}
     DspBuffer<T>& operator=(const DspBuffer<T>& rhs);
     
     // Operators
@@ -90,12 +87,11 @@ public:
 
 template <class T>
 template <class U>
-void DspBuffer<T>::initArray(U *array, unsigned arrayLen, DomainType dataDomain) {
+void DspBuffer<T>::initArray(U *array, unsigned arrayLen) {
     buf = std::vector<T>(arrayLen);
     for (unsigned i=0; i<arrayLen; i++) {
         buf[i] = (T) array[i];
     }
-    domain = dataDomain;
     scratchBuf = std::vector<T>(0);
 }
 
@@ -103,7 +99,6 @@ template <class T>
 DspBuffer<T>& DspBuffer<T>::operator=(const DspBuffer<T>& rhs)
 {
     buf = rhs.buf;
-    domain = rhs.domain;
     return *this;
 }
 
@@ -154,7 +149,6 @@ template <class T>
 DspBuffer<T> & DspBuffer<T>::operator+=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
-    assert(domain == rhs.domain);
     for (unsigned i=0; i<buf.size(); i++) {
         buf[i] += rhs.buf[i];
     }
@@ -188,7 +182,6 @@ template <class T>
 DspBuffer<T> & DspBuffer<T>::operator-=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
-    assert(domain == rhs.domain);
     for (unsigned i=0; i<buf.size(); i++) {
         buf[i] -= rhs.buf[i];
     }
@@ -222,7 +215,6 @@ template <class T>
 DspBuffer<T> & DspBuffer<T>::operator*=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
-    assert(domain == rhs.domain);
     for (unsigned i=0; i<buf.size(); i++) {
         buf[i] *= rhs.buf[i];
     }
@@ -256,7 +248,6 @@ template <class T>
 DspBuffer<T> & DspBuffer<T>::operator/=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
-    assert(domain == rhs.domain);
     for (unsigned i=0; i<buf.size(); i++) {
         buf[i] /= rhs.buf[i];
     }
@@ -290,7 +281,6 @@ template <class T>
 DspBuffer<T> & DspBuffer<T>::operator%=(const DspBuffer<T> &rhs)
 {
     assert(size() == rhs.size());
-    assert(domain == rhs.domain);
     for (unsigned i=0; i<buf.size(); i++) {
         buf[i] %= rhs.buf[i];
     }

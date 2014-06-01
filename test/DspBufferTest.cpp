@@ -8,19 +8,17 @@ TEST(DspBufferInit, Size) {
 	DspBuffer<int> buf(50);
     
     EXPECT_EQ(50, buf.buf.size());
-    EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
 
 TEST(DspBufferInit, Array) {
     short expectedData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
-	DspBuffer<int> buf(expectedData, numElements, FREQUENCY_DOMAIN);
+	DspBuffer<int> buf(expectedData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf.buf[i]);
     }
-    EXPECT_EQ(FREQUENCY_DOMAIN, buf.domain);
 }
 
 TEST(DspBufferInit, Vector) {
@@ -32,7 +30,6 @@ TEST(DspBufferInit, Vector) {
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf.buf[i]);
     }
-    EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
 
 // Operator tests
@@ -47,7 +44,6 @@ TEST(DspBufferOperators, PreIncrement) {
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ((expectedData[i]+1)*2, buf.buf[i]);
     }
-    EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
 
 TEST(DspBufferOperators, PostIncrement) {
@@ -63,7 +59,6 @@ TEST(DspBufferOperators, PostIncrement) {
         EXPECT_EQ(expectedData[i]*2, buf2[i]);
         EXPECT_EQ(expectedData[i]+1, buf[i]);
     }
-    EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
 
 TEST(DspBufferOperators, PreDecrement) {
@@ -77,7 +72,6 @@ TEST(DspBufferOperators, PreDecrement) {
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ((expectedData[i]-1)*2, buf.buf[i]);
     }
-    EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
 
 TEST(DspBufferOperators, PostDecrement) {
@@ -93,7 +87,6 @@ TEST(DspBufferOperators, PostDecrement) {
         EXPECT_EQ(expectedData[i]*2, buf2[i]);
         EXPECT_EQ(expectedData[i]-1, buf[i]);
     }
-    EXPECT_EQ(TIME_DOMAIN, buf.domain);
 }
 
 TEST(DspBufferOperators, PlusEqualsBuf) {
