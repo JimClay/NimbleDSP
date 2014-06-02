@@ -836,3 +836,27 @@ TEST(FixedPtDspBufferMethods, Pow) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
+
+TEST(FixedPtDspBufferMethods, Saturate) {
+    int inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
+    int expectedData[] = {1, -5, 5, 3, 5, -2, -5, 1};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<int> buf(inputData, numElements);
+    
+    buf.saturate(5);
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(FixedPtDspBufferMethods, Abs) {
+    int inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
+    int expectedData[] = {1, 10, 8, 3, 6, 2, 9, 1};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<int> buf(inputData, numElements);
+    
+    buf.abs();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}

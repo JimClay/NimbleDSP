@@ -4,8 +4,9 @@
 
 #include <vector>
 #include <cassert>
+#include <cstdlib>
 #include <cmath>
-#include <complex>
+//#include <complex>
 #include "kiss_fft.h"
 #include "kiss_fftr.h"
 
@@ -78,6 +79,7 @@ public:
     const T min(unsigned *minLoc = NULL) const;
     const int find(T val) const;
     void saturate(T val);
+    void abs();
     
     //DspBuffer< std::complex<T> > fft(bool pad = false, bool scale = true);
 };
@@ -386,6 +388,13 @@ void DspBuffer<T>::saturate(T val) {
     }
 }
  
+template <class T>
+void DspBuffer<T>::abs() {
+    for (unsigned i=0; i<size(); i++) {
+        buf[i] = (T) std::abs(buf[i]);
+    }
+}
+
 //template <class T>
 //DspBuffer< std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
 //{
