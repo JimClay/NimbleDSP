@@ -77,6 +77,7 @@ public:
     const T max(unsigned *maxLoc = NULL) const;
     const T min(unsigned *minLoc = NULL) const;
     const int find(T val) const;
+    void saturate(T val);
     
     //DspBuffer< std::complex<T> > fft(bool pad = false, bool scale = true);
 };
@@ -374,7 +375,17 @@ void DspBuffer<T>::pow(const T exponent) {
         buf[i] = std::pow(buf[i], exponent);
     }
 }
-    
+   
+template <class T>
+void DspBuffer<T>::saturate(T val) {
+    for (unsigned i=0; i<size(); i++) {
+        if (buf[i] > val)
+            buf[i] = val;
+        else if (buf[i] < -val)
+            buf[i] = -val;
+    }
+}
+ 
 //template <class T>
 //DspBuffer< std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
 //{

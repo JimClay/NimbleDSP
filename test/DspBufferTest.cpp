@@ -428,6 +428,18 @@ TEST(DspBufferMethods, Pow) {
     }
 }
 
+TEST(DspBufferMethods, Saturate) {
+    double inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
+    double expectedData[] = {1, -5, 5, 3, 5, -2, -5, 1};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    
+    buf.saturate(5);
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
 //TEST(DspBufferMethods, FFT) {
 //    double input[] = {-275, -75, 125, 325, -175, 25, 225, -175};
 //    double expectedReal[] = {0, -525, -800, 324, -200};
