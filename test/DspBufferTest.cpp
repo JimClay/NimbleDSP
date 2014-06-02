@@ -18,7 +18,7 @@ TEST(DspBufferInit, Size) {
 }
 
 TEST(DspBufferInit, Array) {
-    short inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -29,7 +29,7 @@ TEST(DspBufferInit, Array) {
 }
 
 TEST(DspBufferInit, Vector) {
-    short array[] = {1, 3, 5, 7, 2, 4, 6, 9};
+    double array[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     std::vector<double> inputData (array, array + sizeof(array) / sizeof(array[0]) );
 	DspBuffer<double> buf(inputData);
     
@@ -41,7 +41,7 @@ TEST(DspBufferInit, Vector) {
 
 // Operator tests
 TEST(DspBufferOperators, PlusEqualsBuf) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
 	DspBuffer<double> buf2(inputData, numElements);
@@ -56,7 +56,7 @@ TEST(DspBufferOperators, PlusEqualsBuf) {
 }
 
 TEST(DspBufferOperators, PlusEqualsScalar) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -70,7 +70,7 @@ TEST(DspBufferOperators, PlusEqualsScalar) {
 }
 
 TEST(DspBufferOperators, PlusBuf) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
 	DspBuffer<double> buf2(inputData, numElements);
@@ -84,7 +84,7 @@ TEST(DspBufferOperators, PlusBuf) {
 }
 
 TEST(DspBufferOperators, PlusScalar) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
 	DspBuffer<double> buf2(0);
@@ -97,7 +97,7 @@ TEST(DspBufferOperators, PlusScalar) {
 }
 
 TEST(DspBufferOperators, MinusEqualsBuf) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     double inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
@@ -107,13 +107,13 @@ TEST(DspBufferOperators, MinusEqualsBuf) {
     
     buf1 -= buf2;
     for (unsigned i=0; i<buf1.buf.size(); i++) {
-        EXPECT_EQ(1, buf1.buf[i]);
+        EXPECT_EQ(inputData[i] - inputData2[i], buf1.buf[i]);
         EXPECT_EQ(inputData2[i], buf2.buf[i]);
     }
 }
 
 TEST(DspBufferOperators, MinusEqualsScalar) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -127,7 +127,7 @@ TEST(DspBufferOperators, MinusEqualsScalar) {
 }
 
 TEST(DspBufferOperators, MinusBuf) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     double inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
@@ -137,12 +137,12 @@ TEST(DspBufferOperators, MinusBuf) {
     buf3 = buf1 - buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
     for (unsigned i=0; i<buf3.buf.size(); i++) {
-        EXPECT_EQ(1, buf3.buf[i]);
+        EXPECT_EQ(inputData[i] - inputData2[i], buf3.buf[i]);
     }
 }
 
 TEST(DspBufferOperators, MinusScalar) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
 	DspBuffer<double> buf2(0);
@@ -155,7 +155,7 @@ TEST(DspBufferOperators, MinusScalar) {
 }
 
 TEST(DspBufferOperators, MultiplyEqualsBuf) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     double inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
@@ -171,7 +171,7 @@ TEST(DspBufferOperators, MultiplyEqualsBuf) {
 }
 
 TEST(DspBufferOperators, MultiplyEqualsScalar) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -185,7 +185,7 @@ TEST(DspBufferOperators, MultiplyEqualsScalar) {
 }
 
 TEST(DspBufferOperators, MultiplyBuf) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     double inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
@@ -200,7 +200,7 @@ TEST(DspBufferOperators, MultiplyBuf) {
 }
 
 TEST(DspBufferOperators, MultiplyScalar) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
 	DspBuffer<double> buf2(0);
@@ -213,7 +213,7 @@ TEST(DspBufferOperators, MultiplyScalar) {
 }
 
 TEST(DspBufferOperators, DivideEqualsBuf) {
-    double inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    double inputData[] = {100, 300, 500, 700.12, 200, 400, 600, 800};
     double inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
@@ -229,7 +229,7 @@ TEST(DspBufferOperators, DivideEqualsBuf) {
 }
 
 TEST(DspBufferOperators, DivideEqualsScalar) {
-    double inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    double inputData[] = {100, 300, 500, 700.12, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -243,7 +243,7 @@ TEST(DspBufferOperators, DivideEqualsScalar) {
 }
 
 TEST(DspBufferOperators, DivideBuf) {
-    double inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    double inputData[] = {100, 300, 500, 700.12, 200, 400, 600, 800};
     double inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
@@ -258,7 +258,7 @@ TEST(DspBufferOperators, DivideBuf) {
 }
 
 TEST(DspBufferOperators, DivideScalar) {
-    double inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    double inputData[] = {100, 300, 500, 700.12, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf1(inputData, numElements);
 	DspBuffer<double> buf2(0);
@@ -271,7 +271,7 @@ TEST(DspBufferOperators, DivideScalar) {
 }
 
 TEST(DspBufferOperators, UnaryMinus) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -285,7 +285,7 @@ TEST(DspBufferOperators, UnaryMinus) {
 }
 
 TEST(DspBufferOperators, Indexing) {
-    double inputData[] = {2, 4, 6, 8, 3, 5, 7, 9};
+    double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 9};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(numElements);
     
@@ -299,7 +299,7 @@ TEST(DspBufferOperators, Indexing) {
 }
 
 TEST(DspBufferOperators, Equality) {
-    double inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
+    double inputData[] = {1, 3, 5, 7.12, 2, 4, 6, 8};
     double inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     double inputData3[] = {0, 2, 4, 6, 1, 3, 5, 7, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
@@ -317,31 +317,31 @@ TEST(DspBufferOperators, Equality) {
 }
 
 TEST(DspBufferStatistics, Mean) {
-    double inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    double inputData[] = {100, 300, 500, 700.12, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(450, buf.mean());
+    EXPECT_EQ(true, FloatsEqual(450.015, buf.mean()));
 }
 
 TEST(DspBufferStatistics, Var) {
-    double inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    double inputData[] = {100, 300, 500, 700.12, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(60000, buf.var());
+    EXPECT_EQ(true, FloatsEqual(60008.57322857144, buf.var()));
 }
 
 TEST(DspBufferStatistics, StdDev) {
-    double inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    double inputData[] = {100, 300, 500, 700.12, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(244.9489742783178, buf.stdDev()));
+    EXPECT_EQ(true, FloatsEqual(244.9664736827704, buf.stdDev()));
 }
 
 TEST(DspBufferStatistics, Median) {
-    double inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
+    double inputData[] = {100, 300, 500, 700.12, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -351,7 +351,7 @@ TEST(DspBufferStatistics, Median) {
 }
 
 TEST(DspBufferMethods, Rotate) {
-    double inputData[] = {2, 4, 6, 8, 3, 5, 7, 9};
+    double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 9};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -372,7 +372,7 @@ TEST(DspBufferMethods, Rotate) {
 }
 
 TEST(DspBufferMethods, Reverse) {
-    double inputData[] = {2, 4, 6, 8, 3, 5, 7, 9};
+    double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 9};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -387,18 +387,18 @@ TEST(DspBufferMethods, Reverse) {
 }
 
 TEST(DspBufferMethods, Max) {
-    double inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
+    double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(8, buf.max());
+    EXPECT_EQ(8.37, buf.max());
     unsigned maxLoc;
-    EXPECT_EQ(8, buf.max(&maxLoc));
+    EXPECT_EQ(8.37, buf.max(&maxLoc));
     EXPECT_EQ(3, maxLoc);
 }
 
 TEST(DspBufferMethods, Min) {
-    double inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
+    double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -409,7 +409,7 @@ TEST(DspBufferMethods, Min) {
 }
 
 TEST(DspBufferMethods, Find) {
-    double inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
+    double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -418,7 +418,7 @@ TEST(DspBufferMethods, Find) {
 }
 
 TEST(DspBufferMethods, Pow) {
-    double inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
+    double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -429,7 +429,7 @@ TEST(DspBufferMethods, Pow) {
 }
 
 TEST(DspBufferMethods, Saturate) {
-    double inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
+    double inputData[] = {1, -10, 8, 3, 6.92, -2, -9, 1};
     double expectedData[] = {1, -5, 5, 3, 5, -2, -5, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
@@ -441,8 +441,8 @@ TEST(DspBufferMethods, Saturate) {
 }
 
 TEST(DspBufferMethods, Abs) {
-    double inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
-    double expectedData[] = {1, 10, 8, 3, 6, 2, 9, 1};
+    double inputData[] = {1, -10, 8, 3, 6.92, -2, -9, 1};
+    double expectedData[] = {1, 10, 8, 3, 6.92, 2, 9, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
