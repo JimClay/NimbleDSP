@@ -69,7 +69,7 @@ public:
     const unsigned size() const {return buf.size();};
     const T mean() const;
     const T var() const;
-    const T stdDev() const;
+    const T stdDev() const {return sqrt(var());}
     const T median();
     
     void rotate(int numToShift);
@@ -269,7 +269,7 @@ const T DspBuffer<T>::mean() const {
     for (unsigned i=0; i<buf.size(); i++) {
         sum += buf[i];
     }
-    return sum / buf.size();
+    return sum / ((T) buf.size());
 }
 
 template <class T>
@@ -281,12 +281,7 @@ const T DspBuffer<T>::var() const {
         T varDiff = buf[i] - meanVal;
         sum += varDiff * varDiff;
     }
-    return sum / (buf.size() - 1);
-}
-
-template <class T>
-const T DspBuffer<T>::stdDev() const {
-    return sqrt(var());
+    return sum / ((T) (buf.size() - 1));
 }
 
 template <class T>
@@ -301,7 +296,7 @@ const T DspBuffer<T>::median() {
     else {
         // Even number of samples.  Average the two in the middle.
         unsigned topHalfIndex = size()/2;
-        return (scratchBuf[topHalfIndex] + scratchBuf[topHalfIndex-1]) / 2;
+        return (scratchBuf[topHalfIndex] + scratchBuf[topHalfIndex-1]) / ((T) 2);
     }
 }
 
@@ -332,7 +327,8 @@ const T DspBuffer<T>::max(unsigned *maxLoc) const {
     unsigned maxIndex = 0;
     
     for (unsigned i=1; i<size(); i++) {
-        if (buf[i] > maxVal) {
+        //if (buf[i] > maxVal) {
+        if (maxVal < buf[i]) {
             maxVal = buf[i];
             maxIndex = i;
         }
