@@ -29,14 +29,14 @@ public:
     DomainType domain;
     
     // Constructors
-    ComplexDspBuffer<T>(void) : DspBuffer<T>() {}
-    ComplexDspBuffer<T>(unsigned size) : DspBuffer<T>(size) {}
+    ComplexDspBuffer<T>(void) : DspBuffer<T>() {domain = TIME_DOMAIN;}
+    ComplexDspBuffer<T>(unsigned size) : DspBuffer<T>(size) {domain = TIME_DOMAIN;}
     template <typename U>
-    ComplexDspBuffer<T>(std::vector<U> data) : DspBuffer<T>(data) {}
+    ComplexDspBuffer<T>(std::vector<U> data, DomainType dataDomain=TIME_DOMAIN) : DspBuffer<T>(data) {domain = dataDomain;}
     template <typename U>
-    ComplexDspBuffer<T>(U *data, unsigned dataLen) : DspBuffer<T>(data, dataLen) {}
+    ComplexDspBuffer<T>(U *data, unsigned dataLen, DomainType dataDomain=TIME_DOMAIN) : DspBuffer<T>(data, dataLen) {domain = dataDomain;}
     
-    ComplexDspBuffer<T>(const ComplexDspBuffer<T>& other) {this->buf = other.buf;}
+    ComplexDspBuffer<T>(const ComplexDspBuffer<T>& other) {this->buf = other.buf; domain = other.domain;}
     ComplexDspBuffer<T>& operator=(const ComplexDspBuffer<T>& rhs);
     ComplexDspBuffer<T>& operator=(const DspBuffer<T>& rhs);
     
