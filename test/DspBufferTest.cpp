@@ -321,7 +321,7 @@ TEST(DspBufferStatistics, Mean) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(450.015, buf.mean()));
+    EXPECT_EQ(true, FloatsEqual(450.015, mean(buf)));
 }
 
 TEST(DspBufferStatistics, Var) {
@@ -329,7 +329,7 @@ TEST(DspBufferStatistics, Var) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(60008.57322857144, buf.var()));
+    EXPECT_EQ(true, FloatsEqual(60008.57322857144, var(buf)));
 }
 
 TEST(DspBufferStatistics, StdDev) {
@@ -337,7 +337,7 @@ TEST(DspBufferStatistics, StdDev) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(244.9664736827704, buf.stdDev()));
+    EXPECT_EQ(true, FloatsEqual(244.9664736827704, stdDev(buf)));
 }
 
 TEST(DspBufferStatistics, Median) {
@@ -345,9 +345,9 @@ TEST(DspBufferStatistics, Median) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(450, buf.median());
+    EXPECT_EQ(450, median(buf));
     buf.buf.push_back(-10000);
-    EXPECT_EQ(400, buf.median());
+    EXPECT_EQ(400, median(buf));
 }
 
 TEST(DspBufferMethods, Rotate) {
@@ -355,17 +355,17 @@ TEST(DspBufferMethods, Rotate) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.rotate(numElements);
+    rotate(buf, numElements);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[i], buf[i]);
     }
     
-    buf.rotate(3);
+    rotate(buf, 3);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[((numElements - 3) + i) % numElements], buf[i]);
     }
     
-    buf.rotate(-1);
+    rotate(buf, -1);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[((numElements - 2) + i) % numElements], buf[i]);
     }
@@ -380,7 +380,7 @@ TEST(DspBufferMethods, Reverse) {
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[numElements-i-1], buf[i]);
     }
-    buf.reverse();
+    reverse(buf);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[i], buf[i]);
     }
@@ -391,9 +391,9 @@ TEST(DspBufferMethods, Max) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(8.37, buf.max());
+    EXPECT_EQ(8.37, max(buf));
     unsigned maxLoc;
-    EXPECT_EQ(8.37, buf.max(&maxLoc));
+    EXPECT_EQ(8.37, max(buf, &maxLoc));
     EXPECT_EQ(3, maxLoc);
 }
 
@@ -402,9 +402,9 @@ TEST(DspBufferMethods, Min) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(2, buf.min());
+    EXPECT_EQ(2, min(buf));
     unsigned minLoc;
-    EXPECT_EQ(2, buf.min(&minLoc));
+    EXPECT_EQ(2, min(buf, &minLoc));
     EXPECT_EQ(0, minLoc);
 }
 
@@ -413,8 +413,8 @@ TEST(DspBufferMethods, Find) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    EXPECT_EQ(-1, buf.find(9));
-    EXPECT_EQ(4, buf.find(3));
+    EXPECT_EQ(-1, find(buf, 9.0));
+    EXPECT_EQ(4, find(buf, 3.0));
 }
 
 TEST(DspBufferMethods, Pow) {
@@ -422,7 +422,7 @@ TEST(DspBufferMethods, Pow) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.pow(3);
+    pow(buf, 3.0);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(inputData[i]*inputData[i]*inputData[i], buf[i]);
     }
@@ -434,7 +434,7 @@ TEST(DspBufferMethods, Saturate) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.saturate(5);
+    saturate(buf, 5.0);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
@@ -446,7 +446,7 @@ TEST(DspBufferMethods, Abs) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.abs();
+    abs(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
@@ -466,7 +466,7 @@ TEST(DspBufferMethods, Resize) {
         EXPECT_EQ(0, buf[i]);
     }
     
-    buf.resize(4);
+    resize(buf, 4);
     EXPECT_EQ(4, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(inputData[i], buf[i]);
@@ -478,7 +478,7 @@ TEST(DspBufferMethods, Pad) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.pad(5);
+    pad(buf, 5);
     EXPECT_EQ(13, buf.size());
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(inputData[i], buf[i]);
@@ -494,7 +494,7 @@ TEST(DspBufferMethods, Exp) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.exp();
+    exp(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
@@ -506,7 +506,7 @@ TEST(DspBufferMethods, Log) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.log();
+    log(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
@@ -518,7 +518,7 @@ TEST(DspBufferMethods, Ln) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.ln();
+    ln(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
@@ -530,7 +530,7 @@ TEST(DspBufferMethods, Log10) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
-    buf.log10();
+    log10(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
