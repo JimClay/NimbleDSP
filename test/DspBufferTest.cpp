@@ -536,6 +536,34 @@ TEST(DspBufferMethods, Log10) {
     }
 }
 
+TEST(DspBufferMethods, Upsample) {
+	double inputData[] = { 1, 10001, 8, -5, 6, 2, 9, 1 };
+	double expectedData[] = { 1, 0, 0, 10001, 0, 0, 8, 0, 0, -5, 0, 0, 6, 0, 0, 2, 0, 0, 9, 0, 0, 1, 0, 0 };
+	double expectedData2[] = { 0, 1, 0, 0, 10001, 0, 0, 8, 0, 0, -5, 0, 0, 6, 0, 0, 2, 0, 0, 9, 0, 0, 1, 0 };
+	double expectedData3[] = { 0, 0, 0, 1, 0, 0, 0, 10001, 0, 0, 0, 8, 0, 0, 0, -5, 0, 0, 0, 6, 0, 0, 0, 2, 0, 0, 0, 9, 0, 0, 0, 1 };
+	unsigned numElements = sizeof(inputData) / sizeof(inputData[0]);
+	DspBuffer<double> bufSave(inputData, numElements);
+	DspBuffer<double> buf(0);
+
+	buf = bufSave;
+	upsample(buf, 3);
+	for (unsigned i = 0; i<numElements; i++) {
+		EXPECT_EQ(expectedData[i], buf[i]);
+	}
+
+	buf = bufSave;
+	upsample(buf, 3, 1);
+	for (unsigned i = 0; i<numElements; i++) {
+		EXPECT_EQ(expectedData2[i], buf[i]);
+	}
+
+	buf = bufSave;
+	upsample(buf, 4, 3);
+	for (unsigned i = 0; i<numElements; i++) {
+		EXPECT_EQ(expectedData3[i], buf[i]);
+	}
+}
+
 //TEST(DspBufferMethods, FFT) {
 //    double input[] = {-275, -75, 125, 325, -175, 25, 225, -175};
 //    double expectedReal[] = {0, -525, -800, 324, -200};

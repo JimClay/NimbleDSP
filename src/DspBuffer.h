@@ -425,7 +425,24 @@ DspBuffer<T> & DspBuffer<T>::log10() {
     }
     return *this;
 }
-    
+
+template <class T>
+DspBuffer<T> & upsample(DspBuffer<T> & buf, int rate, int phase = 0) {
+	assert(rate > 0);
+	assert(phase >= 0 && phase < rate);
+	if (rate == 1)
+		return buf;
+
+	int originalSize = buf.size();
+	buf.resize(originalSize*rate);
+	int from, to;
+	for (from = originalSize - 1, to = buf.size() - (rate - phase); to > 0; from--, to -= rate) {
+		buf[to] = buf[from];
+		buf[from] = 0;
+	}
+	return buf;
+}
+
 //template <class T>
 //ComplexDspBuffer<T> std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
 //{
