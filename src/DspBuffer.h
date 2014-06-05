@@ -6,7 +6,6 @@
 #include <cassert>
 #include <cstdlib>
 #include <cmath>
-//#include <complex>
 #include "kiss_fft.h"
 #include "kiss_fftr.h"
 
@@ -18,7 +17,7 @@ const unsigned DEFAULT_BUF_LEN = 0;
 
 #define VECTOR_TO_ARRAY(x)      (&x[0])
 
-
+    
 template <class T>
 class DspBuffer {
 
@@ -81,7 +80,10 @@ public:
     void saturate(T val);
     void abs();
     
-    //DspBuffer< std::complex<T> > fft(bool pad = false, bool scale = true);
+    void resize(unsigned len, T val = (T) 0) {buf.resize(len, val);}
+    void pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val);}
+    
+    //ComplexDspBuffer<T> std::complex<T> > fft(bool pad = false, bool scale = false);
 };
 
 
@@ -392,7 +394,7 @@ void DspBuffer<T>::abs() {
 }
 
 //template <class T>
-//DspBuffer< std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
+//ComplexDspBuffer<T> std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
 //{
 //    unsigned originalSize = size();
 //    unsigned fftLen = originalSize;
@@ -403,7 +405,7 @@ void DspBuffer<T>::abs() {
 //            buf.resize(fftLen, 0);
 //        }
 //    }
-//    DspBuffer< std::complex<T> > fftResult(fftLen);
+//    ComplexDspBuffer< std::complex<T> > fftResult(fftLen);
 //    
 //    if (size() & 1) {
 //        // kissfft real FFT's (as opposed to complex) require even lengths.  If it isn't even

@@ -74,7 +74,7 @@ const T ComplexDspBuffer<T>::var() const {
     T sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
         T varDiff = this->buf[i] - meanVal;
-        sum += varDiff * conj(varDiff);
+        sum += varDiff * std::conj(varDiff);
     }
     return sum / ((T) (this->size() - 1));
 }

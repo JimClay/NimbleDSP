@@ -452,6 +452,42 @@ TEST(DspBufferMethods, Abs) {
     }
 }
 
+TEST(DspBufferMethods, Resize) {
+    double inputData[] = {1, -10, 8, 3, 6.92, -2, -9, 1};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    
+    buf.resize(11);
+    EXPECT_EQ(11, buf.size());
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(inputData[i], buf[i]);
+    }
+    for (unsigned i=numElements; i<buf.size(); i++) {
+        EXPECT_EQ(0, buf[i]);
+    }
+    
+    buf.resize(4);
+    EXPECT_EQ(4, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(inputData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, Pad) {
+    double inputData[] = {1, -10, 8, 3, 6.92, -2, -9, 1};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    
+    buf.pad(5);
+    EXPECT_EQ(13, buf.size());
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(inputData[i], buf[i]);
+    }
+    for (unsigned i=numElements; i<buf.size(); i++) {
+        EXPECT_EQ(0, buf[i]);
+    }
+}
+
 //TEST(DspBufferMethods, FFT) {
 //    double input[] = {-275, -75, 125, 325, -175, 25, 225, -175};
 //    double expectedReal[] = {0, -525, -800, 324, -200};
