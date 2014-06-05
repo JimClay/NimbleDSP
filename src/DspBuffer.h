@@ -59,7 +59,7 @@ public:
     template <class U>
     DspBuffer<T> & operator/=(const DspBuffer<U> &rhs);
     DspBuffer<T> & operator/=(const T &rhs);
-    void pow(const T exponent);
+    DspBuffer<T> & pow(const T exponent);
     
     T& operator[](unsigned index) {return buf[index];};
     const T& operator[](unsigned index) const {return buf[index];};
@@ -71,17 +71,17 @@ public:
     const T stdDev() const {return sqrt(var());}
     const T median();
     
-    void rotate(int numToShift);
-    void reverse();
+    DspBuffer<T> & rotate(int numToShift);
+    DspBuffer<T> & reverse();
     
     const T max(unsigned *maxLoc = NULL) const;
     const T min(unsigned *minLoc = NULL) const;
     const int find(T val) const;
-    void saturate(T val);
-    void abs();
+    DspBuffer<T> & saturate(T val);
+    DspBuffer<T> & abs();
     
-    void resize(unsigned len, T val = (T) 0) {buf.resize(len, val);}
-    void pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val);}
+    DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val);}
+    DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val);}
     
     //ComplexDspBuffer<T> std::complex<T> > fft(bool pad = false, bool scale = false);
 };
@@ -303,7 +303,7 @@ const T DspBuffer<T>::median() {
 }
 
 template <class T>
-void DspBuffer<T>::rotate(int numToShift) {
+DspBuffer<T> & DspBuffer<T>::rotate(int numToShift) {
     numToShift = size() - numToShift;
     while (numToShift < 0)
         numToShift += size();
@@ -315,11 +315,13 @@ void DspBuffer<T>::rotate(int numToShift) {
         return;
 
     std::rotate(buf.begin(), buf.begin()+numToShift, buf.end());
+    return *this;
 }
 
 template <class T>
-void DspBuffer<T>::reverse() {
+DspBuffer<T> & DspBuffer<T>::reverse() {
     std::reverse(buf.begin(), buf.end());
+    return *this;
 }
 
 template <class T>
@@ -370,27 +372,30 @@ const int DspBuffer<T>::find(T val) const {
 }
     
 template <class T>
-void DspBuffer<T>::pow(const T exponent) {
+DspBuffer<T> & DspBuffer<T>::pow(const T exponent) {
     for (unsigned i=0; i<size(); i++) {
         buf[i] = std::pow(buf[i], exponent);
     }
+    return *this;
 }
    
 template <class T>
-void DspBuffer<T>::saturate(T val) {
+DspBuffer<T> & DspBuffer<T>::saturate(T val) {
     for (unsigned i=0; i<size(); i++) {
         if (buf[i] > val)
             buf[i] = val;
         else if (buf[i] < -val)
             buf[i] = -val;
     }
+    return *this;
 }
  
 template <class T>
-void DspBuffer<T>::abs() {
+DspBuffer<T> & DspBuffer<T>::abs() {
     for (unsigned i=0; i<size(); i++) {
         buf[i] = (T) std::abs(buf[i]);
     }
+    return *this;
 }
 
 //template <class T>

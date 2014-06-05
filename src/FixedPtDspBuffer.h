@@ -42,7 +42,7 @@ public:
     template <class U>
     FixedPtDspBuffer<T> & operator%=(const FixedPtDspBuffer<U> &rhs);
     FixedPtDspBuffer<T> & operator%=(const T &rhs);
-    void pow(const SMARTDSP_FLOAT_TYPE exponent);
+    FixedPtDspBuffer<T> & pow(const SMARTDSP_FLOAT_TYPE exponent);
     
     FixedPtDspBuffer<T> & operator~();
     template <class U>
@@ -324,10 +324,11 @@ inline FixedPtDspBuffer<T> operator<<(FixedPtDspBuffer<T> lhs, const T& rhs)
 }
 
 template <class T>
-void FixedPtDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
+FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
     for (unsigned i=0; i<this->size(); i++) {
         this->buf[i] = (T) round(std::pow(this->buf[i], exponent));
     }
+    return *this;
 }
     
 template <class T>
