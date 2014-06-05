@@ -79,6 +79,10 @@ public:
     const int find(T val) const;
     DspBuffer<T> & saturate(T val);
     DspBuffer<T> & abs();
+    DspBuffer<T> & exp();
+    DspBuffer<T> & log();
+    DspBuffer<T> & ln() {return log();}
+    DspBuffer<T> & log10();
     
     DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val); return *this;}
     DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val); return *this;}
@@ -398,6 +402,30 @@ DspBuffer<T> & DspBuffer<T>::abs() {
     return *this;
 }
 
+template <class T>
+DspBuffer<T> & DspBuffer<T>::exp() {
+    for (unsigned i=0; i<size(); i++) {
+        buf[i] = std::exp(buf[i]);
+    }
+    return *this;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::log() {
+    for (unsigned i=0; i<size(); i++) {
+        buf[i] = std::log(buf[i]);
+    }
+    return *this;
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::log10() {
+    for (unsigned i=0; i<size(); i++) {
+        buf[i] = std::log10(buf[i]);
+    }
+    return *this;
+}
+    
 //template <class T>
 //ComplexDspBuffer<T> std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
 //{

@@ -431,3 +431,87 @@ TEST(ComplexDspBufferMethods, Abs) {
     }
 }
 
+TEST(ComplexDspBufferMethods, Resize) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 0)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer< std::complex<double> > buf(inputData, numElements);
+    
+    buf.resize(11);
+    EXPECT_EQ(11, buf.size());
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, ComplexEqual(inputData[i], buf[i]));
+    }
+    for (unsigned i=numElements; i<buf.size(); i++) {
+        EXPECT_EQ(true, ComplexEqual(0, buf[i]));
+    }
+    
+    buf.resize(0);
+    EXPECT_EQ(0, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(true, ComplexEqual(inputData[i], buf[i]));
+    }
+}
+
+TEST(ComplexDspBufferMethods, Pad) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 0)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer< std::complex<double> > buf(inputData, numElements);
+    
+    buf.pad(5);
+    EXPECT_EQ(numElements + 5, buf.size());
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(inputData[i], buf[i]);
+    }
+    for (unsigned i=numElements; i<buf.size(); i++) {
+        EXPECT_EQ(std::complex<double>(0,0), buf[i]);
+    }
+}
+
+TEST(ComplexDspBufferMethods, Exp) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 0), std::complex<double>(11.3, 2.1), std::complex<double>(0, 8), std::complex<double>(.0001, .0001)};
+    std::complex<double>  expectedData[] = {std::complex<double>(2.71828182846, 0), std::complex<double>(-40802.48887960893, 69765.99455269895), std::complex<double>(-0.14550003381, 0.98935824662), std::complex<double>(1.00010000000, 0.00010001000)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer< std::complex<double> > buf(inputData, numElements);
+    
+    buf.exp();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+    }
+}
+
+TEST(ComplexDspBufferMethods, Log) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 0), std::complex<double>(11.3, 2.1), std::complex<double>(0, 8), std::complex<double>(.0001, .0001)};
+    std::complex<double>  expectedData[] = {std::complex<double>(0, 0), std::complex<double>(2.441779605764140, 0.183744530739123), std::complex<double>(2.079441541679836, 1.570796326794897), std::complex<double>(-8.863766781696210, 0.785398163397448)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer< std::complex<double> > buf(inputData, numElements);
+    
+    buf.log();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+    }
+}
+
+TEST(ComplexDspBufferMethods, Ln) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 0), std::complex<double>(11.3, 2.1), std::complex<double>(0, 8), std::complex<double>(.0001, .0001)};
+    std::complex<double>  expectedData[] = {std::complex<double>(0, 0), std::complex<double>(2.441779605764140, 0.183744530739123), std::complex<double>(2.079441541679836, 1.570796326794897), std::complex<double>(-8.863766781696210, 0.785398163397448)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer< std::complex<double> > buf(inputData, numElements);
+    
+    buf.ln();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+    }
+}
+
+TEST(ComplexDspBufferMethods, Log10) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 0), std::complex<double>(11.3, 2.1), std::complex<double>(0, 8), std::complex<double>(.0001, .0001)};
+    std::complex<double>  expectedData[] = {std::complex<double>(0, 0), std::complex<double>(1.060451408807264, 0.079799235779903), std::complex<double>(0.903089986991944, 0.682188176920921), std::complex<double>(-3.849485002168009, 0.341094088460460)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer< std::complex<double> > buf(inputData, numElements);
+    
+    buf.log10();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+    }
+}
+

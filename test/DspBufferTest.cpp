@@ -418,7 +418,7 @@ TEST(DspBufferMethods, Find) {
 }
 
 TEST(DspBufferMethods, Pow) {
-    double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 3};
+    double inputData[] = {2, 0, 6, 8.37, 3, 1, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -441,8 +441,8 @@ TEST(DspBufferMethods, Saturate) {
 }
 
 TEST(DspBufferMethods, Abs) {
-    double inputData[] = {1, -10, 8, 3, 6.92, -2, -9, 1};
-    double expectedData[] = {1, 10, 8, 3, 6.92, 2, 9, 1};
+    double inputData[] = {1, -10, 8, 0, 6.92, -2, -9, 1};
+    double expectedData[] = {1, 10, 8, 0, 6.92, 2, 9, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     
@@ -485,6 +485,54 @@ TEST(DspBufferMethods, Pad) {
     }
     for (unsigned i=numElements; i<buf.size(); i++) {
         EXPECT_EQ(0, buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, Exp) {
+    double inputData[] = {1, -10, 8, 0, 6.92, -2, -9, 1};
+    double expectedData[] = {2.71828183, 0.00004540, 2980.95798704, 1.00000000, 1012.31999453, 0.13533528, 0.00012341, 2.71828183};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    
+    buf.exp();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+    }
+}
+
+TEST(DspBufferMethods, Log) {
+    double inputData[] = {1, 10001.3, 8, .0001, 6.92, 2, 9, 1};
+    double expectedData[] = {0, 9.21047036, 2.07944154, -9.21034037, 1.93441577, 0.69314718, 2.19722458, 0};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    
+    buf.log();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+    }
+}
+
+TEST(DspBufferMethods, Ln) {
+    double inputData[] = {1, 10001.3, 8, .0001, 6.92, 2, 9, 1};
+    double expectedData[] = {0, 9.21047036, 2.07944154, -9.21034037, 1.93441577, 0.69314718, 2.19722458, 0};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    
+    buf.ln();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+    }
+}
+
+TEST(DspBufferMethods, Log10) {
+    double inputData[] = {1, 10001.3, 8, .0001, 6.92, 2, 9, 1};
+    double expectedData[] = {0, 4.00005645, 0.90308999, -4.00000000, 0.84010609, 0.30103000, 0.95424251, 0};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    
+    buf.log10();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
 }
 
