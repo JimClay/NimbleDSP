@@ -312,7 +312,7 @@ DspBuffer<T> & DspBuffer<T>::rotate(int numToShift) {
     while (numToShift < 0)
         numToShift += size();
     
-    while (numToShift >= size())
+    while (numToShift >= (int) size())
         numToShift -= size();
     
     if (numToShift == 0)
@@ -405,7 +405,7 @@ DspBuffer<T> & DspBuffer<T>::abs() {
 template <class T>
 DspBuffer<T> & DspBuffer<T>::exp() {
     for (unsigned i=0; i<size(); i++) {
-        buf[i] = std::exp(buf[i]);
+        buf[i] = (T) std::exp(buf[i]);
     }
     return *this;
 }
@@ -413,7 +413,7 @@ DspBuffer<T> & DspBuffer<T>::exp() {
 template <class T>
 DspBuffer<T> & DspBuffer<T>::log() {
     for (unsigned i=0; i<size(); i++) {
-        buf[i] = std::log(buf[i]);
+		buf[i] = (T) std::log(buf[i]);
     }
     return *this;
 }
@@ -421,7 +421,7 @@ DspBuffer<T> & DspBuffer<T>::log() {
 template <class T>
 DspBuffer<T> & DspBuffer<T>::log10() {
     for (unsigned i=0; i<size(); i++) {
-        buf[i] = std::log10(buf[i]);
+		buf[i] = (T) std::log10(buf[i]);
     }
     return *this;
 }

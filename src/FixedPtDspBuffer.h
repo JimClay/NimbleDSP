@@ -9,6 +9,7 @@
 #ifndef SmartDsp_FixedPtDspBuffer_h
 #define SmartDsp_FixedPtDspBuffer_h
 
+#include <math.h>
 #include "DspBuffer.h"
 
 #ifndef SMARTDSP_FLOAT_TYPE
@@ -326,7 +327,7 @@ inline FixedPtDspBuffer<T> operator<<(FixedPtDspBuffer<T> lhs, const T& rhs)
 template <class T>
 FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = (T) round(std::pow(this->buf[i], exponent));
+        this->buf[i] = (T) std::round(std::pow(this->buf[i], exponent));
     }
     return *this;
 }
