@@ -80,8 +80,8 @@ public:
     DspBuffer<T> & saturate(T val);
     DspBuffer<T> & abs();
     
-    DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val);}
-    DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val);}
+    DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val); return *this;}
+    DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val); return *this;}
     
     //ComplexDspBuffer<T> std::complex<T> > fft(bool pad = false, bool scale = false);
 };
@@ -312,7 +312,7 @@ DspBuffer<T> & DspBuffer<T>::rotate(int numToShift) {
         numToShift -= size();
     
     if (numToShift == 0)
-        return;
+        return *this;
 
     std::rotate(buf.begin(), buf.begin()+numToShift, buf.end());
     return *this;
