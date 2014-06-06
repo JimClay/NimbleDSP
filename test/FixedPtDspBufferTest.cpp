@@ -721,7 +721,7 @@ TEST(FixedPtDspBufferStatistics, Mean) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(4.5, buf.mean()));
+    EXPECT_EQ(true, FloatsEqual(4.5, meanF(buf)));
 }
 
 TEST(FixedPtDspBufferStatistics, Var) {
@@ -729,7 +729,7 @@ TEST(FixedPtDspBufferStatistics, Var) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(60000.0, buf.var()));
+    EXPECT_EQ(true, FloatsEqual(60000.0, varF(buf)));
 }
 
 TEST(FixedPtDspBufferStatistics, StdDev) {
@@ -737,7 +737,7 @@ TEST(FixedPtDspBufferStatistics, StdDev) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(244.9489742783178, buf.stdDev()));
+    EXPECT_EQ(true, FloatsEqual(244.9489742783178, stdDevF(buf)));
 }
 
 TEST(FixedPtDspBufferStatistics, Median) {
@@ -745,9 +745,9 @@ TEST(FixedPtDspBufferStatistics, Median) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(450, buf.median());
+    EXPECT_EQ(450, median(buf));
     buf.buf.push_back(-10000);
-    EXPECT_EQ(400, buf.median());
+    EXPECT_EQ(400, median(buf));
 }
 
 TEST(FixedPtDspBufferStatistics, Mode) {
@@ -755,7 +755,7 @@ TEST(FixedPtDspBufferStatistics, Mode) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(3, buf.mode());
+    EXPECT_EQ(3, mode(buf));
 }
 
 TEST(FixedPtDspBufferMethods, Rotate) {
@@ -763,17 +763,17 @@ TEST(FixedPtDspBufferMethods, Rotate) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.rotate(numElements);
+    rotate(buf, numElements);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[i], buf[i]);
     }
     
-    buf.rotate(3);
+    rotate(buf, 3);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[((numElements - 3) + i) % numElements], buf[i]);
     }
     
-    buf.rotate(-1);
+    rotate(buf, -1);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[((numElements - 2) + i) % numElements], buf[i]);
     }
@@ -784,11 +784,11 @@ TEST(FixedPtDspBufferMethods, Reverse) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.reverse();
+    reverse(buf);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[numElements-i-1], buf[i]);
     }
-    buf.reverse();
+    reverse(buf);
     for (unsigned i=0; i<buf.buf.size(); i++) {
         EXPECT_EQ(inputData[i], buf[i]);
     }
@@ -799,9 +799,9 @@ TEST(FixedPtDspBufferMethods, Max) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(8, buf.max());
+    EXPECT_EQ(8, max(buf));
     unsigned maxLoc;
-    EXPECT_EQ(8, buf.max(&maxLoc));
+    EXPECT_EQ(8, max(buf, &maxLoc));
     EXPECT_EQ(3, maxLoc);
 }
 
@@ -810,9 +810,9 @@ TEST(FixedPtDspBufferMethods, Min) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(2, buf.min());
+    EXPECT_EQ(2, min(buf));
     unsigned minLoc;
-    EXPECT_EQ(2, buf.min(&minLoc));
+    EXPECT_EQ(2, min(buf, &minLoc));
     EXPECT_EQ(0, minLoc);
 }
 
@@ -821,17 +821,17 @@ TEST(FixedPtDspBufferMethods, Find) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(-1, buf.find(9));
-    EXPECT_EQ(4, buf.find(3));
+    EXPECT_EQ(-1, find(buf, 9));
+    EXPECT_EQ(4, find(buf, 3));
 }
 
 TEST(FixedPtDspBufferMethods, Pow) {
     int inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
-    int expectedData[] = {20, 388, 2218, 7643, 113, 1013, 4304, 113};
+    int expectedData[] = {16, 256, 1296, 4096, 81, 625, 2401, 81};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.pow(4.3);
+    pow(buf, 4);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
@@ -843,7 +843,7 @@ TEST(FixedPtDspBufferMethods, Saturate) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<int> buf(inputData, numElements);
     
-    buf.saturate(5);
+    saturate(buf, 5);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
@@ -855,7 +855,7 @@ TEST(FixedPtDspBufferMethods, Abs) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<int> buf(inputData, numElements);
     
-    buf.abs();
+    abs(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
@@ -866,7 +866,7 @@ TEST(FixedPtDspBufferMethods, Resize) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.resize(11);
+    resize(buf, 11);
     EXPECT_EQ(11, buf.size());
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(inputData[i], buf[i]);
@@ -875,7 +875,7 @@ TEST(FixedPtDspBufferMethods, Resize) {
         EXPECT_EQ(0, buf[i]);
     }
     
-    buf.resize(4);
+    resize(buf, 4);
     EXPECT_EQ(4, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(inputData[i], buf[i]);
@@ -887,7 +887,7 @@ TEST(FixedPtDspBufferMethods, Pad) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.pad(5);
+    pad(buf, 5);
     EXPECT_EQ(13, buf.size());
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(inputData[i], buf[i]);
@@ -903,7 +903,7 @@ TEST(FixedPtDspBufferMethods, Exp) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.exp();
+    exp(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
@@ -915,7 +915,7 @@ TEST(FixedPtDspBufferMethods, Log) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.log();
+    log(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
@@ -927,7 +927,7 @@ TEST(FixedPtDspBufferMethods, Ln) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.ln();
+    ln(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
@@ -939,7 +939,7 @@ TEST(FixedPtDspBufferMethods, Log10) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	FixedPtDspBuffer<int> buf(inputData, numElements);
     
-    buf.log10();
+    log10(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }

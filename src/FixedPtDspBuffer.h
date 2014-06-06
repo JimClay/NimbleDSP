@@ -390,6 +390,30 @@ const T FixedPtDspBuffer<T>::mode() {
     return modeVal;
 }
 
+template <class T>
+const T mode(FixedPtDspBuffer<T> & buffer) {
+    return buffer.mode();
+}
+
+template <class T>
+const SMARTDSP_FLOAT_TYPE meanF(FixedPtDspBuffer<T> & buffer) {
+    return buffer.mean();
+}
+
+template <class T>
+const SMARTDSP_FLOAT_TYPE varF(FixedPtDspBuffer<T> & buffer) {
+    return buffer.var();
+}
+
+template <class T>
+const SMARTDSP_FLOAT_TYPE stdF(FixedPtDspBuffer<T> & buffer) {
+    return buffer.stdDev();
+}
+
+template <class T>
+const SMARTDSP_FLOAT_TYPE stdDevF(FixedPtDspBuffer<T> & buffer) {
+    return buffer.stdDev();
+}
 
 };
 
