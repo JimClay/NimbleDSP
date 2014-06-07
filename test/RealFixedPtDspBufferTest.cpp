@@ -1,4 +1,4 @@
-#include "FixedPtDspBuffer.h"
+#include "RealFixedPtDspBuffer.h"
 #include "gtest/gtest.h"
 
 using namespace SmartDsp;
@@ -7,16 +7,16 @@ using namespace SmartDsp;
 extern bool FloatsEqual(double float1, double float2);
 
 
-TEST(FixedPtDspBufferInit, Size) {
-	FixedPtDspBuffer<int> buf(50);
+TEST(RealFixedPtDspBufferInit, Size) {
+	RealFixedPtDspBuffer<int> buf(50);
     
     EXPECT_EQ(50, buf.buf.size());
 }
 
-TEST(FixedPtDspBufferInit, Array) {
+TEST(RealFixedPtDspBufferInit, Array) {
     short inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.buf.size(); i++) {
@@ -24,10 +24,10 @@ TEST(FixedPtDspBufferInit, Array) {
     }
 }
 
-TEST(FixedPtDspBufferInit, Vector) {
+TEST(RealFixedPtDspBufferInit, Vector) {
     short array[] = {1, 3, 5, 7, 2, 4, 6, 9};
     std::vector<int> inputData (array, array + sizeof(array) / sizeof(array[0]) );
-	FixedPtDspBuffer<int> buf(inputData);
+	RealFixedPtDspBuffer<int> buf(inputData);
     
     EXPECT_EQ(inputData.size(), buf.buf.size());
     for (unsigned i=0; i<buf.buf.size(); i++) {
@@ -36,10 +36,10 @@ TEST(FixedPtDspBufferInit, Vector) {
 }
 
 // Operator tests
-TEST(FixedPtDspBufferOperators, PreIncrement) {
+TEST(RealFixedPtDspBufferOperators, PreIncrement) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -49,11 +49,11 @@ TEST(FixedPtDspBufferOperators, PreIncrement) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, PostIncrement) {
+TEST(RealFixedPtDspBufferOperators, PostIncrement) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -64,10 +64,10 @@ TEST(FixedPtDspBufferOperators, PostIncrement) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, PreDecrement) {
+TEST(RealFixedPtDspBufferOperators, PreDecrement) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -77,11 +77,11 @@ TEST(FixedPtDspBufferOperators, PreDecrement) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, PostDecrement) {
+TEST(RealFixedPtDspBufferOperators, PostDecrement) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -92,11 +92,11 @@ TEST(FixedPtDspBufferOperators, PostDecrement) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, PlusEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, PlusEqualsBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -107,10 +107,10 @@ TEST(FixedPtDspBufferOperators, PlusEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, PlusEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, PlusEqualsScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -121,12 +121,12 @@ TEST(FixedPtDspBufferOperators, PlusEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, PlusBuf) {
+TEST(RealFixedPtDspBufferOperators, PlusBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 + buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -135,11 +135,11 @@ TEST(FixedPtDspBufferOperators, PlusBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, PlusScalar) {
+TEST(RealFixedPtDspBufferOperators, PlusScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 + 32;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -148,12 +148,12 @@ TEST(FixedPtDspBufferOperators, PlusScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, MinusEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, MinusEqualsBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -164,10 +164,10 @@ TEST(FixedPtDspBufferOperators, MinusEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, MinusEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, MinusEqualsScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -178,13 +178,13 @@ TEST(FixedPtDspBufferOperators, MinusEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, MinusBuf) {
+TEST(RealFixedPtDspBufferOperators, MinusBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 - buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -193,11 +193,11 @@ TEST(FixedPtDspBufferOperators, MinusBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, MinusScalar) {
+TEST(RealFixedPtDspBufferOperators, MinusScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 - 15;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -206,12 +206,12 @@ TEST(FixedPtDspBufferOperators, MinusScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, MultiplyEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, MultiplyEqualsBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -222,10 +222,10 @@ TEST(FixedPtDspBufferOperators, MultiplyEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, MultiplyEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, MultiplyEqualsScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -236,13 +236,13 @@ TEST(FixedPtDspBufferOperators, MultiplyEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, MultiplyBuf) {
+TEST(RealFixedPtDspBufferOperators, MultiplyBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 * buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -251,11 +251,11 @@ TEST(FixedPtDspBufferOperators, MultiplyBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, MultiplyScalar) {
+TEST(RealFixedPtDspBufferOperators, MultiplyScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 * 15;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -264,12 +264,12 @@ TEST(FixedPtDspBufferOperators, MultiplyScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, DivideEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, DivideEqualsBuf) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -280,10 +280,10 @@ TEST(FixedPtDspBufferOperators, DivideEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, DivideEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, DivideEqualsScalar) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -294,13 +294,13 @@ TEST(FixedPtDspBufferOperators, DivideEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, DivideBuf) {
+TEST(RealFixedPtDspBufferOperators, DivideBuf) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 / buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -309,11 +309,11 @@ TEST(FixedPtDspBufferOperators, DivideBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, DivideScalar) {
+TEST(RealFixedPtDspBufferOperators, DivideScalar) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 / 15;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -322,12 +322,12 @@ TEST(FixedPtDspBufferOperators, DivideScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, ModuloEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, ModuloEqualsBuf) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -338,10 +338,10 @@ TEST(FixedPtDspBufferOperators, ModuloEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, ModuloEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, ModuloEqualsScalar) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -352,13 +352,13 @@ TEST(FixedPtDspBufferOperators, ModuloEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, ModuloBuf) {
+TEST(RealFixedPtDspBufferOperators, ModuloBuf) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 % buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -367,11 +367,11 @@ TEST(FixedPtDspBufferOperators, ModuloBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, ModuloScalar) {
+TEST(RealFixedPtDspBufferOperators, ModuloScalar) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 % 15;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -380,12 +380,12 @@ TEST(FixedPtDspBufferOperators, ModuloScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitAndEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, BitAndEqualsBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -396,10 +396,10 @@ TEST(FixedPtDspBufferOperators, BitAndEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitAndEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, BitAndEqualsScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -410,13 +410,13 @@ TEST(FixedPtDspBufferOperators, BitAndEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitAndBuf) {
+TEST(RealFixedPtDspBufferOperators, BitAndBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 & buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -425,11 +425,11 @@ TEST(FixedPtDspBufferOperators, BitAndBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitAndScalar) {
+TEST(RealFixedPtDspBufferOperators, BitAndScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 & 4;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -438,12 +438,12 @@ TEST(FixedPtDspBufferOperators, BitAndScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitOrEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, BitOrEqualsBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -454,10 +454,10 @@ TEST(FixedPtDspBufferOperators, BitOrEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitOrEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, BitOrEqualsScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -468,13 +468,13 @@ TEST(FixedPtDspBufferOperators, BitOrEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitOrBuf) {
+TEST(RealFixedPtDspBufferOperators, BitOrBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 | buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -483,11 +483,11 @@ TEST(FixedPtDspBufferOperators, BitOrBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitOrScalar) {
+TEST(RealFixedPtDspBufferOperators, BitOrScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 | 4;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -496,12 +496,12 @@ TEST(FixedPtDspBufferOperators, BitOrScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitXorEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, BitXorEqualsBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -512,10 +512,10 @@ TEST(FixedPtDspBufferOperators, BitXorEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitXorEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, BitXorEqualsScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -526,13 +526,13 @@ TEST(FixedPtDspBufferOperators, BitXorEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitXorBuf) {
+TEST(RealFixedPtDspBufferOperators, BitXorBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {-1, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 ^ buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -541,11 +541,11 @@ TEST(FixedPtDspBufferOperators, BitXorBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitXorScalar) {
+TEST(RealFixedPtDspBufferOperators, BitXorScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 ^ 4;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -554,12 +554,12 @@ TEST(FixedPtDspBufferOperators, BitXorScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitShiftRightEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, BitShiftRightEqualsBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -570,10 +570,10 @@ TEST(FixedPtDspBufferOperators, BitShiftRightEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitShiftRightEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, BitShiftRightEqualsScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -584,13 +584,13 @@ TEST(FixedPtDspBufferOperators, BitShiftRightEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitShiftRightBuf) {
+TEST(RealFixedPtDspBufferOperators, BitShiftRightBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 >> buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -599,11 +599,11 @@ TEST(FixedPtDspBufferOperators, BitShiftRightBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitShiftRightScalar) {
+TEST(RealFixedPtDspBufferOperators, BitShiftRightScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 >> 1;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -612,12 +612,12 @@ TEST(FixedPtDspBufferOperators, BitShiftRightScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitShiftLeftEqualsBuf) {
+TEST(RealFixedPtDspBufferOperators, BitShiftLeftEqualsBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
     
     EXPECT_EQ(numElements, buf1.buf.size());
     
@@ -628,10 +628,10 @@ TEST(FixedPtDspBufferOperators, BitShiftLeftEqualsBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitShiftLeftEqualsScalar) {
+TEST(RealFixedPtDspBufferOperators, BitShiftLeftEqualsScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -642,13 +642,13 @@ TEST(FixedPtDspBufferOperators, BitShiftLeftEqualsScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitShiftLeftBuf) {
+TEST(RealFixedPtDspBufferOperators, BitShiftLeftBuf) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-    FixedPtDspBuffer<int> buf3(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+    RealFixedPtDspBuffer<int> buf3(0);
     
     buf3 = buf1 << buf2;
     EXPECT_EQ(numElements, buf3.buf.size());
@@ -657,11 +657,11 @@ TEST(FixedPtDspBufferOperators, BitShiftLeftBuf) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, BitShiftLeftScalar) {
+TEST(RealFixedPtDspBufferOperators, BitShiftLeftScalar) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(0);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(0);
     
     buf2 = buf1 << 1;
     EXPECT_EQ(numElements, buf2.buf.size());
@@ -670,10 +670,10 @@ TEST(FixedPtDspBufferOperators, BitShiftLeftScalar) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, UnaryMinus) {
+TEST(RealFixedPtDspBufferOperators, UnaryMinus) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(numElements, buf.buf.size());
     
@@ -684,10 +684,10 @@ TEST(FixedPtDspBufferOperators, UnaryMinus) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, Indexing) {
+TEST(RealFixedPtDspBufferOperators, Indexing) {
     int inputData[] = {2, 4, 6, 8, 3, 5, 7, 9};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(numElements);
+	RealFixedPtDspBuffer<int> buf(numElements);
     
     for (unsigned i=0; i<numElements; i++) {
         buf[i] = inputData[i];
@@ -698,15 +698,15 @@ TEST(FixedPtDspBufferOperators, Indexing) {
     }
 }
 
-TEST(FixedPtDspBufferOperators, Equality) {
+TEST(RealFixedPtDspBufferOperators, Equality) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     int inputData2[] = {0, 2, 4, 6, 1, 3, 5, 7};
     int inputData3[] = {0, 2, 4, 6, 1, 3, 5, 7, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
     unsigned numElements3 = sizeof(inputData3)/sizeof(inputData3[0]);
-	FixedPtDspBuffer<int> buf1(inputData, numElements);
-	FixedPtDspBuffer<int> buf2(inputData2, numElements);
-	FixedPtDspBuffer<int> buf3(inputData3, numElements3);
+	RealFixedPtDspBuffer<int> buf1(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf2(inputData2, numElements);
+	RealFixedPtDspBuffer<int> buf3(inputData3, numElements3);
     
     EXPECT_EQ(false, buf1 == buf2);
     EXPECT_EQ(true, buf1 != buf2);
@@ -716,52 +716,52 @@ TEST(FixedPtDspBufferOperators, Equality) {
     EXPECT_EQ(false, buf1 != buf1);
 }
 
-TEST(FixedPtDspBufferStatistics, Mean) {
+TEST(RealFixedPtDspBufferStatistics, Mean) {
     int inputData[] = {1, 3, 5, 7, 2, 4, 6, 8};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(true, FloatsEqual(4.5, meanF(buf)));
 }
 
-TEST(FixedPtDspBufferStatistics, Var) {
+TEST(RealFixedPtDspBufferStatistics, Var) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(true, FloatsEqual(60000.0, varF(buf)));
 }
 
-TEST(FixedPtDspBufferStatistics, StdDev) {
+TEST(RealFixedPtDspBufferStatistics, StdDev) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(true, FloatsEqual(244.9489742783178, stdDevF(buf)));
 }
 
-TEST(FixedPtDspBufferStatistics, Median) {
+TEST(RealFixedPtDspBufferStatistics, Median) {
     int inputData[] = {100, 300, 500, 700, 200, 400, 600, 800};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(450, median(buf));
     buf.buf.push_back(-10000);
     EXPECT_EQ(400, median(buf));
 }
 
-TEST(FixedPtDspBufferStatistics, Mode) {
+TEST(RealFixedPtDspBufferStatistics, Mode) {
     int inputData[] = {7, 3, 2, 8, 3, 6, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(3, mode(buf));
 }
 
-TEST(FixedPtDspBufferMethods, Rotate) {
+TEST(RealFixedPtDspBufferMethods, Rotate) {
     int inputData[] = {2, 4, 6, 8, 3, 5, 7, 9};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     rotate(buf, numElements);
     for (unsigned i=0; i<buf.buf.size(); i++) {
@@ -779,10 +779,10 @@ TEST(FixedPtDspBufferMethods, Rotate) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Reverse) {
+TEST(RealFixedPtDspBufferMethods, Reverse) {
     int inputData[] = {2, 4, 6, 8, 3, 5, 7, 9};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     reverse(buf);
     for (unsigned i=0; i<buf.buf.size(); i++) {
@@ -794,10 +794,10 @@ TEST(FixedPtDspBufferMethods, Reverse) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Max) {
+TEST(RealFixedPtDspBufferMethods, Max) {
     int inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(8, max(buf));
     unsigned maxLoc;
@@ -805,10 +805,10 @@ TEST(FixedPtDspBufferMethods, Max) {
     EXPECT_EQ(3, maxLoc);
 }
 
-TEST(FixedPtDspBufferMethods, Min) {
+TEST(RealFixedPtDspBufferMethods, Min) {
     int inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(2, min(buf));
     unsigned minLoc;
@@ -816,20 +816,20 @@ TEST(FixedPtDspBufferMethods, Min) {
     EXPECT_EQ(0, minLoc);
 }
 
-TEST(FixedPtDspBufferMethods, Find) {
+TEST(RealFixedPtDspBufferMethods, Find) {
     int inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(-1, find(buf, 9));
     EXPECT_EQ(4, find(buf, 3));
 }
 
-TEST(FixedPtDspBufferMethods, Pow) {
+TEST(RealFixedPtDspBufferMethods, Pow) {
     int inputData[] = {2, 4, 6, 8, 3, 5, 7, 3};
     int expectedData[] = {16, 256, 1296, 4096, 81, 625, 2401, 81};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     pow(buf, 4);
     for (unsigned i=0; i<numElements; i++) {
@@ -837,11 +837,11 @@ TEST(FixedPtDspBufferMethods, Pow) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Saturate) {
+TEST(RealFixedPtDspBufferMethods, Saturate) {
     int inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
     int expectedData[] = {1, -5, 5, 3, 5, -2, -5, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     saturate(buf, 5);
     for (unsigned i=0; i<numElements; i++) {
@@ -849,7 +849,7 @@ TEST(FixedPtDspBufferMethods, Saturate) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Abs) {
+TEST(RealFixedPtDspBufferMethods, Abs) {
     int inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
     int expectedData[] = {1, 10, 8, 3, 6, 2, 9, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
@@ -861,10 +861,10 @@ TEST(FixedPtDspBufferMethods, Abs) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Resize) {
+TEST(RealFixedPtDspBufferMethods, Resize) {
     int inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     resize(buf, 11);
     EXPECT_EQ(11, buf.size());
@@ -882,10 +882,10 @@ TEST(FixedPtDspBufferMethods, Resize) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Pad) {
+TEST(RealFixedPtDspBufferMethods, Pad) {
     int inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     pad(buf, 5);
     EXPECT_EQ(13, buf.size());
@@ -897,11 +897,11 @@ TEST(FixedPtDspBufferMethods, Pad) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Exp) {
+TEST(RealFixedPtDspBufferMethods, Exp) {
     int inputData[] = {1, -10, 8, 0, 7, -2, -9, 1};
     int expectedData[] = {2, 0, 2980, 1, 1096, 0, 0, 2};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     exp(buf);
     for (unsigned i=0; i<numElements; i++) {
@@ -909,11 +909,11 @@ TEST(FixedPtDspBufferMethods, Exp) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Log) {
+TEST(RealFixedPtDspBufferMethods, Log) {
     int inputData[] = {1, 10001, 8, 203, 7, 2, 9, 1};
     int expectedData[] = {0, 9, 2, 5, 1, 0, 2, 0};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     log(buf);
     for (unsigned i=0; i<numElements; i++) {
@@ -921,11 +921,11 @@ TEST(FixedPtDspBufferMethods, Log) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Ln) {
+TEST(RealFixedPtDspBufferMethods, Ln) {
     int inputData[] = {1, 10001, 8, 203, 7, 2, 9, 1};
     int expectedData[] = {0, 9, 2, 5, 1, 0, 2, 0};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     ln(buf);
     for (unsigned i=0; i<numElements; i++) {
@@ -933,11 +933,11 @@ TEST(FixedPtDspBufferMethods, Ln) {
     }
 }
 
-TEST(FixedPtDspBufferMethods, Log10) {
+TEST(RealFixedPtDspBufferMethods, Log10) {
     int inputData[] = {1, 10001, 8, 203, 7, 2, 9, 1};
     int expectedData[] = {0, 4, 0, 2, 0, 0, 0, 0};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	FixedPtDspBuffer<int> buf(inputData, numElements);
+	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     log10(buf);
     for (unsigned i=0; i<numElements; i++) {
