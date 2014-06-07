@@ -841,7 +841,7 @@ TEST(FixedPtDspBufferMethods, Saturate) {
     int inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
     int expectedData[] = {1, -5, 5, 3, 5, -2, -5, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<int> buf(inputData, numElements);
+	FixedPtDspBuffer<int> buf(inputData, numElements);
     
     saturate(buf, 5);
     for (unsigned i=0; i<numElements; i++) {

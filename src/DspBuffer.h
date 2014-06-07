@@ -3,6 +3,7 @@
 
 
 #include <vector>
+#include <algorithm>
 #include <cassert>
 #include <cstdlib>
 #include <cmath>
@@ -14,6 +15,9 @@ namespace SmartDsp {
 
 const unsigned DEFAULT_BUF_LEN = 0;
 
+#ifndef SMARTDSP_FLOAT_TYPE
+#define SMARTDSP_FLOAT_TYPE    double
+#endif
 
 #define VECTOR_TO_ARRAY(x)      (&x[0])
 
@@ -59,25 +63,17 @@ public:
     template <class U>
     DspBuffer<T> & operator/=(const DspBuffer<U> &rhs);
     DspBuffer<T> & operator/=(const T &rhs);
-    DspBuffer<T> & pow(const T exponent);
     
     T& operator[](unsigned index) {return buf[index];};
     const T& operator[](unsigned index) const {return buf[index];};
     
     // Methods
     const unsigned size() const {return buf.size();};
-    const T mean() const;
-    const T var() const;
-    const T stdDev() const {return sqrt(var());}
-    const T median();
     
     DspBuffer<T> & rotate(int numToShift);
     DspBuffer<T> & reverse();
     
-    const T max(unsigned *maxLoc = NULL) const;
-    const T min(unsigned *minLoc = NULL) const;
     const int find(const T val) const;
-    DspBuffer<T> & saturate(T val);
     DspBuffer<T> & abs();
     DspBuffer<T> & exp();
     DspBuffer<T> & log();
@@ -87,8 +83,6 @@ public:
     DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val); return *this;}
     DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val); return *this;}
     DspBuffer<T> & upsample(int rate, int phase = 0);
-    
-    //ComplexDspBuffer<T> std::complex<T> > fft(bool pad = false, bool scale = false);
 };
 
 
@@ -270,69 +264,6 @@ template <class T>
 inline bool operator!=(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {return !(lhs == rhs);}
 
 template <class T>
-const T DspBuffer<T>::mean() const {
-    assert(buf.size() > 0);
-    T sum = 0;
-    for (unsigned i=0; i<buf.size(); i++) {
-        sum += buf[i];
-    }
-    return sum / ((T) buf.size());
-}
-
-template <class T>
-const T mean(DspBuffer<T> & buffer) {
-    return buffer.mean();
-}
-
-template <class T>
-const T DspBuffer<T>::var() const {
-    assert(buf.size() > 1);
-    T meanVal = mean();
-    T sum = 0;
-    for (unsigned i=0; i<buf.size(); i++) {
-        T varDiff = buf[i] - meanVal;
-        sum += varDiff * varDiff;
-    }
-    return sum / ((T) (buf.size() - 1));
-}
-
-template <class T>
-const T var(DspBuffer<T> & buffer) {
-    return buffer.var();
-}
-
-template <class T>
-const T std(DspBuffer<T> & buffer) {
-    return buffer.stdDev();
-}
-
-template <class T>
-const T stdDev(DspBuffer<T> & buffer) {
-    return buffer.stdDev();
-}
-
-template <class T>
-const T DspBuffer<T>::median() {
-    assert(size() > 0);
-    scratchBuf = buf;
-    std::sort(scratchBuf.begin(), scratchBuf.end());
-    if (size() & 1) {
-        // Odd number of samples
-        return scratchBuf[size()/2];
-    }
-    else {
-        // Even number of samples.  Average the two in the middle.
-        unsigned topHalfIndex = size()/2;
-        return (scratchBuf[topHalfIndex] + scratchBuf[topHalfIndex-1]) / ((T) 2);
-    }
-}
-
-template <class T>
-const T median(DspBuffer<T> & buffer) {
-    return buffer.median();
-}
-
-template <class T>
 DspBuffer<T> & DspBuffer<T>::rotate(int numToShift) {
     numToShift = size() - numToShift;
     while (numToShift < 0)
@@ -365,53 +296,6 @@ DspBuffer<T> & reverse(DspBuffer<T> & buffer) {
 }
 
 template <class T>
-const T DspBuffer<T>::max(unsigned *maxLoc) const {
-    assert(size() > 0);
-    T maxVal = buf[0];
-    unsigned maxIndex = 0;
-    
-    for (unsigned i=1; i<size(); i++) {
-        //if (buf[i] > maxVal) {
-        if (maxVal < buf[i]) {
-            maxVal = buf[i];
-            maxIndex = i;
-        }
-    }
-    if (maxLoc != NULL) {
-        *maxLoc = maxIndex;
-    }
-    return maxVal;
-}
-
-template <class T>
-const T max(DspBuffer<T> & buffer, unsigned *maxLoc = NULL) {
-    return buffer.max(maxLoc);
-}
-
-template <class T>
-const T DspBuffer<T>::min(unsigned *minLoc) const {
-    assert(size() > 0);
-    T minVal = buf[0];
-    unsigned minIndex = 0;
-    
-    for (unsigned i=1; i<size(); i++) {
-        if (buf[i] < minVal) {
-            minVal = buf[i];
-            minIndex = i;
-        }
-    }
-    if (minLoc != NULL) {
-        *minLoc = minIndex;
-    }
-    return minVal;
-}
-
-template <class T>
-const T min(DspBuffer<T> & buffer, unsigned *minLoc = NULL) {
-    return buffer.min(minLoc);
-}
-
-template <class T>
 const int DspBuffer<T>::find(const T val) const {
     for (unsigned i=0; i<size(); i++) {
         if (buf[i] == val) {
@@ -424,35 +308,6 @@ const int DspBuffer<T>::find(const T val) const {
 template <class T>
 const int find(DspBuffer<T> & buffer, const T val) {
     return buffer.find(val);
-}
-
-template <class T>
-DspBuffer<T> & DspBuffer<T>::pow(const T exponent) {
-    for (unsigned i=0; i<size(); i++) {
-        buf[i] = std::pow(buf[i], exponent);
-    }
-    return *this;
-}
-
-template <class T>
-DspBuffer<T> & pow(DspBuffer<T> & buffer, const T exponent) {
-    return buffer.pow(exponent);
-}
-
-template <class T>
-DspBuffer<T> & DspBuffer<T>::saturate(T val) {
-    for (unsigned i=0; i<size(); i++) {
-        if (buf[i] > val)
-            buf[i] = val;
-        else if (buf[i] < -val)
-            buf[i] = -val;
-    }
-    return *this;
-}
-
-template <class T>
-DspBuffer<T> & saturate(DspBuffer<T> & buffer, T val) {
-    return buffer.saturate(val);
 }
 
 template <class T>

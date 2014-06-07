@@ -40,14 +40,14 @@ public:
     ComplexDspBuffer<T>& operator=(const ComplexDspBuffer<T>& rhs);
     ComplexDspBuffer<T>& operator=(const DspBuffer<T>& rhs);
     
-    const T var() const;
-    const T stdDev() const {return std::sqrt(var());}
-    void saturate(T val);
+    // Methods
+    ComplexDspBuffer<T> & pow(const std::complex<SMARTDSP_FLOAT_TYPE> & exponent);
     
-    // Inherited methods that don't apply to complex
-    const T max(unsigned *maxLoc = NULL) const {assert(false);}  // No max function for ComplexDspBuffer.
-    const T min(unsigned *minLoc = NULL) const {assert(false);}  // No min function for ComplexDspBuffer.
-    const T median() {assert(false);}
+    const std::complex<SMARTDSP_FLOAT_TYPE> mean() const;
+    const SMARTDSP_FLOAT_TYPE var() const;
+    const SMARTDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
+    
+    void saturate(T val);
 };
 
 
@@ -68,15 +68,58 @@ ComplexDspBuffer<T>& ComplexDspBuffer<T>::operator=(const DspBuffer<T>& rhs)
 }
 
 template <class T>
-const T ComplexDspBuffer<T>::var() const {
-    assert(this->size() > 1);
-    T meanVal = this->mean();
-    T sum = 0;
+ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SMARTDSP_FLOAT_TYPE> & exponent) {
     for (unsigned i=0; i<this->size(); i++) {
-        T varDiff = this->buf[i] - meanVal;
+        this->buf[i] = std::pow(this->buf[i], exponent);
+    }
+    return *this;
+}
+
+template <class T>
+ComplexDspBuffer<T> & pow(ComplexDspBuffer<T> & buffer, const std::complex<SMARTDSP_FLOAT_TYPE> exponent) {
+    return buffer.pow(exponent);
+}
+
+template <class T>
+const std::complex<SMARTDSP_FLOAT_TYPE> ComplexDspBuffer<T>::mean() const {
+    assert(this->size() > 0);
+    std::complex<SMARTDSP_FLOAT_TYPE> sum = 0;
+    for (unsigned i=0; i<this->size(); i++) {
+        sum += this->buf[i];
+    }
+    return sum / ((SMARTDSP_FLOAT_TYPE) this->size());
+}
+
+template <class T>
+const std::complex<SMARTDSP_FLOAT_TYPE> mean(ComplexDspBuffer<T> & buffer) {
+    return buffer.mean();
+}
+
+template <class T>
+const SMARTDSP_FLOAT_TYPE ComplexDspBuffer<T>::var() const {
+    assert(this->size() > 1);
+    std::complex<SMARTDSP_FLOAT_TYPE> meanVal = this->mean();
+    std::complex<SMARTDSP_FLOAT_TYPE> sum = 0;
+    for (unsigned i=0; i<this->size(); i++) {
+        std::complex<SMARTDSP_FLOAT_TYPE> varDiff = this->buf[i] - meanVal;
         sum += varDiff * std::conj(varDiff);
     }
-    return sum / ((T) (this->size() - 1));
+    return sum.real() / (this->size() - 1);
+}
+
+template <class T>
+const SMARTDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
+    return buffer.var();
+}
+
+template <class T>
+const SMARTDSP_FLOAT_TYPE std(ComplexDspBuffer<T> & buffer) {
+    return buffer.stdDev();
+}
+
+template <class T>
+const SMARTDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
+    return buffer.stdDev();
 }
 
 template <class T>

@@ -10,7 +10,7 @@
 #define SmartDsp_FixedPtDspBuffer_h
 
 #include <math.h>
-#include "DspBuffer.h"
+#include "RealDspBuffer.h"
 
 #ifndef SMARTDSP_FLOAT_TYPE
 #define SMARTDSP_FLOAT_TYPE double
@@ -20,16 +20,15 @@ namespace SmartDsp {
 
 
 template <class T>
-class FixedPtDspBuffer : public DspBuffer<T> {
-    
-public:
+class FixedPtDspBuffer : public RealDspBuffer<T> {
+ public:
     // Constructors
     FixedPtDspBuffer<T>(void) : DspBuffer<T>() {}
-    FixedPtDspBuffer<T>(unsigned size) : DspBuffer<T>(size) {}
+    FixedPtDspBuffer<T>(unsigned size) : RealDspBuffer<T>(size) {}
     template <typename U>
-    FixedPtDspBuffer<T>(std::vector<U> data) : DspBuffer<T>(data) {}
+    FixedPtDspBuffer<T>(std::vector<U> data) : RealDspBuffer<T>(data) {}
     template <typename U>
-    FixedPtDspBuffer<T>(U *data, unsigned dataLen) : DspBuffer<T>(data, dataLen) {}
+    FixedPtDspBuffer<T>(U *data, unsigned dataLen) : RealDspBuffer<T>(data, dataLen) {}
     
     FixedPtDspBuffer<T>(const FixedPtDspBuffer<T>& other) {this->buf = other.buf;}
     FixedPtDspBuffer<T>& operator=(const DspBuffer<T>& rhs);
@@ -43,7 +42,6 @@ public:
     template <class U>
     FixedPtDspBuffer<T> & operator%=(const FixedPtDspBuffer<U> &rhs);
     FixedPtDspBuffer<T> & operator%=(const T &rhs);
-    FixedPtDspBuffer<T> & pow(const SMARTDSP_FLOAT_TYPE exponent);
     
     FixedPtDspBuffer<T> & operator~();
     template <class U>
@@ -63,9 +61,7 @@ public:
     FixedPtDspBuffer<T> & operator<<=(const T &rhs);
     
     // Methods
-    const SMARTDSP_FLOAT_TYPE mean() const;
-    const SMARTDSP_FLOAT_TYPE var() const;
-    const SMARTDSP_FLOAT_TYPE stdDev() const;
+    RealDspBuffer<T> & pow(const SMARTDSP_FLOAT_TYPE exponent);
     const T mode();
 };
 
@@ -325,40 +321,13 @@ inline FixedPtDspBuffer<T> operator<<(FixedPtDspBuffer<T> lhs, const T& rhs)
 }
 
 template <class T>
-FixedPtDspBuffer<T> & FixedPtDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
+RealDspBuffer<T> & FixedPtDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
     for (unsigned i=0; i<this->size(); i++) {
         this->buf[i] = (T) std::round(std::pow(this->buf[i], exponent));
     }
     return *this;
 }
     
-template <class T>
-const SMARTDSP_FLOAT_TYPE FixedPtDspBuffer<T>::mean() const {
-    assert(this->size() > 0);
-    SMARTDSP_FLOAT_TYPE sum = 0;
-    for (unsigned i=0; i<this->size(); i++) {
-        sum += (SMARTDSP_FLOAT_TYPE) this->buf[i];
-    }
-    return sum / this->size();
-}
-
-template <class T>
-const SMARTDSP_FLOAT_TYPE FixedPtDspBuffer<T>::var() const {
-    assert(this->size() > 1);
-    SMARTDSP_FLOAT_TYPE meanVal = mean();
-    SMARTDSP_FLOAT_TYPE sum = 0;
-    for (unsigned i=0; i<this->size(); i++) {
-        SMARTDSP_FLOAT_TYPE varDiff = ((SMARTDSP_FLOAT_TYPE) this->buf[i]) - meanVal;
-        sum += varDiff * varDiff;
-    }
-    return sum / (this->size() - 1);
-}
-
-template <class T>
-const SMARTDSP_FLOAT_TYPE FixedPtDspBuffer<T>::stdDev() const {
-    return (SMARTDSP_FLOAT_TYPE) sqrt(var());
-}
-
 template <class T>
 const T FixedPtDspBuffer<T>::mode() {
     assert(this->size() > 0);
