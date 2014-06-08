@@ -514,4 +514,16 @@ TEST(ComplexDspBufferMethods, Log10) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
 }
-
+/*
+TEST(ComplexDspBufferMethods, FFT) {
+    std::complex<double> inputData[] = {std::complex<double>(2.094776, 2.603959), std::complex<double>(1.072411, 1.546441), std::complex<double>(1.458795, -0.646638), std::complex<double>(0.932867, -1.972880), std::complex<double>(1.236277, -2.809003), std::complex<double>(-1.338462, -2.722972), std::complex<double>(-2.417209, 1.940747), std::complex<double>(1.168972, -1.097403), std::complex<double>(2.701332, -2.793324)};
+    std::complex<double>  expectedData[] = {std::complex<double>(0, 0), std::complex<double>(1.060451408807264, 0.079799235779903), std::complex<double>(0.903089986991944, 0.682188176920921), std::complex<double>(-3.849485002168009, 0.341094088460460)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer< std::complex<double> > buf(inputData, numElements);
+    
+    fft(buf);
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+*/

@@ -88,11 +88,6 @@ const SMARTDSP_FLOAT_TYPE var(RealDspBuffer<T> & buffer) {
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE std(RealDspBuffer<T> & buffer) {
-    return buffer.stdDev();
-}
-
-template <class T>
 const SMARTDSP_FLOAT_TYPE stdDev(RealDspBuffer<T> & buffer) {
     return buffer.stdDev();
 }

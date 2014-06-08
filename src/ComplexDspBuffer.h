@@ -11,6 +11,7 @@
 
 #include <complex>
 #include "DspBuffer.h"
+#include "kissfft.hh"
 
 
 
@@ -19,13 +20,9 @@ namespace SmartDsp {
 enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 
 
-#define VECTOR_TO_ARRAY(x)      (&x[0])
-
-
 template <class T>
 class ComplexDspBuffer : public DspBuffer<T> {
-    
-public:
+ public:
     DomainType domain;
     
     // Constructors
@@ -48,6 +45,9 @@ public:
     const SMARTDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
     
     void saturate(T val);
+    
+    //ComplexDspBuffer<T> & fft();
+    //ComplexDspBuffer<T> & ifft();
 };
 
 
@@ -113,11 +113,6 @@ const SMARTDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE std(ComplexDspBuffer<T> & buffer) {
-    return buffer.stdDev();
-}
-
-template <class T>
 const SMARTDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
     return buffer.stdDev();
 }
@@ -135,7 +130,42 @@ void ComplexDspBuffer<T>::saturate(T val) {
             this->buf[i].imag(-val.imag());
     }
 }
+/*
+template <class T>
+ComplexDspBuffer<T> & ComplexDspBuffer<T>::fft() {
+    assert(domain == TIME_DOMAIN);
+    kissfft<T> fftEngine = kissfft<T>(this->size(), false);
+    std::vector<T> fftResults(this->size());
+    
+    fftEngine.transform((typename kissfft_utils::traits<T>::cpx_type *) VECTOR_TO_ARRAY(this->buf),
+                        (typename kissfft_utils::traits<T>::cpx_type *) VECTOR_TO_ARRAY(fftResults));
+    this->buf = fftResults;
+    domain = FREQUENCY_DOMAIN;
+    return *this;
+}
 
+template <class T>
+ComplexDspBuffer<T> & fft(ComplexDspBuffer<T> &buffer) {
+    return buffer.fft();
+}
+
+template <class T>
+ComplexDspBuffer<T> & ComplexDspBuffer<T>::ifft() {
+    assert(domain == FREQUENCY_DOMAIN);
+    kissfft<T> fftEngine = kissfft<T>(this->size(), true);
+    std::vector<T> fftResults(this->size());
+    
+    fftEngine.transform(VECTOR_TO_ARRAY(this->buf), VECTOR_TO_ARRAY(fftResults));
+    this->buf = fftResults;
+    domain = TIME_DOMAIN;
+    return *this;
+}
+
+template <class T>
+ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
+    return buffer.ifft();
+}
+*/
 };
 
 #endif

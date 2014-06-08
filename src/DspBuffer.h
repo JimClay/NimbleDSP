@@ -19,7 +19,8 @@ const unsigned DEFAULT_BUF_LEN = 0;
 #define SMARTDSP_FLOAT_TYPE    double
 #endif
 
-#define VECTOR_TO_ARRAY(x)      (&x[0])
+//#define VECTOR_TO_ARRAY(x)      (&x[0])
+#define VECTOR_TO_ARRAY(x)      (&((x)[0]))
 
     
 template <class T>
