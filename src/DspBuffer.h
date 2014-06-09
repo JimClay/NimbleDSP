@@ -84,6 +84,7 @@ public:
     DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val); return *this;}
     DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val); return *this;}
     DspBuffer<T> & upsample(int rate, int phase = 0);
+    DspBuffer<T> & downsample(int rate, int phase = 0);
 };
 
 
@@ -400,35 +401,26 @@ DspBuffer<T> & upsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
     return buffer.upsample(rate, phase);
 }
 
-//template <class T>
-//ComplexDspBuffer<T> std::complex<T> > DspBuffer<T>::fft(bool padForSpeed, bool scale)
-//{
-//    unsigned originalSize = size();
-//    unsigned fftLen = originalSize;
-//    
-//    if (padForSpeed) {
-//        fftLen = kiss_fftr_next_fast_size_real(originalSize);
-//        if (fftLen > originalSize) {
-//            buf.resize(fftLen, 0);
-//        }
-//    }
-//    ComplexDspBuffer< std::complex<T> > fftResult(fftLen);
-//    
-//    if (size() & 1) {
-//        // kissfft real FFT's (as opposed to complex) require even lengths.  If it isn't even
-//        // then we'll have to do a complex FFT.
-//        
-////        kiss_fft_cfg fftConfig = kiss_fft_alloc(fftLen, 0, NULL, NULL);
-////        kiss_fft(fftConfig, VECTOR_TO_ARRAY(buf), VECTOR_TO_ARRAY(fftResult));
-////        kiss_fft_free(fftConfig);
-//    }
-//    else {
-//        kiss_fftr_cfg fftConfig = kiss_fftr_alloc(fftLen, 0, NULL, NULL);
-//        kiss_fftr(fftConfig, VECTOR_TO_ARRAY(buf), VECTOR_TO_ARRAY(fftResult));
-//        kiss_fftr_free(fftConfig);
-//    }
-//    return fftResult;
-//}
+template <class T>
+DspBuffer<T> & DspBuffer<T>::downsample(int rate, int phase) {
+	assert(rate > 0);
+	assert(phase >= 0 && phase < rate);
+	if (rate == 1)
+		return *this;
+
+	int newSize = buf.size() / rate;
+	int from, to;
+	for (from = phase, to = 0; to < newSize; from += rate, to++) {
+		buf[to] = buf[from];
+	}
+	buf.resize(newSize);
+	return *this;
+}
+
+template <class T>
+DspBuffer<T> & downsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
+    return buffer.downsample(rate, phase);
+}
 
     
 };

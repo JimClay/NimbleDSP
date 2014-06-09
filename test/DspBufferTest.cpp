@@ -484,3 +484,34 @@ TEST(DspBufferMethods, Upsample) {
 		EXPECT_EQ(expectedData3[i], buf[i]);
 	}
 }
+
+TEST(DspBufferMethods, Downsample) {
+	double inputData[] = { 1, 2, 3, 10001, 10002, 10003, 8, 9, 10, -5, -6, -7, 6, 7, 8, 2, 3, 4, 9, 10, 11, 1, 2, 3 };
+	double expectedData[] = { 1, 10001, 8, -5, 6, 2, 9, 1 };
+	double expectedData2[] = { 2, 10002, 9, -6, 7, 3, 10, 2 };
+	double expectedData3[] = { 3, 10003, 10, -7, 8, 4, 11, 3 };
+	unsigned numElements = sizeof(inputData) / sizeof(inputData[0]);
+	DspBuffer<double> bufSave(inputData, numElements);
+	DspBuffer<double> buf(0);
+
+	buf = bufSave;
+	downsample(buf, 3);
+    EXPECT_EQ(numElements/3, buf.size());
+	for (unsigned i = 0; i<buf.size(); i++) {
+		EXPECT_EQ(expectedData[i], buf[i]);
+	}
+
+	buf = bufSave;
+	downsample(buf, 3, 1);
+    EXPECT_EQ(numElements/3, buf.size());
+	for (unsigned i = 0; i<buf.size(); i++) {
+		EXPECT_EQ(expectedData2[i], buf[i]);
+	}
+
+	buf = bufSave;
+	downsample(buf, 3, 2);
+    EXPECT_EQ(numElements/3, buf.size());
+	for (unsigned i = 0; i<buf.size(); i++) {
+		EXPECT_EQ(expectedData3[i], buf[i]);
+	}
+}
