@@ -44,7 +44,9 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     const SMARTDSP_FLOAT_TYPE var() const;
     const SMARTDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
     
-    void saturate(const std::complex<T> & val);
+    ComplexDspBuffer<T> & saturate(const std::complex<T> & val);
+    ComplexDspBuffer<T> & conj();
+    ComplexDspBuffer<T> & magSq();
     
     ComplexDspBuffer<T> & fft();
     ComplexDspBuffer<T> & ifft();
@@ -118,7 +120,7 @@ const SMARTDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
 }
 
 template <class T>
-void ComplexDspBuffer<T>::saturate(const std::complex<T> & val) {
+ComplexDspBuffer<T> & ComplexDspBuffer<T>::saturate(const std::complex<T> & val) {
     for (unsigned i=0; i<this->size(); i++) {
         if (this->buf[i].real() > val.real())
             this->buf[i].real(val.real());
@@ -129,6 +131,7 @@ void ComplexDspBuffer<T>::saturate(const std::complex<T> & val) {
         else if (this->buf[i].imag() < -val.imag())
             this->buf[i].imag(-val.imag());
     }
+    return *this;
 }
 
 template <class T>
@@ -147,6 +150,34 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::fft() {
 template <class T>
 ComplexDspBuffer<T> & fft(ComplexDspBuffer<T> &buffer) {
     return buffer.fft();
+}
+
+template <class T>
+ComplexDspBuffer<T> & ComplexDspBuffer<T>::conj() {
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i].imag(-this->buf[i].imag());
+    }
+    return *this;
+}
+
+template <class T>
+ComplexDspBuffer<T> & conj(ComplexDspBuffer<T> & buffer) {
+    return buffer.conj();
+}
+
+template <class T>
+ComplexDspBuffer<T> & ComplexDspBuffer<T>::magSq() {
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i].real(this->buf[i].real() * this->buf[i].real() +
+                          this->buf[i].imag() * this->buf[i].imag());
+        this->buf[i].imag(0);
+    }
+    return *this;
+}
+
+template <class T>
+ComplexDspBuffer<T> & magSq(ComplexDspBuffer<T> & buffer) {
+    return buffer.magSq();
 }
 
 template <class T>
