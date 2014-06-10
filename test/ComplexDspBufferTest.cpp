@@ -577,6 +577,7 @@ TEST(ComplexDspBufferMethods, FilterOdd) {
     ComplexDspBuffer<double> result = ComplexDspBuffer<double>();
     
     result = convolve(buf, filter);
+    EXPECT_EQ(buf.size() + filter.size() - 1, result.size());
     for (unsigned i=0; i<result.size(); i++) {
         EXPECT_EQ(expectedData[i], result[i]);
     }
@@ -593,6 +594,41 @@ TEST(ComplexDspBufferMethods, FilterEven) {
     ComplexDspBuffer<double> result = ComplexDspBuffer<double>();
     
     result = convolve(buf, filter);
+    EXPECT_EQ(buf.size() + filter.size() - 1, result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
+
+TEST(ComplexDspBufferMethods, FilterOddTrim) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    double filterTaps[] = {1, 2, 3, 4, 5};
+    std::complex<double> expectedData[] = {std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-20, 65), std::complex<double>(-35, 80), std::complex<double>(-50, 95), std::complex<double>(-65, 110), std::complex<double>(-72, 114), std::complex<double>(-70, 106)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<double> filter(filterTaps, numElements);
+    ComplexDspBuffer<double> result = ComplexDspBuffer<double>();
+    
+    result = convolve(buf, filter, true);
+    EXPECT_EQ(buf.size(), result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
+
+TEST(ComplexDspBufferMethods, FilterEvenTrim) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    double filterTaps[] = {1, 2, 3, 4, 5, 6};
+    std::complex<double> expectedData[] = {std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-14, 77), std::complex<double>(-35, 98), std::complex<double>(-56, 119), std::complex<double>(-77, 140), std::complex<double>(-90, 150), std::complex<double>(-94, 148)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<double> filter(filterTaps, numElements);
+    ComplexDspBuffer<double> result = ComplexDspBuffer<double>();
+    
+    result = convolve(buf, filter, true);
+    EXPECT_EQ(buf.size(), result.size());
     for (unsigned i=0; i<result.size(); i++) {
         EXPECT_EQ(expectedData[i], result[i]);
     }
