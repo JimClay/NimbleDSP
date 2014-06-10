@@ -198,6 +198,40 @@ ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
     return buffer.ifft();
 }
 
+template <class T>
+ComplexDspBuffer<T> convolve(ComplexDspBuffer<T> & data, DspBuffer<T> filter, bool trimTails = false) {
+    ComplexDspBuffer<T> result = ComplexDspBuffer<T>(data.size() + filter.size() - 1);
+    
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    
+    // Initial partial overlap
+    for (resultIndex=0; resultIndex<filter.size()-1; resultIndex++) {
+        for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+            result[resultIndex] += data[dataIndex] * filter[filterIndex];
+        }
+    }
+    
+    // Middle full overlap
+    for (; resultIndex<data.size(); resultIndex++) {
+        for (dataIndex=resultIndex - (filter.size()-1), filterIndex=filter.size()-1;
+             filterIndex>=0; dataIndex++, filterIndex--) {
+            result[resultIndex] += data[dataIndex] * filter[filterIndex];
+        }
+    }
+
+    // Final partial overlap
+    for (; resultIndex<result.size(); resultIndex++) {
+        for (dataIndex=resultIndex - (filter.size()-1), filterIndex=filter.size()-1;
+             dataIndex<data.size(); dataIndex++, filterIndex--) {
+            result[resultIndex] += data[dataIndex] * filter[filterIndex];
+        }
+    }
+    
+    return result;
+}
+
 };
 
 #endif

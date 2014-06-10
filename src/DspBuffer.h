@@ -422,7 +422,6 @@ DspBuffer<T> & downsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
     return buffer.downsample(rate, phase);
 }
 
-    
 };
 
 #endif
