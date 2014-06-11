@@ -626,3 +626,39 @@ TEST(RealDspBufferMethods, FilterEvenTrim) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
+
+TEST(RealDspBufferMethods, Sum) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    
+    EXPECT_EQ(-27, sum(buf));
+}
+
+TEST(RealDspBufferMethods, Diff) {
+    double inputData[] = {1, 1, 2, 4, 7, 11, 16, 22};
+    double expectedData[] = {0, 1, 2, 3, 4, 5, 6};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    
+    diff(buf);
+    EXPECT_EQ(numElements-1, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(RealDspBufferMethods, RunningDiff) {
+    double inputData[] = {1, 1, 2, 4, 7, 11, 16, 22};
+    double expectedData[] = {-1, 0, 1, 2, 3, 4, 5, 6};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    
+    double previousVal = 2;
+    diff(buf, previousVal);
+    EXPECT_EQ(numElements, buf.size());
+    EXPECT_EQ(22, previousVal);
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}

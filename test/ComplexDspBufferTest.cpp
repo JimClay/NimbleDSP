@@ -634,4 +634,40 @@ TEST(ComplexDspBufferMethods, FilterEvenTrim) {
     }
 }
 
+TEST(ComplexDspBufferMethods, Sum) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    
+    EXPECT_EQ(std::complex<double>(-27, 54), sum(buf));
+}
+
+TEST(ComplexDspBufferMethods, Diff) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    std::complex<double> expectedData[] = {std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    
+    diff(buf);
+    EXPECT_EQ(numElements-1, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(ComplexDspBufferMethods, RunningDiff) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    std::complex<double> expectedData[] = {std::complex<double>(-2, 2), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1), std::complex<double>(-1, 1)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    std::complex<double> previousVal = std::complex<double>(3, 0);
+    
+    diff(buf, previousVal);
+    EXPECT_EQ(numElements, buf.size());
+    EXPECT_EQ(std::complex<double>(-7, 10), previousVal);
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
 

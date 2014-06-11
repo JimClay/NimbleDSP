@@ -85,6 +85,9 @@ public:
     DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val); return *this;}
     DspBuffer<T> & upsample(int rate, int phase = 0);
     DspBuffer<T> & downsample(int rate, int phase = 0);
+	T sum() const;
+	DspBuffer<T> & diff();
+    DspBuffer<T> & diff(T & previousVal);
     
     template <class U>
     DspBuffer<T> & convolve(DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
@@ -425,6 +428,53 @@ DspBuffer<T> & DspBuffer<T>::downsample(int rate, int phase) {
 template <class T>
 DspBuffer<T> & downsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
     return buffer.downsample(rate, phase);
+}
+
+template <class T>
+T DspBuffer<T>::sum() const {
+	assert(buf.size() > 0);
+	T bufferSum = 0;
+	for (unsigned i=0; i<buf.size(); i++) {
+		bufferSum += buf[i];
+	}
+	return bufferSum;
+}
+
+template <class T>
+T sum(const DspBuffer<T> & buffer) {
+	return buffer.sum();
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::diff() {
+	assert(buf.size() > 1);
+	for (unsigned i=0; i<(buf.size()-1); i++) {
+		buf[i] = buf[i + 1] - buf[i];
+	}
+    buf.resize(buf.size()-1);
+    return *this;
+}
+
+template <class T>
+DspBuffer<T> & diff(DspBuffer<T> & buffer) {
+    return buffer.diff();
+}
+
+template <class T>
+DspBuffer<T> & DspBuffer<T>::diff(T & previousVal) {
+	assert(buf.size() > 0);
+    T nextPreviousVal = buf[buf.size()-1];
+	for (unsigned i=buf.size()-1; i>0; i--) {
+		buf[i] = buf[i] - buf[i - 1];
+	}
+    buf[0] = buf[0] - previousVal;
+    previousVal = nextPreviousVal;
+    return *this;
+}
+
+template <class T>
+DspBuffer<T> & diff(DspBuffer<T> & buffer, T & previousVal) {
+    return buffer.diff(previousVal);
 }
 
 template <class T>
