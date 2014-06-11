@@ -85,6 +85,9 @@ public:
     DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val); return *this;}
     DspBuffer<T> & upsample(int rate, int phase = 0);
     DspBuffer<T> & downsample(int rate, int phase = 0);
+    
+    template <class U>
+    DspBuffer<T> & convolve(DspBuffer<T> & result, DspBuffer<U> & filter, bool trimTails = false) const;
 };
 
 
@@ -422,42 +425,43 @@ DspBuffer<T> & downsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
     return buffer.downsample(rate, phase);
 }
 
-template <class T, class U>
-DspBuffer<T> & convolve(DspBuffer<T> & result, DspBuffer<T> & data, DspBuffer<U> filter, bool trimTails = false) {
+template <class T>
+template <class U>
+DspBuffer<T> & DspBuffer<T>::convolve(DspBuffer<T> & result, DspBuffer<U> & filter, bool trimTails) const {
     int resultIndex;
     int filterIndex;
     int dataIndex;
     
     if (trimTails) {
-        result.resize(data.size());
+        result.resize(this->size());
         
         // Initial partial overlap
         int initialTrim = (filter.size() - 1) / 2;
         for (resultIndex=0; resultIndex<(filter.size()-1) - initialTrim; resultIndex++) {
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                result[resultIndex] += data[dataIndex] * filter[filterIndex];
+                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (; resultIndex<data.size() - initialTrim; resultIndex++) {
+        for (; resultIndex<this->size() - initialTrim; resultIndex++) {
             for (dataIndex=resultIndex - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                result[resultIndex] += data[dataIndex] * filter[filterIndex];
+                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
             }
         }
 
         // Final partial overlap
         for (; resultIndex<result.size(); resultIndex++) {
             for (dataIndex=resultIndex - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
-                 dataIndex<data.size(); dataIndex++, filterIndex--) {
-                result[resultIndex] += data[dataIndex] * filter[filterIndex];
+                 dataIndex<this->size(); dataIndex++, filterIndex--) {
+                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
             }
         }
         return result;
     }
     else {
-        result.resize(data.size() + filter.size() - 1);
+        result.resize(this->size() + filter.size() - 1);
         
         int resultIndex;
         int filterIndex;
@@ -466,33 +470,40 @@ DspBuffer<T> & convolve(DspBuffer<T> & result, DspBuffer<T> & data, DspBuffer<U>
         // Initial partial overlap
         for (resultIndex=0; resultIndex<filter.size()-1; resultIndex++) {
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                result[resultIndex] += data[dataIndex] * filter[filterIndex];
+                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (; resultIndex<data.size(); resultIndex++) {
+        for (; resultIndex<this->size(); resultIndex++) {
             for (dataIndex=resultIndex - (filter.size()-1), filterIndex=filter.size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                result[resultIndex] += data[dataIndex] * filter[filterIndex];
+                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
             }
         }
 
         // Final partial overlap
         for (; resultIndex<result.size(); resultIndex++) {
             for (dataIndex=resultIndex - (filter.size()-1), filterIndex=filter.size()-1;
-                 dataIndex<data.size(); dataIndex++, filterIndex--) {
-                result[resultIndex] += data[dataIndex] * filter[filterIndex];
+                 dataIndex<this->size(); dataIndex++, filterIndex--) {
+                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
             }
         }
         return result;
     }
 }
+ 
+template <class T, class U>
+inline DspBuffer<T> convolve(DspBuffer<T> & data, DspBuffer<U> filter, bool trimTails = false) {
+    DspBuffer<T> result = DspBuffer<T>();
+    data.convolve(result, filter, trimTails);
+    return result;
+}
 
 template <class T, class U>
-DspBuffer<T> convolve(DspBuffer<T> & data, DspBuffer<U> filter, bool trimTails = false) {
+inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> filter, bool trimTails = false) {
     DspBuffer<T> result = DspBuffer<T>();
-    convolve(result, data, filter, trimTails);
+    data.convolve(result, filter, trimTails);
     return result;
 }
 

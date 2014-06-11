@@ -559,15 +559,70 @@ TEST(RealDspBufferMethods, Upsample) {
 	}
 }
 
-//TEST(RealDspBufferMethods, FFT) {
-//    double input[] = {-275, -75, 125, 325, -175, 25, 225, -175};
-//    double expectedReal[] = {0, -525, -800, 324, -200};
-//    double expectedImag[] = {0, -183, 200, -383, 0};
-//    unsigned numElements = sizeof(input)/sizeof(input[0]);
-//	RealDspBuffer<double> buf(input, numElements);
-//    
-//    RealDspBuffer< std::complex<double> > fftResult(0);
-//    fftResult = buf.fft();
-//    
-//    EXPECT_EQ(numElements/2, fftResult.size());
-//}
+TEST(RealDspBufferMethods, FilterOdd) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {1, 2, 2, 0, -5, -20, -35, -50, -65, -72, -70, -58, -35};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> result = RealDspBuffer<double>();
+    
+    result = convolve(buf, filter);
+    EXPECT_EQ(buf.size() + filter.size() - 1, result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
+
+TEST(RealDspBufferMethods, FilterEven) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6};
+    double expectedData[] = {1, 2, 2, 0, -5, -14, -35, -56, -77, -90, -94, -88, -71, -42};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> result = RealDspBuffer<double>();
+    
+    result = convolve(buf, filter);
+    EXPECT_EQ(buf.size() + filter.size() - 1, result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
+
+TEST(RealDspBufferMethods, FilterOddTrim) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {2, 0, -5, -20, -35, -50, -65, -72, -70};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> result = RealDspBuffer<double>();
+    
+    result = convolve(buf, filter, true);
+    EXPECT_EQ(buf.size(), result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
+
+TEST(RealDspBufferMethods, FilterEvenTrim) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6};
+    double expectedData[] = {2, 0, -5, -14, -35, -56, -77, -90, -94};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> result = RealDspBuffer<double>();
+    
+    result = convolve(buf, filter, true);
+    EXPECT_EQ(buf.size(), result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}

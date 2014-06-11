@@ -515,3 +515,71 @@ TEST(DspBufferMethods, Downsample) {
 		EXPECT_EQ(expectedData3[i], buf[i]);
 	}
 }
+
+TEST(DspBufferMethods, FilterOdd) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {1, 2, 2, 0, -5, -20, -35, -50, -65, -72, -70, -58, -35};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> result = DspBuffer<double>();
+    
+    result = convolve(buf, filter);
+    EXPECT_EQ(buf.size() + filter.size() - 1, result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
+
+TEST(DspBufferMethods, FilterEven) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6};
+    double expectedData[] = {1, 2, 2, 0, -5, -14, -35, -56, -77, -90, -94, -88, -71, -42};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> result = DspBuffer<double>();
+    
+    result = convolve(buf, filter);
+    EXPECT_EQ(buf.size() + filter.size() - 1, result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
+
+TEST(DspBufferMethods, FilterOddTrim) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {2, 0, -5, -20, -35, -50, -65, -72, -70};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> result = DspBuffer<double>();
+    
+    result = convolve(buf, filter, true);
+    EXPECT_EQ(buf.size(), result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
+
+TEST(DspBufferMethods, FilterEvenTrim) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6};
+    double expectedData[] = {2, 0, -5, -14, -35, -56, -77, -90, -94};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> result = DspBuffer<double>();
+    
+    result = convolve(buf, filter, true);
+    EXPECT_EQ(buf.size(), result.size());
+    for (unsigned i=0; i<result.size(); i++) {
+        EXPECT_EQ(expectedData[i], result[i]);
+    }
+}
