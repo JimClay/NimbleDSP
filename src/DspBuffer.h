@@ -87,7 +87,9 @@ public:
     DspBuffer<T> & downsample(int rate, int phase = 0);
     
     template <class U>
-    DspBuffer<T> & convolve(DspBuffer<T> & result, DspBuffer<U> & filter, bool trimTails = false) const;
+    DspBuffer<T> & convolve(DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
+    //template <class U>
+    //DspBuffer<T> & decimate(int rate, DspBuffer<U> & filter, bool trimTails = true);
 };
 
 
@@ -427,84 +429,89 @@ DspBuffer<T> & downsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::convolve(DspBuffer<T> & result, DspBuffer<U> & filter, bool trimTails) const {
+DspBuffer<T> & DspBuffer<T>::convolve(DspBuffer<U> & filter, bool trimTails, DspBuffer<T> *scratchBuf) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
+    DspBuffer<T> scratch;
+    DspBuffer<T> *data;
+    
+    if (scratchBuf == NULL) {
+        data = &scratch;
+    }
+    else {
+        data = scratchBuf;
+    }
+    *data = *this;
     
     if (trimTails) {
-        result.resize(this->size());
-        
         // Initial partial overlap
         int initialTrim = (filter.size() - 1) / 2;
         for (resultIndex=0; resultIndex<(filter.size()-1) - initialTrim; resultIndex++) {
+            buf[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (; resultIndex<this->size() - initialTrim; resultIndex++) {
+        for (; resultIndex<data->size() - initialTrim; resultIndex++) {
+            buf[resultIndex] = 0;
             for (dataIndex=resultIndex - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
         }
 
         // Final partial overlap
-        for (; resultIndex<result.size(); resultIndex++) {
+        for (; resultIndex<this->size(); resultIndex++) {
+            buf[resultIndex] = 0;
             for (dataIndex=resultIndex - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
-                 dataIndex<this->size(); dataIndex++, filterIndex--) {
-                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
+                 dataIndex<data->size(); dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
         }
-        return result;
     }
     else {
-        result.resize(this->size() + filter.size() - 1);
-        
-        int resultIndex;
-        int filterIndex;
-        int dataIndex;
+        this->resize(this->size() + filter.size() - 1);
         
         // Initial partial overlap
         for (resultIndex=0; resultIndex<filter.size()-1; resultIndex++) {
+            buf[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (; resultIndex<this->size(); resultIndex++) {
+        for (; resultIndex<data->size(); resultIndex++) {
+            buf[resultIndex] = 0;
             for (dataIndex=resultIndex - (filter.size()-1), filterIndex=filter.size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
         }
 
         // Final partial overlap
-        for (; resultIndex<result.size(); resultIndex++) {
+        for (; resultIndex<this->size(); resultIndex++) {
+            buf[resultIndex] = 0;
             for (dataIndex=resultIndex - (filter.size()-1), filterIndex=filter.size()-1;
-                 dataIndex<this->size(); dataIndex++, filterIndex--) {
-                result[resultIndex] += buf[dataIndex] * filter[filterIndex];
+                 dataIndex<data->size(); dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
         }
-        return result;
     }
+    return *this;
 }
  
 template <class T, class U>
-inline DspBuffer<T> convolve(DspBuffer<T> & data, DspBuffer<U> filter, bool trimTails = false) {
-    DspBuffer<T> result = DspBuffer<T>();
-    data.convolve(result, filter, trimTails);
-    return result;
+inline DspBuffer<T> & convolve(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
+    return data.convolve(filter, trimTails, scratchBuf);
 }
 
 template <class T, class U>
-inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> filter, bool trimTails = false) {
-    DspBuffer<T> result = DspBuffer<T>();
-    data.convolve(result, filter, trimTails);
-    return result;
+inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
+    return data.convolve(filter, trimTails, scratchBuf);
 }
 
 };

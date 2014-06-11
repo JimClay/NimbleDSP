@@ -574,12 +574,12 @@ TEST(ComplexDspBufferMethods, FilterOdd) {
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     DspBuffer<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> result = ComplexDspBuffer<double>();
+    ComplexDspBuffer<double> input = buf;
     
-    result = convolve(buf, filter);
-    EXPECT_EQ(buf.size() + filter.size() - 1, result.size());
-    for (unsigned i=0; i<result.size(); i++) {
-        EXPECT_EQ(expectedData[i], result[i]);
+    convolve(buf, filter);
+    EXPECT_EQ(input.size() + filter.size() - 1, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
 
@@ -591,12 +591,12 @@ TEST(ComplexDspBufferMethods, FilterEven) {
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     DspBuffer<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> result = ComplexDspBuffer<double>();
+    ComplexDspBuffer<double> input = buf;
     
-    result = convolve(buf, filter);
-    EXPECT_EQ(buf.size() + filter.size() - 1, result.size());
-    for (unsigned i=0; i<result.size(); i++) {
-        EXPECT_EQ(expectedData[i], result[i]);
+    convolve(buf, filter);
+    EXPECT_EQ(input.size() + filter.size() - 1, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
 
@@ -608,12 +608,12 @@ TEST(ComplexDspBufferMethods, FilterOddTrim) {
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     DspBuffer<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> result = ComplexDspBuffer<double>();
+    ComplexDspBuffer<double> input = buf;
     
-    result = convolve(buf, filter, true);
-    EXPECT_EQ(buf.size(), result.size());
-    for (unsigned i=0; i<result.size(); i++) {
-        EXPECT_EQ(expectedData[i], result[i]);
+    convolve(buf, filter, true);
+    EXPECT_EQ(input.size(), buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
 
@@ -625,12 +625,12 @@ TEST(ComplexDspBufferMethods, FilterEvenTrim) {
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     DspBuffer<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> result = ComplexDspBuffer<double>();
+    ComplexDspBuffer<double> input = buf;
     
-    result = convolve(buf, filter, true);
-    EXPECT_EQ(buf.size(), result.size());
-    for (unsigned i=0; i<result.size(); i++) {
-        EXPECT_EQ(expectedData[i], result[i]);
+    convolve(buf, filter, true);
+    EXPECT_EQ(input.size(), buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
 
