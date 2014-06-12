@@ -27,9 +27,9 @@ template <class T>
 class DspBuffer {
 
 protected:
-    std::vector<T> scratchBuf;
+    std::vector<T> *scratchBuf;
     
-    void initSize(unsigned size) {buf = std::vector<T>(size); scratchBuf = std::vector<T>(0);}
+    void initSize(unsigned size) {buf = std::vector<T>(size);}
     template <class U>
     void initArray(U *array, unsigned arrayLen);
     
@@ -38,14 +38,14 @@ public:
 	std::vector<T> buf;
     
     // Constructors
-    DspBuffer<T>(void) {initSize(DEFAULT_BUF_LEN);}
-    DspBuffer<T>(unsigned size) {initSize(size);}
+    //DspBuffer<T>(std::vector<T> *scratch = NULL) {initSize(DEFAULT_BUF_LEN); scratchBuf = scratch;}
+    DspBuffer<T>(unsigned size = 0, std::vector<T> *scratch = NULL) {initSize(size); scratchBuf = scratch;}
     template <typename U>
-    DspBuffer<T>(std::vector<U> data) {initArray(VECTOR_TO_ARRAY(data), data.size());}
+    DspBuffer<T>(std::vector<U> data, std::vector<T> *scratch = NULL) {initArray(VECTOR_TO_ARRAY(data), data.size()); scratchBuf = scratch;}
     template <typename U>
-    DspBuffer<T>(U *data, unsigned dataLen) {initArray(data, dataLen);}
+    DspBuffer<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) {initArray(data, dataLen); scratchBuf = scratch;}
     
-    DspBuffer<T>(const DspBuffer<T>& other) {buf = other.buf;}
+    DspBuffer<T>(const DspBuffer<T>& other) {buf = other.buf; scratchBuf = other.scratchBuf;}
     DspBuffer<T>& operator=(const DspBuffer<T>& rhs);
     
     // Operators
@@ -105,7 +105,6 @@ void DspBuffer<T>::initArray(U *array, unsigned arrayLen) {
     for (unsigned i=0; i<arrayLen; i++) {
         buf[i] = (T) array[i];
     }
-    scratchBuf = std::vector<T>(0);
 }
 
 template <class T>
@@ -689,6 +688,8 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
             }
             ++filterStart;
             if (filterStart >= filter.size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
                 filterStart -= rate;
                 ++dataStart;
             }
@@ -703,6 +704,8 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
             }
             ++filterStart;
             if (filterStart >= filter.size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
                 filterStart -= rate;
                 ++dataStart;
             }
@@ -728,6 +731,8 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
             }
             ++filterStart;
             if (filterStart >= filter.size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
                 filterStart -= rate;
                 ++dataStart;
             }
@@ -742,6 +747,8 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
             }
             ++filterStart;
             if (filterStart >= filter.size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
                 filterStart -= rate;
                 ++dataStart;
             }

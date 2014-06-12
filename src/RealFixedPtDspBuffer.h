@@ -328,16 +328,21 @@ RealDspBuffer<T> & RealFixedPtDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE expone
 template <class T>
 const T RealFixedPtDspBuffer<T>::mode() {
     assert(this->size() > 0);
-    this->scratchBuf = this->buf;
-    std::sort(this->scratchBuf.begin(), this->scratchBuf.end());
+    std::vector<T> tempScratch;
+
+    if (this->scratchBuf == NULL) {
+        this->scratchBuf = &tempScratch;
+    }
+    *(this->scratchBuf) = this->buf;
+    std::sort(this->scratchBuf->begin(), this->scratchBuf->end());
     
     T modeVal = 0;
     unsigned modeLen = 0;
-    T currentVal = this->scratchBuf[0];
+    T currentVal = (*this->scratchBuf)[0];
     unsigned currentLen = 1;
     
     for (unsigned i=1; i<this->size(); i++) {
-        if (this->scratchBuf[i] == currentVal) {
+        if ((*this->scratchBuf)[i] == currentVal) {
             currentLen++;
         }
         else {
@@ -345,7 +350,7 @@ const T RealFixedPtDspBuffer<T>::mode() {
                 modeVal = currentVal;
                 modeLen = currentLen;
             }
-            currentVal = this->scratchBuf[i];
+            currentVal = (*this->scratchBuf)[i];
             currentLen = 1;
         }
     }
