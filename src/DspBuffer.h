@@ -93,6 +93,8 @@ public:
     DspBuffer<T> & convolve(DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
     template <class U>
     DspBuffer<T> & decimate(int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
+    template <class U>
+    DspBuffer<T> & interp(int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
 };
 
 
@@ -646,6 +648,106 @@ DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trim
 template <class T, class U>
 inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
     return data.decimate(rate, filter, trimTails, scratchBuf);
+}
+
+template <class T>
+template <class U>
+DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTails, DspBuffer<T> *scratchBuf) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    int phase;
+    DspBuffer<T> scratch;
+    DspBuffer<T> *data;
+    int originalFiltLen = filter.size();
+    
+    filter.resize(((originalFiltLen + rate - 1)/rate) * rate);
+    
+    if (scratchBuf == NULL) {
+        data = &scratch;
+    }
+    else {
+        data = scratchBuf;
+    }
+    *data = *this;
+    
+    if (trimTails) {
+        this->resize(this->size() * rate);
+        
+        // Initial partial overlap
+        int initialTrim = (filter.size() - 1) / 2;
+        for (resultIndex=0; resultIndex<((filter.size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(data->size() - initialTrim + rate - 1)/rate; resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<this->size(); resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
+                 dataIndex<data->size(); dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+    }
+    else {
+        this->resize(this->size() * rate + filter.size() - 1);
+        
+        // Initial partial overlap
+        for (resultIndex=0, phase=0; resultIndex<originalFiltLen-1; resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+            if (phase < rate - 1)
+                ++phase;
+            else
+                phase = 0;
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<data->size()*rate; resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=(resultIndex - (originalFiltLen-1))/rate, filterIndex=filter.size()-rate + phase;
+                 filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+            if (phase < rate - 1)
+                ++phase;
+            else
+                phase = 0;
+        }
+
+        // Final partial overlap
+        for (; resultIndex<this->size(); resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=resultIndex/rate - (filter.size()-1), filterIndex=filter.size()-rate + phase;
+                 dataIndex<data->size(); dataIndex++, filterIndex-=rate) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+            if (phase < rate - 1)
+                ++phase;
+            else
+                phase = 0;
+        }
+    }
+    return *this;
+}
+ 
+template <class T, class U>
+inline DspBuffer<T> & interp(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
+    return data.interp(rate, filter, trimTails, scratchBuf);
 }
 
 };
