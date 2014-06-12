@@ -767,7 +767,7 @@ TEST(DspBufferMethods, DecimateOddOddTrim) {
 TEST(DspBufferMethods, InterpEvenOdd) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5};
-    double expectedData[] = {1, 2, 3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35, 0, 0};
+    double expectedData[] = {1, 2, 3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
@@ -776,7 +776,7 @@ TEST(DspBufferMethods, InterpEvenOdd) {
     int rate = 3;
     
     interp(buf, rate, filter);
-    EXPECT_EQ(input.size()*rate + filter.size() - 1, buf.size());
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
@@ -785,7 +785,7 @@ TEST(DspBufferMethods, InterpEvenOdd) {
 TEST(DspBufferMethods, InterpEvenEven) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5, 6};
-    double expectedData[] = {1, 2, 3, 4, 5, 6, -1, -2, -3, -6, -9, -12, -11, -16, -21, -16, -23, -30, -21, -30, -39, -26, -37, -48, -31, -44, -57, -28, -35, -42, 0, 0};
+    double expectedData[] = {1, 2, 3, 4, 5, 6, -1, -2, -3, -6, -9, -12, -11, -16, -21, -16, -23, -30, -21, -30, -39, -26, -37, -48, -31, -44, -57, -28, -35, -42};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
@@ -794,7 +794,7 @@ TEST(DspBufferMethods, InterpEvenEven) {
     int rate = 3;
     
     interp(buf, rate, filter);
-    EXPECT_EQ(input.size()*rate + filter.size() - 1, buf.size());
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
@@ -803,7 +803,7 @@ TEST(DspBufferMethods, InterpEvenEven) {
 TEST(DspBufferMethods, InterpOddEven) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
-    double expectedData[] = {1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -7, -10, -13, -16, -13, -18, -23, -28, -19, -26, -33, -40, -25, -34, -43, -52, -31, -42, -53, -64, -37, -50, -63, -76, -43, -58, -73, -88, -49, -66, -83, -100, -35, -34, -33, -32, 61, 82, 103, 124, 55, 66, 77, 88, 0, 0, 0};
+    double expectedData[] = {1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -7, -10, -13, -16, -13, -18, -23, -28, -19, -26, -33, -40, -25, -34, -43, -52, -31, -42, -53, -64, -37, -50, -63, -76, -43, -58, -73, -88, -49, -66, -83, -100, -35, -34, -33, -32, 61, 82, 103, 124, 55, 66, 77, 88};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
@@ -812,7 +812,7 @@ TEST(DspBufferMethods, InterpOddEven) {
     int rate = 4;
     
     interp(buf, rate, filter);
-    EXPECT_EQ(input.size()*rate + filter.size() - 1, buf.size());
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
@@ -821,7 +821,7 @@ TEST(DspBufferMethods, InterpOddEven) {
 TEST(DspBufferMethods, InterpOddOdd) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    double expectedData[] = {1, 2, 3, 4, 5, 6, 7, 8, 8, -2, -3, -4, -7, -10, -13, -16, -22, -18, -23, -28, -37, -26, -33, -40, -52, -34, -43, -52, -67, -42, -53, -64, -82, -50, -63, -76, -97, -58, -73, -88, -112, -66, -83, -100, -107, -34, -33, -32, -20, 82, 103, 124, 145, 66, 77, 88, 99, 0, 0, 0};
+    double expectedData[] = {1, 2, 3, 4, 5, 6, 7, 8, 8, -2, -3, -4, -7, -10, -13, -16, -22, -18, -23, -28, -37, -26, -33, -40, -52, -34, -43, -52, -67, -42, -53, -64, -82, -50, -63, -76, -97, -58, -73, -88, -112, -66, -83, -100, -107, -34, -33, -32, -20, 82, 103, 124, 145, 66, 77, 88, 99};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
@@ -830,7 +830,43 @@ TEST(DspBufferMethods, InterpOddOdd) {
     int rate = 4;
     
     interp(buf, rate, filter);
-    EXPECT_EQ(input.size()*rate + filter.size() - 1, buf.size());
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, InterpOddEvenRate2) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    double expectedData[] = {1, 2, 3, 4, 4, 4, 2, 0, -14, -20, -30, -40, -46, -60, -62, -80, -78, -100, -94, -120, -110, -140, -106, -120, -60, -56, 20, 32, 125, 146, 77, 88};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 2;
+    
+    interp(buf, rate, filter);
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, InterpOddOddRate2) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    double expectedData[] = {1, 2, 3, 4, 4, 4, 2, 0, -5, -20, -30, -40, -55, -60, -80, -80, -105, -100, -130, -120, -155, -140, -160, -120, -123, -56, -52, 32, 44, 146, 167, 88, 99};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 2;
+    
+    interp(buf, rate, filter);
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }

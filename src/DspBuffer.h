@@ -659,9 +659,7 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
     int phase;
     DspBuffer<T> scratch;
     DspBuffer<T> *data;
-    int originalFiltLen = filter.size();
-    
-    filter.resize(((originalFiltLen + rate - 1)/rate) * rate);
+    int dataStart, filterStart;
     
     if (scratchBuf == NULL) {
         data = &scratch;
@@ -702,44 +700,42 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
         }
     }
     else {
-        this->resize(this->size() * rate + filter.size() - 1);
+        this->resize(this->size() * rate + filter.size() - 1 - (rate - 1));
         
         // Initial partial overlap
-        for (resultIndex=0, phase=0; resultIndex<originalFiltLen-1; resultIndex++) {
+        for (resultIndex=0, phase=0, dataStart=0; resultIndex<filter.size()-1; resultIndex++) {
             buf[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
                 buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
-            if (phase < rate - 1)
-                ++phase;
-            else
-                phase = 0;
         }
         
         // Middle full overlap
-        for (; resultIndex<data->size()*rate; resultIndex++) {
+        for (dataStart=0, filterStart=resultIndex; resultIndex<data->size()*rate; resultIndex++) {
             buf[resultIndex] = 0;
-            for (dataIndex=(resultIndex - (originalFiltLen-1))/rate, filterIndex=filter.size()-rate + phase;
+            for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
                 buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
-            if (phase < rate - 1)
-                ++phase;
-            else
-                phase = 0;
+            ++filterStart;
+            if (filterStart >= filter.size()) {
+                filterStart -= rate;
+                ++dataStart;
+            }
         }
 
         // Final partial overlap
         for (; resultIndex<this->size(); resultIndex++) {
             buf[resultIndex] = 0;
-            for (dataIndex=resultIndex/rate - (filter.size()-1), filterIndex=filter.size()-rate + phase;
+            for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<data->size(); dataIndex++, filterIndex-=rate) {
                 buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
             }
-            if (phase < rate - 1)
-                ++phase;
-            else
-                phase = 0;
+            ++filterStart;
+            if (filterStart >= filter.size()) {
+                filterStart -= rate;
+                ++dataStart;
+            }
         }
     }
     return *this;
