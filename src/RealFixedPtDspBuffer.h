@@ -329,20 +329,24 @@ template <class T>
 const T RealFixedPtDspBuffer<T>::mode() {
     assert(this->size() > 0);
     std::vector<T> tempScratch;
+    std::vector<T> *scratch;
 
     if (this->scratchBuf == NULL) {
-        this->scratchBuf = &tempScratch;
+        scratch = &tempScratch;
     }
-    *(this->scratchBuf) = this->buf;
-    std::sort(this->scratchBuf->begin(), this->scratchBuf->end());
+    else {
+        scratch = this->scratchBuf;
+    }
+    *scratch = this->buf;
+    std::sort(scratch->begin(), scratch->end());
     
     T modeVal = 0;
     unsigned modeLen = 0;
-    T currentVal = (*this->scratchBuf)[0];
+    T currentVal = (*scratch)[0];
     unsigned currentLen = 1;
     
     for (unsigned i=1; i<this->size(); i++) {
-        if ((*this->scratchBuf)[i] == currentVal) {
+        if ((*scratch)[i] == currentVal) {
             currentLen++;
         }
         else {
@@ -350,7 +354,7 @@ const T RealFixedPtDspBuffer<T>::mode() {
                 modeVal = currentVal;
                 modeLen = currentLen;
             }
-            currentVal = (*this->scratchBuf)[i];
+            currentVal = (*scratch)[i];
             currentLen = 1;
         }
     }

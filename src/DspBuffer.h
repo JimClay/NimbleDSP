@@ -90,11 +90,11 @@ public:
     DspBuffer<T> & diff(T & previousVal);
     
     template <class U>
-    DspBuffer<T> & convolve(DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
+    DspBuffer<T> & conv(DspBuffer<U> & filter, bool trimTails = false);
     template <class U>
-    DspBuffer<T> & decimate(int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
+    DspBuffer<T> & decimate(int rate, DspBuffer<U> & filter, bool trimTails = false);
     template <class U>
-    DspBuffer<T> & interp(int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
+    DspBuffer<T> & interp(int rate, DspBuffer<U> & filter, bool trimTails = false);
 };
 
 
@@ -480,12 +480,12 @@ DspBuffer<T> & diff(DspBuffer<T> & buffer, T & previousVal) {
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::convolve(DspBuffer<U> & filter, bool trimTails, DspBuffer<T> *scratchBuf) {
+DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<U> & filter, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
-    DspBuffer<T> scratch;
-    DspBuffer<T> *data;
+    std::vector<T> scratch;
+    std::vector<T> *data;
     
     if (scratchBuf == NULL) {
         data = &scratch;
@@ -493,7 +493,7 @@ DspBuffer<T> & DspBuffer<T>::convolve(DspBuffer<U> & filter, bool trimTails, Dsp
     else {
         data = scratchBuf;
     }
-    *data = *this;
+    *data = this->buf;
     
     if (trimTails) {
         // Initial partial overlap
@@ -554,25 +554,20 @@ DspBuffer<T> & DspBuffer<T>::convolve(DspBuffer<U> & filter, bool trimTails, Dsp
     }
     return *this;
 }
- 
-template <class T, class U>
-inline DspBuffer<T> & convolve(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
-    return data.convolve(filter, trimTails, scratchBuf);
-}
 
 template <class T, class U>
-inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
-    return data.convolve(filter, trimTails, scratchBuf);
+inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false) {
+    return data.conv(filter, trimTails);
 }
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trimTails, DspBuffer<T> *scratchBuf) {
+DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
-    DspBuffer<T> scratch;
-    DspBuffer<T> *data;
+    std::vector<T> scratch;
+    std::vector<T> *data;
     
     if (scratchBuf == NULL) {
         data = &scratch;
@@ -580,7 +575,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trim
     else {
         data = scratchBuf;
     }
-    *data = *this;
+    *data = this->buf;
     
     if (trimTails) {
         this->resize((this->size() + rate - 1) / rate);
@@ -645,19 +640,19 @@ DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trim
 }
  
 template <class T, class U>
-inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
-    return data.decimate(rate, filter, trimTails, scratchBuf);
+inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false) {
+    return data.decimate(rate, filter, trimTails);
 }
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTails, DspBuffer<T> *scratchBuf) {
+DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
-    DspBuffer<T> scratch;
-    DspBuffer<T> *data;
     int dataStart, filterStart;
+    std::vector<T> scratch;
+    std::vector<T> *data;
     
     if (scratchBuf == NULL) {
         data = &scratch;
@@ -665,7 +660,7 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
     else {
         data = scratchBuf;
     }
-    *data = *this;
+    *data = this->buf;
     
     if (trimTails) {
         this->resize(this->size() * rate);
@@ -758,8 +753,8 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
 }
  
 template <class T, class U>
-inline DspBuffer<T> & interp(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
-    return data.interp(rate, filter, trimTails, scratchBuf);
+inline DspBuffer<T> & interp(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false) {
+    return data.interp(rate, filter, trimTails);
 }
 
 };
