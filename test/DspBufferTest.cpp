@@ -619,3 +619,147 @@ TEST(DspBufferMethods, RunningDiff) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
+
+TEST(DspBufferMethods, DecimateEvenOdd) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {1, 0, -35, -72, -35};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 3;
+    
+    decimate(buf, rate, filter);
+    EXPECT_EQ((input.size() + filter.size() - 1 + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, DecimateEvenEven) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6};
+    double expectedData[] = {1, 0, -35, -90, -71};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 3;
+    
+    decimate(buf, rate, filter);
+    EXPECT_EQ((input.size() + filter.size() - 1 + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, DecimateOddEven) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    double expectedData[] = {1, -5, -84, -166, -12};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 4;
+    
+    decimate(buf, rate, filter);
+    EXPECT_EQ((input.size() + filter.size() - 1 + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, DecimateOddOdd) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    double expectedData[] = {1, -5, -75, -193, -75, 99};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 4;
+    
+    decimate(buf, rate, filter);
+    EXPECT_EQ((input.size() + filter.size() - 1 + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, DecimateEvenOddTrim) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {2, -20, -65};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 3;
+    
+    decimate(buf, rate, filter, true);
+    EXPECT_EQ((input.size() + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, DecimateEvenEvenTrim) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6};
+    double expectedData[] = {2, -14, -77};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 3;
+    
+    decimate(buf, rate, filter, true);
+    EXPECT_EQ((input.size() + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, DecimateOddEvenTrim) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    double expectedData[] = {0, -48, -172, -72};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 4;
+    
+    decimate(buf, rate, filter, true);
+    EXPECT_EQ((input.size() + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferMethods, DecimateOddOddTrim) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
+    int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    double expectedData[] = {-5, -75, -193, -75};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> input = buf;
+    int rate = 4;
+    
+    decimate(buf, rate, filter, true);
+    EXPECT_EQ((input.size() + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}

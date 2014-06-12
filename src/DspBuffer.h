@@ -91,8 +91,8 @@ public:
     
     template <class U>
     DspBuffer<T> & convolve(DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
-    //template <class U>
-    //DspBuffer<T> & decimate(int rate, DspBuffer<U> & filter, bool trimTails = true);
+    template <class U>
+    DspBuffer<T> & decimate(int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL);
 };
 
 
@@ -562,6 +562,90 @@ inline DspBuffer<T> & convolve(DspBuffer<T> & data, DspBuffer<U> & filter, bool 
 template <class T, class U>
 inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
     return data.convolve(filter, trimTails, scratchBuf);
+}
+
+template <class T>
+template <class U>
+DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trimTails, DspBuffer<T> *scratchBuf) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    DspBuffer<T> scratch;
+    DspBuffer<T> *data;
+    
+    if (scratchBuf == NULL) {
+        data = &scratch;
+    }
+    else {
+        data = scratchBuf;
+    }
+    *data = *this;
+    
+    if (trimTails) {
+        this->resize((this->size() + rate - 1) / rate);
+        
+        // Initial partial overlap
+        int initialTrim = (filter.size() - 1) / 2;
+        for (resultIndex=0; resultIndex<((filter.size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(data->size() - initialTrim + rate - 1)/rate; resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<this->size(); resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
+                 dataIndex<data->size(); dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+    }
+    else {
+        this->resize(((this->size() + filter.size() - 1) + (rate - 1)) / rate);
+        
+        // Initial partial overlap
+        for (resultIndex=0; resultIndex<(filter.size()-1+rate-1)/rate; resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(data->size()+rate-1)/rate; resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - (filter.size()-1), filterIndex=filter.size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<this->size(); resultIndex++) {
+            buf[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - (filter.size()-1), filterIndex=filter.size()-1;
+                 dataIndex<data->size(); dataIndex++, filterIndex--) {
+                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+            }
+        }
+    }
+    return *this;
+}
+ 
+template <class T, class U>
+inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false, DspBuffer<T> *scratchBuf = NULL) {
+    return data.decimate(rate, filter, trimTails, scratchBuf);
 }
 
 };
