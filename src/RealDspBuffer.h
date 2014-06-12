@@ -45,7 +45,7 @@ class RealDspBuffer : public DspBuffer<T> {
 template <class T>
 RealDspBuffer<T> & RealDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = std::pow(this->buf[i], exponent);
+        this->buf[i] = (T) std::pow(this->buf[i], exponent);
     }
     return *this;
 }
