@@ -79,7 +79,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SMARTDSP_FLOAT
 }
 
 template <class T>
-ComplexDspBuffer<T> & pow(ComplexDspBuffer<T> & buffer, const std::complex<SMARTDSP_FLOAT_TYPE> exponent) {
+inline ComplexDspBuffer<T> & pow(ComplexDspBuffer<T> & buffer, const std::complex<SMARTDSP_FLOAT_TYPE> exponent) {
     return buffer.pow(exponent);
 }
 
@@ -94,7 +94,7 @@ const std::complex<SMARTDSP_FLOAT_TYPE> ComplexDspBuffer<T>::mean() const {
 }
 
 template <class T>
-const std::complex<SMARTDSP_FLOAT_TYPE> mean(ComplexDspBuffer<T> & buffer) {
+inline const std::complex<SMARTDSP_FLOAT_TYPE> mean(ComplexDspBuffer<T> & buffer) {
     return buffer.mean();
 }
 
@@ -111,12 +111,12 @@ const SMARTDSP_FLOAT_TYPE ComplexDspBuffer<T>::var() const {
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
+inline const SMARTDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
     return buffer.var();
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
+inline const SMARTDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
     return buffer.stdDev();
 }
 
@@ -149,7 +149,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::fft() {
 }
 
 template <class T>
-ComplexDspBuffer<T> & fft(ComplexDspBuffer<T> &buffer) {
+inline ComplexDspBuffer<T> & fft(ComplexDspBuffer<T> &buffer) {
     return buffer.fft();
 }
 
@@ -162,22 +162,26 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::conj() {
 }
 
 template <class T>
-ComplexDspBuffer<T> & conj(ComplexDspBuffer<T> & buffer) {
+inline ComplexDspBuffer<T> & conj(ComplexDspBuffer<T> & buffer) {
     return buffer.conj();
+}
+
+template <class T>
+inline T magSq(const std::complex<T> &val) {
+    return val.real() * val.real() + val.imag() * val.imag();
 }
 
 template <class T>
 ComplexDspBuffer<T> & ComplexDspBuffer<T>::magSq() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].real(this->buf[i].real() * this->buf[i].real() +
-                          this->buf[i].imag() * this->buf[i].imag());
+        this->buf[i].real(SmartDsp::magSq(buf[i]));
         this->buf[i].imag(0);
     }
     return *this;
 }
 
 template <class T>
-ComplexDspBuffer<T> & magSq(ComplexDspBuffer<T> & buffer) {
+inline ComplexDspBuffer<T> & magSq(ComplexDspBuffer<T> & buffer) {
     return buffer.magSq();
 }
 
@@ -195,7 +199,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::ifft() {
 }
 
 template <class T>
-ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
+inline ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
     return buffer.ifft();
 }
 
@@ -209,8 +213,13 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::angle() {
 }
 
 template <class T>
-ComplexDspBuffer<T> & angle(ComplexDspBuffer<T> & buffer) {
+inline ComplexDspBuffer<T> & angle(ComplexDspBuffer<T> & buffer) {
     return buffer.angle();
+}
+
+template <class T>
+inline T angle(std::complex<T> &val) {
+    return std::arg(val);
 }
 
 };
