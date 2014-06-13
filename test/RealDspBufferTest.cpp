@@ -662,3 +662,58 @@ TEST(RealDspBufferMethods, RunningDiff) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
+
+TEST(RealDspBufferFilter, DecimateEvenOdd) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {1, 0, -35, -72, -35};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> input = buf;
+    int rate = 3;
+    
+    decimate(buf, rate, filter);
+    EXPECT_EQ((input.size() + filter.size() - 1 + (rate - 1))/rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(RealDspBufferFilter, InterpEvenOdd) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {1, 2, 3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> input = buf;
+    int rate = 3;
+    
+    interp(buf, rate, filter);
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(RealDspBufferFilter, Resample1) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {1, 3, 5, -1, -3, -9, -11, -9, -23, -21, -15, -37, -31, -21, -35};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	RealDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> input = buf;
+    int interpRate = 3;
+    int decimateRate = 2;
+    
+    resample(buf, interpRate, decimateRate, filter);
+    EXPECT_EQ((input.size()*interpRate + filter.size()-1 - (interpRate-1) + decimateRate-1)/decimateRate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}

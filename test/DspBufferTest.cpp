@@ -567,7 +567,7 @@ TEST(DspBufferFilter, FilterOddTrim) {
     }
 }
 
-TEST(interpRate, FilterEvenTrim) {
+TEST(DspBufferFilter, FilterEvenTrim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5, 6};
     double expectedData[] = {2, 0, -5, -14, -35, -56, -77, -90, -94};
@@ -620,7 +620,7 @@ TEST(DspBufferMethods, RunningDiff) {
     }
 }
 
-TEST(interpRate, DecimateEvenOdd) {
+TEST(DspBufferFilter, DecimateEvenOdd) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {1, 0, -35, -72, -35};
@@ -638,7 +638,7 @@ TEST(interpRate, DecimateEvenOdd) {
     }
 }
 
-TEST(interpRate, DecimateEvenEven) {
+TEST(DspBufferFilter, DecimateEvenEven) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5, 6};
     double expectedData[] = {1, 0, -35, -90, -71};
@@ -656,7 +656,7 @@ TEST(interpRate, DecimateEvenEven) {
     }
 }
 
-TEST(interpRate, DecimateOddEven) {
+TEST(DspBufferFilter, DecimateOddEven) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
     double expectedData[] = {1, -5, -84, -166, -12};
@@ -674,7 +674,7 @@ TEST(interpRate, DecimateOddEven) {
     }
 }
 
-TEST(interpRate, DecimateOddOdd) {
+TEST(DspBufferFilter, DecimateOddOdd) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     double expectedData[] = {1, -5, -75, -193, -75, 99};
@@ -692,7 +692,7 @@ TEST(interpRate, DecimateOddOdd) {
     }
 }
 
-TEST(interpRate, DecimateEvenOddTrim) {
+TEST(DspBufferFilter, DecimateEvenOddTrim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {2, -20, -65};
@@ -710,7 +710,7 @@ TEST(interpRate, DecimateEvenOddTrim) {
     }
 }
 
-TEST(interpRate, DecimateEvenEvenTrim) {
+TEST(DspBufferFilter, DecimateEvenEvenTrim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5, 6};
     double expectedData[] = {2, -14, -77};
@@ -728,7 +728,7 @@ TEST(interpRate, DecimateEvenEvenTrim) {
     }
 }
 
-TEST(interpRate, DecimateOddEvenTrim) {
+TEST(DspBufferFilter, DecimateOddEvenTrim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
     double expectedData[] = {0, -48, -172, -72};
@@ -746,7 +746,7 @@ TEST(interpRate, DecimateOddEvenTrim) {
     }
 }
 
-TEST(interpRate, DecimateOddOddTrim) {
+TEST(DspBufferFilter, DecimateOddOddTrim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     double expectedData[] = {-5, -75, -193, -75};
@@ -764,7 +764,7 @@ TEST(interpRate, DecimateOddOddTrim) {
     }
 }
 
-TEST(interpRate, InterpEvenOdd) {
+TEST(DspBufferFilter, InterpEvenOdd) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {1, 2, 3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
@@ -782,7 +782,7 @@ TEST(interpRate, InterpEvenOdd) {
     }
 }
 
-TEST(interpRate, InterpEvenEven) {
+TEST(DspBufferFilter, InterpEvenEven) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5, 6};
     double expectedData[] = {1, 2, 3, 4, 5, 6, -1, -2, -3, -6, -9, -12, -11, -16, -21, -16, -23, -30, -21, -30, -39, -26, -37, -48, -31, -44, -57, -28, -35, -42};
@@ -800,7 +800,7 @@ TEST(interpRate, InterpEvenEven) {
     }
 }
 
-TEST(interpRate, InterpOddEven) {
+TEST(DspBufferFilter, InterpOddEven) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
     double expectedData[] = {1, 2, 3, 4, 5, 6, 7, 8, -1, -2, -3, -4, -7, -10, -13, -16, -13, -18, -23, -28, -19, -26, -33, -40, -25, -34, -43, -52, -31, -42, -53, -64, -37, -50, -63, -76, -43, -58, -73, -88, -49, -66, -83, -100, -35, -34, -33, -32, 61, 82, 103, 124, 55, 66, 77, 88};
@@ -818,7 +818,7 @@ TEST(interpRate, InterpOddEven) {
     }
 }
 
-TEST(interpRate, InterpOddOdd) {
+TEST(DspBufferFilter, InterpOddOdd) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     double expectedData[] = {1, 2, 3, 4, 5, 6, 7, 8, 8, -2, -3, -4, -7, -10, -13, -16, -22, -18, -23, -28, -37, -26, -33, -40, -52, -34, -43, -52, -67, -42, -53, -64, -82, -50, -63, -76, -97, -58, -73, -88, -112, -66, -83, -100, -107, -34, -33, -32, -20, 82, 103, 124, 145, 66, 77, 88, 99};
@@ -836,7 +836,7 @@ TEST(interpRate, InterpOddOdd) {
     }
 }
 
-TEST(interpRate, InterpOddEvenRate2) {
+TEST(DspBufferFilter, InterpOddEvenRate2) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
     double expectedData[] = {1, 2, 3, 4, 4, 4, 2, 0, -14, -20, -30, -40, -46, -60, -62, -80, -78, -100, -94, -120, -110, -140, -106, -120, -60, -56, 20, 32, 125, 146, 77, 88};
@@ -854,7 +854,7 @@ TEST(interpRate, InterpOddEvenRate2) {
     }
 }
 
-TEST(interpRate, InterpOddOddRate2) {
+TEST(DspBufferFilter, InterpOddOddRate2) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     double expectedData[] = {1, 2, 3, 4, 4, 4, 2, 0, -5, -20, -30, -40, -55, -60, -80, -80, -105, -100, -130, -120, -155, -140, -160, -120, -123, -56, -52, 32, 44, 146, 167, 88, 99};
@@ -872,7 +872,7 @@ TEST(interpRate, InterpOddOddRate2) {
     }
 }
 
-TEST(interpRate, InterpEvenOddTrim) {
+TEST(DspBufferFilter, InterpEvenOddTrim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
@@ -890,7 +890,7 @@ TEST(interpRate, InterpEvenOddTrim) {
     }
 }
 
-TEST(interpRate, InterpEvenEvenTrim) {
+TEST(DspBufferFilter, InterpEvenEvenTrim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5, 6};
     double expectedData[] = {3, 4, 5, 6, -1, -2, -3, -6, -9, -12, -11, -16, -21, -16, -23, -30, -21, -30, -39, -26, -37, -48, -31, -44, -57, -28, -35};
@@ -908,7 +908,7 @@ TEST(interpRate, InterpEvenEvenTrim) {
     }
 }
 
-TEST(interpRate, InterpOddEvenRate2Trim) {
+TEST(DspBufferFilter, InterpOddEvenRate2Trim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
     double expectedData[] = {4, 4, 4, 2, 0, -14, -20, -30, -40, -46, -60, -62, -80, -78, -100, -94, -120, -110, -140, -106, -120, -60, -56, 20, 32, 125};
@@ -926,7 +926,7 @@ TEST(interpRate, InterpOddEvenRate2Trim) {
     }
 }
 
-TEST(interpRate, InterpOddOddRate2Trim) {
+TEST(DspBufferFilter, InterpOddOddRate2Trim) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     double expectedData[] = {4, 4, 2, 0, -5, -20, -30, -40, -55, -60, -80, -80, -105, -100, -130, -120, -155, -140, -160, -120, -123, -56, -52, 32, 44, 146};
@@ -944,7 +944,7 @@ TEST(interpRate, InterpOddOddRate2Trim) {
     }
 }
 
-TEST(interpRate, Resample1) {
+TEST(DspBufferFilter, Resample1) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {1, 3, 5, -1, -3, -9, -11, -9, -23, -21, -15, -37, -31, -21, -35};
@@ -963,7 +963,7 @@ TEST(interpRate, Resample1) {
     }
 }
 
-TEST(interpRate, Resample2) {
+TEST(DspBufferFilter, Resample2) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5, 6};
     double expectedData[] = {1, 5, -3, -11, -23, -39, -31, -35};
@@ -982,7 +982,7 @@ TEST(interpRate, Resample2) {
     }
 }
 
-TEST(interpRate, Resample3) {
+TEST(DspBufferFilter, Resample3) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
     double expectedData[] = {1, 4, 7, -2, -7, -16, -23, -26, -25, -52, -53, -50, -43, -88, -83, -34, 61, 124, 77};
@@ -1001,7 +1001,7 @@ TEST(interpRate, Resample3) {
     }
 }
 
-TEST(interpRate, Resample4) {
+TEST(DspBufferFilter, Resample4) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     double expectedData[] = {1, -2, -23, -52, -97, -34, 77};
@@ -1020,7 +1020,7 @@ TEST(interpRate, Resample4) {
     }
 }
 
-TEST(interpRate, Resample5) {
+TEST(DspBufferFilter, Resample5) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8};
     double expectedData[] = {1, 4, -30, -80, -110, -56, 77};
@@ -1039,7 +1039,7 @@ TEST(interpRate, Resample5) {
     }
 }
 
-TEST(interpRate, Resample6) {
+TEST(DspBufferFilter, Resample6) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, 10, 11};
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     double expectedData[] = {1, 4, 2, -20, -55, -80, -130, -140, -123, 32, 167};
@@ -1058,7 +1058,7 @@ TEST(interpRate, Resample6) {
     }
 }
 
-TEST(interpRate, Resample7) {
+TEST(DspBufferFilter, Resample7) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {3, 5, -1, -3, -9, -11, -9, -23, -21, -15, -37, -31, -21, -35};
