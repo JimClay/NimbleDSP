@@ -47,6 +47,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     ComplexDspBuffer<T> & saturate(const std::complex<T> & val);
     ComplexDspBuffer<T> & conj();
     ComplexDspBuffer<T> & magSq();
+    ComplexDspBuffer<T> & angle();
     
     ComplexDspBuffer<T> & fft();
     ComplexDspBuffer<T> & ifft();
@@ -196,6 +197,20 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::ifft() {
 template <class T>
 ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
     return buffer.ifft();
+}
+
+template <class T>
+ComplexDspBuffer<T> & ComplexDspBuffer<T>::angle() {
+    for (unsigned i=0; i<this->size(); i++) {
+        this->buf[i].real(std::arg(buf[i]));
+        this->buf[i].imag(0);
+    }
+    return *this;
+}
+
+template <class T>
+ComplexDspBuffer<T> & angle(ComplexDspBuffer<T> & buffer) {
+    return buffer.angle();
 }
 
 };

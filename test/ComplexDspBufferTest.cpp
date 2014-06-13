@@ -726,4 +726,16 @@ TEST(ComplexDspBufferFilter, Resample1) {
     }
 }
 
+TEST(ComplexDspBufferMethods, Angle) {
+    std::complex<double> inputData[] = {std::complex<double>(0.814723686, 0), std::complex<double>(0.861459324, 0.279905102), std::complex<double>(0.102734492, 0.074640978), std::complex<double>(0.536868858, 0.738936590), std::complex<double>(0.195409754, 0.601409382), std::complex<double>(0, 0.097540405), std::complex<double>(-0.086060683, 0.264867546), std::complex<double>(-0.321448892, 0.442436443), std::complex<double>(-0.774639302, 0.562808397), std::complex<double>(-0.917663529, 0.298166955), std::complex<double>(-0.157613082, 0), std::complex<double>(-0.923088590, -0.299929664), std::complex<double>(-0.774364328, -0.562608616), std::complex<double>(-0.285296648, -0.392677148), std::complex<double>(-0.247300265, -0.761111955), std::complex<double>(0, -0.141886339), std::complex<double>(0.130331404, -0.401118816), std::complex<double>(0.538255837, -0.740845602), std::complex<double>(0.640909193, -0.465647785), std::complex<double>(0.912531524, -0.296499466), std::complex<double>(0.655740699, 0), std::complex<double>(0, 0)};
+    std::complex<double> expectedData[] = {std::complex<double>(0), std::complex<double>(0.314159265), std::complex<double>(0.628318531), std::complex<double>(0.942477796), std::complex<double>(1.256637061), std::complex<double>(1.570796327), std::complex<double>(1.884955592), std::complex<double>(2.199114858), std::complex<double>(2.513274123), std::complex<double>(2.827433388), std::complex<double>(3.141592654), std::complex<double>(-2.827433388), std::complex<double>(-2.513274123), std::complex<double>(-2.199114858), std::complex<double>(-1.884955592), std::complex<double>(-1.570796327), std::complex<double>(-1.256637061), std::complex<double>(-0.942477796), std::complex<double>(-0.628318531), std::complex<double>(-0.314159265), std::complex<double>(0), std::complex<double>(0)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    
+    buf.angle();
+    for (unsigned i=0; i<numElements; i++) {
+        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+    }
+}
+
 
