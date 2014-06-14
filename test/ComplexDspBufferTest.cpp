@@ -98,7 +98,8 @@ TEST(ComplexDspBufferOperators, PlusScalar) {
     buf2 = buf1 + operand;
     EXPECT_EQ(numElements, buf2.buf.size());
     for (unsigned i=0; i<buf2.buf.size(); i++) {
-        EXPECT_EQ(inputData[i] + operand, buf2.buf[i]);
+        EXPECT_EQ(inputData[i] + operand, buf2[i]);
+        EXPECT_EQ(inputData[i], buf1[i]);
     }
 }
 

@@ -104,76 +104,146 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
                                             Operators
     *****************************************************************************************/
     /**
-     * \brief Assignment operator.
+     * \brief Assignment operator from ComplexDspBuffer.
+     * \return Reference to "this".
      */
     ComplexDspBuffer<T>& operator=(const ComplexDspBuffer<T>& rhs);
+    
+    /**
+     * \brief Assignment operator from DspBuffer.
+     * \return Reference to "this".
+     */
     ComplexDspBuffer<T>& operator=(const DspBuffer<T>& rhs);
     
     /**
      * \brief Unary minus (negation) operator.
+     * \return Reference to "this".
      */
     ComplexDspBuffer<T> & operator-();
     
     /**
      * \brief Add Buffer/Assignment operator.
+     * \return Reference to "this".
      */
     template <class U>
     ComplexDspBuffer<T> & operator+=(const DspBuffer<U> &rhs);
     
     /**
      * \brief Add Scalar/Assignment operator.
+     * \return Reference to "this".
      */
     ComplexDspBuffer<T> & operator+=(const std::complex<T> &rhs);
     
     /**
      * \brief Subtract Buffer/Assignment operator.
+     * \return Reference to "this".
      */
     template <class U>
     ComplexDspBuffer<T> & operator-=(const DspBuffer<U> &rhs);
     
     /**
      * \brief Subtract Scalar/Assignment operator.
+     * \return Reference to "this".
      */
     ComplexDspBuffer<T> & operator-=(const std::complex<T> &rhs);
     
     /**
      * \brief Multiply Buffer/Assignment operator.
+     * \return Reference to "this".
      */
     template <class U>
     ComplexDspBuffer<T> & operator*=(const DspBuffer<U> &rhs);
     
     /**
      * \brief Multiply Scalar/Assignment operator.
+     * \return Reference to "this".
      */
     ComplexDspBuffer<T> & operator*=(const std::complex<T> &rhs);
     
     /**
      * \brief Divide Buffer/Assignment operator.
+     * \return Reference to "this".
      */
     template <class U>
     ComplexDspBuffer<T> & operator/=(const DspBuffer<U> &rhs);
     
     /**
      * \brief Divide Scalar/Assignment operator.
+     * \return Reference to "this".
      */
     ComplexDspBuffer<T> & operator/=(const std::complex<T> &rhs);
     
     /*****************************************************************************************
                                             Methods
     *****************************************************************************************/
-    // Methods
+    /**
+     * \brief Sets each element of \ref buf equal to its value to the power of "exponent".
+     *
+     * \param exponent Exponent to use.
+     * \return Reference to "this".
+     */
     ComplexDspBuffer<T> & pow(const std::complex<SMARTDSP_FLOAT_TYPE> & exponent);
     
+    /**
+     * \brief Returns the mean (average) of the data in \ref buf.
+     */
     const std::complex<SMARTDSP_FLOAT_TYPE> mean() const;
+    
+    /**
+     * \brief Returns the variance of the data in \ref buf.
+     */
     const SMARTDSP_FLOAT_TYPE var() const;
+    
+    /**
+     * \brief Returns the standard deviation of the data in \ref buf.
+     */
     const SMARTDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
     
+    /**
+     * \brief Sets the upper and lower limit of the values in \ref buf.
+     *
+     * \param Limiting value for the data in \ref buf.  Any values that
+     *      are greater than "val" are made equal to "val", and
+     *      any that are less than -val are made equal to -val.  This is done
+     *      independently on the real and imaginary elements of \ref buf.
+     * \return Reference to "this".
+     */
     ComplexDspBuffer<T> & saturate(const std::complex<T> & val);
+    
+    /**
+     * \brief Conjugates the data in \ref buf.
+     * \return Reference to "this".
+     */
     ComplexDspBuffer<T> & conj();
+    
+    /**
+     * \brief Sets each element of \ref buf equal to its magnitude squared.
+     * \return Reference to "this".
+     */
     ComplexDspBuffer<T> & magSq();
+    
+    /**
+     * \brief Sets each element of \ref buf equal to its angle.
+     *
+     * The angle is held in the real portion of \ref buf.
+     * \return Reference to "this".
+     */
     ComplexDspBuffer<T> & angle();
     
+    /**
+     * \brief Sets \ref buf equal to the FFT of the data in \ref buf.
+     *
+     * Sets \ref domain equal to SmartDsp::FREQUENCY_DOMAIN.
+     * \return Reference to "this".
+     */
     ComplexDspBuffer<T> & fft();
+    
+    /**
+     * \brief Sets \ref buf equal to the inverse FFT of the data in \ref buf.
+     *
+     * Sets \ref domain equal to SmartDsp::TIME_DOMAIN.
+     * \return Reference to "this".
+     */
     ComplexDspBuffer<T> & ifft();
 };
 
@@ -226,6 +296,9 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator+=(const std::complex<T> & rh
     return *this;
 }
 
+/**
+ * \brief Buffer addition operator.
+ */
 template <class T, class U>
 inline ComplexDspBuffer<T> operator+(ComplexDspBuffer<T> lhs, const DspBuffer<U>& rhs)
 {
@@ -233,6 +306,9 @@ inline ComplexDspBuffer<T> operator+(ComplexDspBuffer<T> lhs, const DspBuffer<U>
     return lhs;
 }
 
+/**
+ * \brief Scalar addition operator.
+ */
 template <class T>
 inline ComplexDspBuffer<T> operator+(ComplexDspBuffer<T> lhs, const std::complex<T> & rhs)
 {
@@ -260,6 +336,9 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator-=(const std::complex<T> &rhs
     return *this;
 }
 
+/**
+ * \brief Buffer subtraction operator.
+ */
 template <class T, class U>
 inline ComplexDspBuffer<T> operator-(ComplexDspBuffer<T> lhs, const DspBuffer<U>& rhs)
 {
@@ -267,6 +346,9 @@ inline ComplexDspBuffer<T> operator-(ComplexDspBuffer<T> lhs, const DspBuffer<U>
     return lhs;
 }
 
+/**
+ * \brief Scalar subtraction operator.
+ */
 template <class T>
 inline ComplexDspBuffer<T> operator-(ComplexDspBuffer<T> lhs, const std::complex<T> & rhs)
 {
@@ -294,6 +376,9 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator*=(const std::complex<T> &rhs
     return *this;
 }
 
+/**
+ * \brief Buffer multiplication operator.
+ */
 template <class T, class U>
 inline ComplexDspBuffer<T> operator*(ComplexDspBuffer<T> lhs, const DspBuffer<U>& rhs)
 {
@@ -301,6 +386,9 @@ inline ComplexDspBuffer<T> operator*(ComplexDspBuffer<T> lhs, const DspBuffer<U>
     return lhs;
 }
 
+/**
+ * \brief Scalar multiplication operator.
+ */
 template <class T>
 inline ComplexDspBuffer<T> operator*(ComplexDspBuffer<T> lhs, const std::complex<T> & rhs)
 {
@@ -328,6 +416,9 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator/=(const std::complex<T> &rhs
     return *this;
 }
 
+/**
+ * \brief Buffer division operator.
+ */
 template <class T, class U>
 inline ComplexDspBuffer<T> operator/(ComplexDspBuffer<T> lhs, const DspBuffer<U> & rhs)
 {
@@ -335,13 +426,16 @@ inline ComplexDspBuffer<T> operator/(ComplexDspBuffer<T> lhs, const DspBuffer<U>
     return lhs;
 }
 
+/**
+ * \brief Scalar division operator.
+ */
 template <class T>
 inline ComplexDspBuffer<T> operator/(ComplexDspBuffer<T> lhs, const std::complex<T> & rhs)
 {
     lhs /= rhs;
     return lhs;
 }
-
+    
 template <class T>
 ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SMARTDSP_FLOAT_TYPE> & exponent) {
     for (unsigned i=0; i<this->size(); i++) {
@@ -350,6 +444,12 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SMARTDSP_FLOAT
     return *this;
 }
 
+/**
+ * \brief Sets each element of "buffer" equal to its value to the power of "exponent".
+ *
+ * \param exponent Exponent to use.
+ * \return Reference to "buffer".
+ */
 template <class T>
 inline ComplexDspBuffer<T> & pow(ComplexDspBuffer<T> & buffer, const std::complex<SMARTDSP_FLOAT_TYPE> exponent) {
     return buffer.pow(exponent);
@@ -365,6 +465,9 @@ const std::complex<SMARTDSP_FLOAT_TYPE> ComplexDspBuffer<T>::mean() const {
     return sum / ((SMARTDSP_FLOAT_TYPE) this->size());
 }
 
+/**
+ * \brief Returns the mean (average) of the data in "buffer".
+ */
 template <class T>
 inline const std::complex<SMARTDSP_FLOAT_TYPE> mean(ComplexDspBuffer<T> & buffer) {
     return buffer.mean();
@@ -382,11 +485,17 @@ const SMARTDSP_FLOAT_TYPE ComplexDspBuffer<T>::var() const {
     return sum.real() / (this->size() - 1);
 }
 
+/**
+ * \brief Returns the variance of the data in "buffer".
+ */
 template <class T>
 inline const SMARTDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
     return buffer.var();
 }
 
+/**
+ * \brief Returns the standard deviation of the data in "buffer".
+ */
 template <class T>
 inline const SMARTDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
     return buffer.stdDev();
@@ -420,6 +529,13 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::fft() {
     return *this;
 }
 
+/**
+ * \brief Sets "buffer" equal to the FFT of the data in buffer.
+ *
+ * Sets \ref domain equal to SmartDsp::FREQUENCY_DOMAIN.
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 inline ComplexDspBuffer<T> & fft(ComplexDspBuffer<T> &buffer) {
     return buffer.fft();
@@ -433,11 +549,18 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::conj() {
     return *this;
 }
 
+/**
+ * \brief Conjugates the data in "buffer".
+ * \return Reference to "buffer".
+ */
 template <class T>
 inline ComplexDspBuffer<T> & conj(ComplexDspBuffer<T> & buffer) {
     return buffer.conj();
 }
 
+/**
+ * \brief Returns the squared magnitude of "val".
+ */
 template <class T>
 inline T magSq(const std::complex<T> &val) {
     return val.real() * val.real() + val.imag() * val.imag();
@@ -452,6 +575,10 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::magSq() {
     return *this;
 }
 
+/**
+ * \brief Sets each element of "buffer" equal to its magnitude squared.
+ * \return Reference to "buffer".
+ */
 template <class T>
 inline ComplexDspBuffer<T> & magSq(ComplexDspBuffer<T> & buffer) {
     return buffer.magSq();
@@ -470,6 +597,13 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::ifft() {
     return *this;
 }
 
+/**
+ * \brief Sets "buffer" equal to the inverse FFT of the data in buffer.
+ *
+ * Sets \ref domain equal to SmartDsp::TIME_DOMAIN.
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 inline ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
     return buffer.ifft();
@@ -478,23 +612,28 @@ inline ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
 template <class T>
 ComplexDspBuffer<T> & ComplexDspBuffer<T>::angle() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].real(std::arg(this->
-        
-        
-        
-        
-        
-        buf[i]));
+        this->buf[i].real(std::arg(this->buf[i]));
         this->buf[i].imag(0);
     }
     return *this;
 }
 
+/**
+ * \brief Sets each element of "buffer" equal to its angle.
+ *
+ * The angle is held in the real portion of "buffer".
+ * \return Reference to "buffer".
+ */
 template <class T>
 inline ComplexDspBuffer<T> & angle(ComplexDspBuffer<T> & buffer) {
     return buffer.angle();
 }
 
+/**
+ * \brief Returns the angle of a single std::complex value.
+ *
+ * \param val Value whose angle is returned.
+ */
 template <class T>
 inline T angle(std::complex<T> &val) {
     return std::arg(val);
