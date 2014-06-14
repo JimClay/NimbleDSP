@@ -575,6 +575,16 @@ DspBuffer<T> & DspBuffer<T>::rotate(int numToShift) {
     return *this;
 }
 
+/**
+ * \brief Circular rotation.
+ *
+ * \param buffer Buffer to rotate.
+ * \param numToShift Number of positions to shift in the circular rotation.  numToShift
+ *      can be positive or negative.  If you visualize the 0 index value at the left and
+ *      the end of the array at the right, positive numToShift values shift the array to
+ *      the left, and negative values shift it to the right.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & rotate(DspBuffer<T> & buffer, int numToShift) {
     return buffer.rotate(numToShift);
@@ -586,6 +596,12 @@ DspBuffer<T> & DspBuffer<T>::reverse() {
     return *this;
 }
 
+/**
+ * \brief Reverses the order of the elements in \ref buf.
+ *
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & reverse(DspBuffer<T> & buffer) {
     return buffer.reverse();
@@ -601,6 +617,14 @@ const int DspBuffer<T>::find(const T val) const {
     return -1;
 }
 
+/**
+ * \brief Finds the first instance of "val" in \ref buf.
+ *
+ * \param buffer Buffer to operate on.
+ * \param val The value to look for in \ref buf.
+ * \return Index of first instance of "val".  If there aren't any elements equal to "val"
+ *      it returns -1.
+ */
 template <class T>
 const int find(DspBuffer<T> & buffer, const T val) {
     return buffer.find(val);
@@ -614,6 +638,12 @@ DspBuffer<T> & DspBuffer<T>::abs() {
     return *this;
 }
 
+/**
+ * \brief Changes the elements of \ref buf to their absolute value.
+ *
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & abs(DspBuffer<T> & buffer) {
     return buffer.abs();
@@ -627,6 +657,12 @@ DspBuffer<T> & DspBuffer<T>::exp() {
     return *this;
 }
 
+/**
+ * \brief Sets each element of \ref buf to e^(element).
+ *
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & exp(DspBuffer<T> & buffer) {
     return buffer.exp();
@@ -640,11 +676,23 @@ DspBuffer<T> & DspBuffer<T>::log() {
     return *this;
 }
 
+/**
+ * \brief Sets each element of \ref buf to the natural log of the element.
+ *
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & log(DspBuffer<T> & buffer) {
     return buffer.log();
 }
 
+/**
+ * \brief Sets each element of \ref buf to the natural log of the element.
+ *
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & ln(DspBuffer<T> & buffer) {
     return buffer.log();
@@ -658,21 +706,45 @@ DspBuffer<T> & DspBuffer<T>::log10() {
     return *this;
 }
 
+/**
+ * \brief Sets each element of \ref buf to the base 10 log of the element.
+ *
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & log10(DspBuffer<T> & buffer) {
     return buffer.log10();
 }
 
+/**
+ * \brief Sets the length of \ref buf to "len".
+ *
+ * \param buffer Buffer to operate on.
+ * \param len The new length for \ref buf.  If len is longer than buf's current size, the
+ *      new elements will be set to "val".  If len is less than buf's current size the extra
+ *      elements will be cut off and the other elements will remain the same.
+ * \param val The value to set any new elements to.  Defaults to 0.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & resize(DspBuffer<T> & buffer, int val) {
     return buffer.resize(val);
 }
 
+/**
+ * \brief Lengthens \ref buf by "len" elements.
+ *
+ * \param buffer Buffer to operate on.
+ * \param len The number of elements to add to \ref buf.
+ * \param val The value to set the new elements to.  Defaults to 0.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & pad(DspBuffer<T> & buffer, int val) {
     return buffer.pad(val);
 }
-
+    
 template <class T>
 DspBuffer<T> & DspBuffer<T>::upsample(int rate, int phase) {
 	assert(rate > 0);
@@ -690,6 +762,15 @@ DspBuffer<T> & DspBuffer<T>::upsample(int rate, int phase) {
 	return *this;
 }
 
+/**
+ * \brief Inserts rate-1 zeros between samples.
+ *
+ * \param buffer Buffer to operate on.
+ * \param rate Indicates how many zeros should be inserted between samples.
+ * \param phase Indicates how many of the zeros should be before the samples (as opposed to
+ *      after).  Valid values are 0 to "rate"-1.  Defaults to 0.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & upsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
     return buffer.upsample(rate, phase);
@@ -711,6 +792,15 @@ DspBuffer<T> & DspBuffer<T>::downsample(int rate, int phase) {
 	return *this;
 }
 
+/**
+ * \brief Removes rate-1 samples out of every rate samples.
+ *
+ * \param buffer Buffer to operate on.
+ * \param rate Indicates how many samples should be removed.
+ * \param phase Tells the function which sample should be the first to be kept.  Valid values
+ *      are 0 to "rate"-1.  Defaults to 0.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & downsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
     return buffer.downsample(rate, phase);
@@ -726,6 +816,11 @@ T DspBuffer<T>::sum() const {
 	return bufferSum;
 }
 
+/**
+ * \brief Returns the sum of all the elements in \ref buf.
+ *
+ * \param buffer Buffer to operate on.
+ */
 template <class T>
 T sum(const DspBuffer<T> & buffer) {
 	return buffer.sum();
@@ -741,6 +836,13 @@ DspBuffer<T> & DspBuffer<T>::diff() {
     return *this;
 }
 
+/**
+ * \brief Replaces \ref buf with the difference between successive samples in buf.
+ *
+ * The resulting \ref buf is one element shorter than it was previously.
+ * \param buffer Buffer to operate on.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & diff(DspBuffer<T> & buffer) {
     return buffer.diff();
@@ -758,6 +860,15 @@ DspBuffer<T> & DspBuffer<T>::diff(T & previousVal) {
     return *this;
 }
 
+/**
+ * \brief Replaces \ref buf with the difference between successive samples in buf.
+ *
+ * \param buffer Buffer to operate on.
+ * \param previousVal The last value in the sample stream before the current contents
+ *      of \ref buf.  previousVal allows the resulting buf to be the same size as the
+ *      previous buf.
+ * \return Reference to "buffer".
+ */
 template <class T>
 DspBuffer<T> & diff(DspBuffer<T> & buffer, T & previousVal) {
     return buffer.diff(previousVal);
@@ -840,6 +951,17 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<U> & filter, bool trimTails) {
     return *this;
 }
 
+/**
+ * \brief Convolution function.
+ *
+ * \param data Buffer to operate on.
+ * \param filter The filter that will convolve "this".
+ * \trimTails "False" tells the function to return the entire convolution, which is
+ *      the length of "this" plus the length of "filter" - 1.  "True" tells the
+ *      function to retain the size of "this" be trimming the tails at both ends of
+ *      the convolution.
+ * \return Reference to "buffer", which holds the result of the convolution.
+ */
 template <class T, class U>
 inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false) {
     return data.conv(filter, trimTails);
@@ -923,7 +1045,21 @@ DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trim
     }
     return *this;
 }
- 
+
+/**
+ * \brief Decimate function.
+ *
+ * This function is equivalent to filtering with the \ref conv function and downsampling
+ * with the \ref downsample function, but much more efficient.
+ *
+ * \param data Buffer to operate on.
+ * \param rate Indicates how much to downsample.
+ * \param filter The filter that will convolve "this".
+ * \trimTails "False" tells the function to return the entire convolution.  "True"
+ *      tells the function to retain the size of "this" be trimming the tails at both
+ *      ends of the convolution.
+ * \return Reference to "buffer", which holds the result of the decimation.
+ */
 template <class T, class U>
 inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false) {
     return data.decimate(rate, filter, trimTails);
@@ -1036,7 +1172,20 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
     }
     return *this;
 }
- 
+
+/**
+ * \brief Interpolation function.
+ *
+ * This function is equivalent to upsampling followed by filtering, but is much more efficient.
+ *
+ * \param data Buffer to operate on.
+ * \param rate Indicates how much to upsample.
+ * \param filter The filter that will convolve "this".
+ * \trimTails "False" tells the function to return the entire convolution.  "True"
+ *      tells the function to retain the size of "this" be trimming the tails at both
+ *      ends of the convolution.
+ * \return Reference to "buffer", which holds the result of the interpolation.
+ */
 template <class T, class U>
 inline DspBuffer<T> & interp(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false) {
     return data.interp(rate, filter, trimTails);
@@ -1168,7 +1317,22 @@ DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffe
     }
     return *this;
 }
- 
+
+/**
+ * \brief Resample function.
+ *
+ * This function is equivalent to upsampling by "interpRate", filtering, and downsampling
+ *      by "decimateRate", but is much more efficient.
+ *
+ * \param data Buffer to operate on.
+ * \param interpRate Indicates how much to upsample.
+ * \param decimateRate Indicates how much to downsample.
+ * \param filter The filter that will convolve "this".
+ * \trimTails "False" tells the function to return the entire convolution.  "True"
+ *      tells the function to retain the size of "this" be trimming the tails at both
+ *      ends of the convolution.
+ * \return Reference to "buffer", which holds the result of the resampling.
+ */
 template <class T, class U>
 inline DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate, DspBuffer<U> & filter, bool trimTails = false) {
     return data.resample(interpRate, decimateRate, filter, trimTails);
