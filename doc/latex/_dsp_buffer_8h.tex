@@ -1,0 +1,114 @@
+\hypertarget{_dsp_buffer_8h}{\section{src/\+Dsp\+Buffer.h File Reference}
+\label{_dsp_buffer_8h}\index{src/\+Dsp\+Buffer.\+h@{src/\+Dsp\+Buffer.\+h}}
+}
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include $<$algorithm$>$}\\*
+{\ttfamily \#include $<$cassert$>$}\\*
+{\ttfamily \#include $<$cstdlib$>$}\\*
+{\ttfamily \#include $<$cmath$>$}\\*
+{\ttfamily \#include \char`\"{}kiss\+\_\+fft.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}kiss\+\_\+fftr.\+h\char`\"{}}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_smart_dsp_1_1_dsp_buffer}{Smart\+Dsp\+::\+Dsp\+Buffer$<$ T $>$}
+\begin{DoxyCompactList}\small\item\em Base class for \hyperlink{namespace_smart_dsp}{Smart\+Dsp}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespace_smart_dsp}{Smart\+Dsp}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{_dsp_buffer_8h_a9ed4123d332590f7a6161bc2061eac49}{S\+M\+A\+R\+T\+D\+S\+P\+\_\+\+F\+L\+O\+A\+T\+\_\+\+T\+Y\+P\+E}~double
+\item 
+\#define \hyperlink{_dsp_buffer_8h_a4f759760ddf67e5e35182e6004aa691f}{V\+E\+C\+T\+O\+R\+\_\+\+T\+O\+\_\+\+A\+R\+R\+A\+Y}(x)~(\&((x)\mbox{[}0\mbox{]}))
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class T , class U $>$ }\\Dsp\+Buffer$<$ T $>$ \hyperlink{namespace_smart_dsp_a7c50b5ae78aaf368ca41b928ddee42e6}{Smart\+Dsp\+::operator+} (Dsp\+Buffer$<$ T $>$ lhs, const Dsp\+Buffer$<$ U $>$ \&rhs)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \hyperlink{namespace_smart_dsp_aea459e2c2f88a2cd329ba522ceefe300}{Smart\+Dsp\+::operator+} (Dsp\+Buffer$<$ T $>$ lhs, const T \&rhs)
+\item 
+{\footnotesize template$<$class T , class U $>$ }\\Dsp\+Buffer$<$ T $>$ \hyperlink{namespace_smart_dsp_a01d8bcdd434e6ca27f17e1ca6e8dc036}{Smart\+Dsp\+::operator-\/} (Dsp\+Buffer$<$ T $>$ lhs, const Dsp\+Buffer$<$ U $>$ \&rhs)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \hyperlink{namespace_smart_dsp_a9196814b51945ddda5c6e9508c769b90}{Smart\+Dsp\+::operator-\/} (Dsp\+Buffer$<$ T $>$ lhs, const T \&rhs)
+\item 
+{\footnotesize template$<$class T , class U $>$ }\\Dsp\+Buffer$<$ T $>$ \hyperlink{namespace_smart_dsp_a542a95710b90e65cfd4a4edf7be4e3ce}{Smart\+Dsp\+::operator$\ast$} (Dsp\+Buffer$<$ T $>$ lhs, const Dsp\+Buffer$<$ U $>$ \&rhs)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \hyperlink{namespace_smart_dsp_a6c7c544c9be4a9e8a598eb446441da48}{Smart\+Dsp\+::operator$\ast$} (Dsp\+Buffer$<$ T $>$ lhs, const T \&rhs)
+\item 
+{\footnotesize template$<$class T , class U $>$ }\\Dsp\+Buffer$<$ T $>$ \hyperlink{namespace_smart_dsp_a954ae7b28b781abf51439362f1bae1b3}{Smart\+Dsp\+::operator/} (Dsp\+Buffer$<$ T $>$ lhs, const Dsp\+Buffer$<$ U $>$ \&rhs)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \hyperlink{namespace_smart_dsp_a76ac2e5c93d53399c086dae052291c0d}{Smart\+Dsp\+::operator/} (Dsp\+Buffer$<$ T $>$ lhs, const T \&rhs)
+\item 
+{\footnotesize template$<$class T $>$ }\\bool \hyperlink{namespace_smart_dsp_a3636f3a26e39c895ad84dcdef6f5307e}{Smart\+Dsp\+::operator==} (const Dsp\+Buffer$<$ T $>$ \&lhs, const Dsp\+Buffer$<$ T $>$ \&rhs)
+\item 
+{\footnotesize template$<$class T $>$ }\\bool \hyperlink{namespace_smart_dsp_a8d6e4c7bb68c21a9d2c8a89e9072751e}{Smart\+Dsp\+::operator!=} (const Dsp\+Buffer$<$ T $>$ \&lhs, const Dsp\+Buffer$<$ T $>$ \&rhs)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a41025441b05f8b7e6fa800f4058eb218}{Smart\+Dsp\+::rotate} (Dsp\+Buffer$<$ T $>$ \&buffer, int num\+To\+Shift)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a898ec78f5aed80a817fc3ce4f6437135}{Smart\+Dsp\+::reverse} (Dsp\+Buffer$<$ T $>$ \&buffer)
+\item 
+{\footnotesize template$<$class T $>$ }\\const int \hyperlink{namespace_smart_dsp_a7e909f391d4acc196b5698f2fbe309d5}{Smart\+Dsp\+::find} (Dsp\+Buffer$<$ T $>$ \&buffer, const T val)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_ac41a08f05ef2cd4f8f353aca5dc77d16}{Smart\+Dsp\+::abs} (Dsp\+Buffer$<$ T $>$ \&buffer)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_ae66197346f7f03eb05186b384293c991}{Smart\+Dsp\+::exp} (Dsp\+Buffer$<$ T $>$ \&buffer)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a35a9524f1d2452ee879d22b675facdd1}{Smart\+Dsp\+::log} (Dsp\+Buffer$<$ T $>$ \&buffer)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_acd1ff2a10b5997cfd5316ca3a6598278}{Smart\+Dsp\+::ln} (Dsp\+Buffer$<$ T $>$ \&buffer)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_ae14d84395f82f996b0ede6e845108c77}{Smart\+Dsp\+::log10} (Dsp\+Buffer$<$ T $>$ \&buffer)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a124f7bbe35df282b7cce26acb8a47c0d}{Smart\+Dsp\+::resize} (Dsp\+Buffer$<$ T $>$ \&buffer, int val)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a9d99ec3d0a0650597dbde7a308b2b086}{Smart\+Dsp\+::pad} (Dsp\+Buffer$<$ T $>$ \&buffer, int val)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_afd38ef5b39c356f89210c6565e0c29ac}{Smart\+Dsp\+::upsample} (Dsp\+Buffer$<$ T $>$ \&buffer, int rate, int phase=0)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_ab15045f3bb3a178cf661a7a1cf7dbcd5}{Smart\+Dsp\+::downsample} (Dsp\+Buffer$<$ T $>$ \&buffer, int rate, int phase=0)
+\item 
+{\footnotesize template$<$class T $>$ }\\T \hyperlink{namespace_smart_dsp_a50f0e15e122979cea19eda960ea4ba3a}{Smart\+Dsp\+::sum} (const Dsp\+Buffer$<$ T $>$ \&buffer)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a989f5ca171737d8ba47652cbf823265d}{Smart\+Dsp\+::diff} (Dsp\+Buffer$<$ T $>$ \&buffer)
+\item 
+{\footnotesize template$<$class T $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a52d7392a2267c1cb526b77c714dc34f9}{Smart\+Dsp\+::diff} (Dsp\+Buffer$<$ T $>$ \&buffer, T \&previous\+Val)
+\item 
+{\footnotesize template$<$class T , class U $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_ad74d7b5bcad55ce7ed61774be7ba7709}{Smart\+Dsp\+::conv} (Dsp\+Buffer$<$ T $>$ \&data, Dsp\+Buffer$<$ U $>$ \&filter, bool trim\+Tails=false)
+\item 
+{\footnotesize template$<$class T , class U $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a3737beac2fd084febc0156cb6a9f4102}{Smart\+Dsp\+::decimate} (Dsp\+Buffer$<$ T $>$ \&data, int rate, Dsp\+Buffer$<$ U $>$ \&filter, bool trim\+Tails=false)
+\item 
+{\footnotesize template$<$class T , class U $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_a9e1c15274538497995e031625288a0ee}{Smart\+Dsp\+::interp} (Dsp\+Buffer$<$ T $>$ \&data, int rate, Dsp\+Buffer$<$ U $>$ \&filter, bool trim\+Tails=false)
+\item 
+{\footnotesize template$<$class T , class U $>$ }\\Dsp\+Buffer$<$ T $>$ \& \hyperlink{namespace_smart_dsp_abcbe35e45c92d00de80c43f0fb5458ef}{Smart\+Dsp\+::resample} (Dsp\+Buffer$<$ T $>$ \&data, int interp\+Rate, int decimate\+Rate, Dsp\+Buffer$<$ U $>$ \&filter, bool trim\+Tails=false)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const unsigned \hyperlink{namespace_smart_dsp_a7ec61bdaec9ae7f99e421e14e074e8d5}{Smart\+Dsp\+::\+D\+E\+F\+A\+U\+L\+T\+\_\+\+B\+U\+F\+\_\+\+L\+E\+N} = 0
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{_dsp_buffer_8h_a9ed4123d332590f7a6161bc2061eac49}{\index{Dsp\+Buffer.\+h@{Dsp\+Buffer.\+h}!S\+M\+A\+R\+T\+D\+S\+P\+\_\+\+F\+L\+O\+A\+T\+\_\+\+T\+Y\+P\+E@{S\+M\+A\+R\+T\+D\+S\+P\+\_\+\+F\+L\+O\+A\+T\+\_\+\+T\+Y\+P\+E}}
+\index{S\+M\+A\+R\+T\+D\+S\+P\+\_\+\+F\+L\+O\+A\+T\+\_\+\+T\+Y\+P\+E@{S\+M\+A\+R\+T\+D\+S\+P\+\_\+\+F\+L\+O\+A\+T\+\_\+\+T\+Y\+P\+E}!Dsp\+Buffer.\+h@{Dsp\+Buffer.\+h}}
+\subsubsection[{S\+M\+A\+R\+T\+D\+S\+P\+\_\+\+F\+L\+O\+A\+T\+\_\+\+T\+Y\+P\+E}]{\setlength{\rightskip}{0pt plus 5cm}\#define S\+M\+A\+R\+T\+D\+S\+P\+\_\+\+F\+L\+O\+A\+T\+\_\+\+T\+Y\+P\+E~double}}\label{_dsp_buffer_8h_a9ed4123d332590f7a6161bc2061eac49}
+
+
+Definition at line 19 of file Dsp\+Buffer.\+h.
+
+\hypertarget{_dsp_buffer_8h_a4f759760ddf67e5e35182e6004aa691f}{\index{Dsp\+Buffer.\+h@{Dsp\+Buffer.\+h}!V\+E\+C\+T\+O\+R\+\_\+\+T\+O\+\_\+\+A\+R\+R\+A\+Y@{V\+E\+C\+T\+O\+R\+\_\+\+T\+O\+\_\+\+A\+R\+R\+A\+Y}}
+\index{V\+E\+C\+T\+O\+R\+\_\+\+T\+O\+\_\+\+A\+R\+R\+A\+Y@{V\+E\+C\+T\+O\+R\+\_\+\+T\+O\+\_\+\+A\+R\+R\+A\+Y}!Dsp\+Buffer.\+h@{Dsp\+Buffer.\+h}}
+\subsubsection[{V\+E\+C\+T\+O\+R\+\_\+\+T\+O\+\_\+\+A\+R\+R\+A\+Y}]{\setlength{\rightskip}{0pt plus 5cm}\#define V\+E\+C\+T\+O\+R\+\_\+\+T\+O\+\_\+\+A\+R\+R\+A\+Y(
+\begin{DoxyParamCaption}
+\item[{}]{x}
+\end{DoxyParamCaption}
+)~(\&((x)\mbox{[}0\mbox{]}))}}\label{_dsp_buffer_8h_a4f759760ddf67e5e35182e6004aa691f}
+
+
+Definition at line 22 of file Dsp\+Buffer.\+h.
+

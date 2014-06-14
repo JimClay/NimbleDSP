@@ -21,79 +21,363 @@ const unsigned DEFAULT_BUF_LEN = 0;
 
 #define VECTOR_TO_ARRAY(x)      (&((x)[0]))
 
-    
+
+/**
+ * \brief Base class for SmartDsp.
+ *
+ * Although you can instantiate objects of this type, that's not what this class is intended for.  It is the
+ * base class that all of the other classes descend from which allows for a great deal of flexibility
+ * through polymorphism.  It also reduces the amount of code because we don't have to replicate the same
+ * functionality in each class.
+ *
+ * Derived classes: RealDspBuffer and ComplexDspBuffer.
+ */
 template <class T>
 class DspBuffer {
 
 protected:
+    /** 
+     * \brief Buffer to store intermediate calculations when needed.
+     */
     std::vector<T> *scratchBuf;
     
+    /** 
+     * \brief Initializes buf to a given size and fills it with zeros.
+     */
     void initSize(unsigned size) {buf = std::vector<T>(size);}
+    
+    /** 
+     * \brief Initializes buf with the size and contents of "array".
+     *
+     * \param array Array to set buf equal to.
+     * \param arrayLen Number of elements in array.
+     */
     template <class U>
     void initArray(U *array, unsigned arrayLen);
     
 public:
-    // Members
+    /*************************************************************************************//**
+     * \brief Vector that holds the object's data.
+     *
+     * The class is built around this member.  Std::vector's were used because they handle the 
+     * dynamic memory, have a rich set of support functions, are fast and efficient, and can
+     * be accessed like a normal array when that is convenient.
+     *****************************************************************************************/
 	std::vector<T> buf;
     
-    // Constructors
-    //DspBuffer<T>(std::vector<T> *scratch = NULL) {initSize(DEFAULT_BUF_LEN); scratchBuf = scratch;}
+    /*****************************************************************************************
+                                        Constructors
+    *****************************************************************************************/
+    /**
+     * \brief Basic constructor.
+     *
+     * Just sets the size of \ref buf and the pointer to the scratch buffer, if one is provided.
+     * \param size Size of \ref buf.
+     * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
+     *      objects (in fact, I recommend it), but if there are multiple threads then it should
+     *      be shared only by objects that are accessed by a single thread.  Objects in other
+     *      threads should have a separate scratch buffer.  If no scratch buffer is provided
+     *      then one will be created in methods that require one and destroyed when the method
+     *      returns.
+     */
     DspBuffer<T>(unsigned size = 0, std::vector<T> *scratch = NULL) {initSize(size); scratchBuf = scratch;}
+    
+    /**
+     * \brief Vector constructor.
+     *
+     * Sets buf equal to the input "data" parameter and sets the pointer to the scratch buffer,
+     *      if one is provided.
+     * \param data Vector that \ref buf will be set equal to.
+     * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
+     *      objects (in fact, I recommend it), but if there are multiple threads then it should
+     *      be shared only by objects that are accessed by a single thread.  Objects in other
+     *      threads should have a separate scratch buffer.  If no scratch buffer is provided
+     *      then one will be created in methods that require one and destroyed when the method
+     *      returns.
+     */
     template <typename U>
     DspBuffer<T>(std::vector<U> data, std::vector<T> *scratch = NULL) {initArray(VECTOR_TO_ARRAY(data), data.size()); scratchBuf = scratch;}
+    
+    /**
+     * \brief Array constructor.
+     *
+     * Sets buf equal to the input "data" array and sets the pointer to the scratch buffer,
+     *      if one is provided.
+     * \param data Array that \ref buf will be set equal to.
+     * \param dataLen Length of "data".
+     * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
+     *      objects (in fact, I recommend it), but if there are multiple threads then it should
+     *      be shared only by objects that are accessed by a single thread.  Objects in other
+     *      threads should have a separate scratch buffer.  If no scratch buffer is provided
+     *      then one will be created in methods that require one and destroyed when the method
+     *      returns.
+     */
     template <typename U>
     DspBuffer<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) {initArray(data, dataLen); scratchBuf = scratch;}
     
+    /**
+     * \brief Copy constructor.
+     */
     DspBuffer<T>(const DspBuffer<T>& other) {buf = other.buf; scratchBuf = other.scratchBuf;}
+    
+    /*****************************************************************************************
+                                            Operators
+    *****************************************************************************************/
+    /**
+     * \brief Assignment operator.
+     */
     DspBuffer<T>& operator=(const DspBuffer<T>& rhs);
     
-    // Operators
+    /**
+     * \brief Unary minus (negation) operator.
+     */
     DspBuffer<T> & operator-();
     
+    /**
+     * \brief Add Buffer/Assignment operator.
+     */
     template <class U>
     DspBuffer<T> & operator+=(const DspBuffer<U> &rhs);
+    
+    /**
+     * \brief Add Scalar/Assignment operator.
+     */
     DspBuffer<T> & operator+=(const T &rhs);
+    
+    /**
+     * \brief Subtract Buffer/Assignment operator.
+     */
     template <class U>
     DspBuffer<T> & operator-=(const DspBuffer<U> &rhs);
+    
+    /**
+     * \brief Subtract Scalar/Assignment operator.
+     */
     DspBuffer<T> & operator-=(const T &rhs);
     
+    /**
+     * \brief Multiply Buffer/Assignment operator.
+     */
     template <class U>
     DspBuffer<T> & operator*=(const DspBuffer<U> &rhs);
+    
+    /**
+     * \brief Multiply Scalar/Assignment operator.
+     */
     DspBuffer<T> & operator*=(const T &rhs);
+    
+    /**
+     * \brief Divide Buffer/Assignment operator.
+     */
     template <class U>
     DspBuffer<T> & operator/=(const DspBuffer<U> &rhs);
+    
+    /**
+     * \brief Divide Scalar/Assignment operator.
+     */
     DspBuffer<T> & operator/=(const T &rhs);
     
+    /**
+     * \brief Index assignment operator.
+     */
     T& operator[](unsigned index) {return buf[index];};
+    
+    /**
+     * \brief Index operator.
+     */
     const T& operator[](unsigned index) const {return buf[index];};
     
-    // Methods
+    /*****************************************************************************************
+                                            Methods
+    *****************************************************************************************/
+    /**
+     * \brief Returns the size of \ref buf.
+     */
     const unsigned size() const {return buf.size();};
     
+    /**
+     * \brief Circular rotation.
+     *
+     * \param numToShift Number of positions to shift in the circular rotation.  numToShift
+     *      can be positive or negative.  If you visualize the 0 index value at the left and
+     *      the end of the array at the right, positive numToShift values shift the array to
+     *      the left, and negative values shift it to the right.
+     * \return Reference to "this".
+     */
     DspBuffer<T> & rotate(int numToShift);
+    
+    /**
+     * \brief Reverses the order of the elements in \ref buf.
+     *
+     * \return Reference to "this".
+     */
     DspBuffer<T> & reverse();
     
+    /**
+     * \brief Finds the first instance of "val" in \ref buf.
+     *
+     * \param val The value to look for in \ref buf.
+     * \return Index of first instance of "val".  If there aren't any elements equal to "val"
+     *      it returns -1.
+     */
     const int find(const T val) const;
+    
+    /**
+     * \brief Changes the elements of \ref buf to their absolute value.
+     *
+     * \return Reference to "this".
+     */
     DspBuffer<T> & abs();
+    
+    /**
+     * \brief Sets each element of \ref buf to e^(element).
+     *
+     * \return Reference to "this".
+     */
     DspBuffer<T> & exp();
+    
+    /**
+     * \brief Sets each element of \ref buf to the natural log of the element.
+     *
+     * \return Reference to "this".
+     */
     DspBuffer<T> & log();
+    
+    /**
+     * \brief Sets each element of \ref buf to the natural log of the element.
+     *
+     * \return Reference to "this".
+     */
     DspBuffer<T> & ln() {return log();}
+    
+    /**
+     * \brief Sets each element of \ref buf to the base 10 log of the element.
+     *
+     * \return Reference to "this".
+     */
     DspBuffer<T> & log10();
     
+    /**
+     * \brief Sets the length of \ref buf to "len".
+     *
+     * \param len The new length for \ref buf.  If len is longer than buf's current size, the
+     *      new elements will be set to "val".  If len is less than buf's current size the extra
+     *      elements will be cut off and the other elements will remain the same.
+     * \param val The value to set any new elements to.  Defaults to 0.
+     * \return Reference to "this".
+     */
     DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val); return *this;}
+    
+    /**
+     * \brief Lengthens \ref buf by "len" elements.
+     *
+     * \param len The number of elements to add to \ref buf.
+     * \param val The value to set the new elements to.  Defaults to 0.
+     * \return Reference to "this".
+     */
     DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val); return *this;}
+    
+    /**
+     * \brief Inserts rate-1 zeros between samples.
+     *
+     * \param rate Indicates how many zeros should be inserted between samples.
+     * \param phase Indicates how many of the zeros should be before the samples (as opposed to
+     *      after).  Valid values are 0 to "rate"-1.  Defaults to 0.
+     * \return Reference to "this".
+     */
     DspBuffer<T> & upsample(int rate, int phase = 0);
+    
+    /**
+     * \brief Removes rate-1 samples out of every rate samples.
+     *
+     * \param rate Indicates how many samples should be removed.
+     * \param phase Tells the method which sample should be the first to be kept.  Valid values
+     *      are 0 to "rate"-1.  Defaults to 0.
+     * \return Reference to "this".
+     */
     DspBuffer<T> & downsample(int rate, int phase = 0);
+    
+    /**
+     * \brief Returns the sum of all the elements in \ref buf.
+     */
 	T sum() const;
+    
+    /**
+     * \brief Replaces \ref buf with the difference between successive samples in buf.
+     *
+     * The resulting \ref buf is one element shorter than it was previously.
+     * \return Reference to "this".
+     */
 	DspBuffer<T> & diff();
+    
+    /**
+     * \brief Replaces \ref buf with the difference between successive samples in buf.
+     *
+     * \param previousVal The last value in the sample stream before the current contents
+     *      of \ref buf.  previousVal allows the resulting buf to be the same size as the
+     *      previous buf.
+     * \return Reference to "this".
+     */
     DspBuffer<T> & diff(T & previousVal);
     
+    /**
+     * \brief Convolution method.
+     *
+     * \param filter The filter that will convolve "this".
+     * \trimTails "False" tells the method to return the entire convolution, which is
+     *      the length of "this" plus the length of "filter" - 1.  "True" tells the
+     *      method to retain the size of "this" be trimming the tails at both ends of
+     *      the convolution.
+     * \return Reference to "this", which holds the result of the convolution.
+     */
     template <class U>
     DspBuffer<T> & conv(DspBuffer<U> & filter, bool trimTails = false);
+    
+    /**
+     * \brief Decimate method.
+     *
+     * This method is equivalent to filtering with the \ref conv method and downsampling
+     * with the \ref downsample method, but much more efficient.
+     *
+     * \param rate Indicates how much to downsample.
+     * \param filter The filter that will convolve "this".
+     * \trimTails "False" tells the method to return the entire convolution.  "True"
+     *      tells the method to retain the size of "this" be trimming the tails at both
+     *      ends of the convolution.
+     * \return Reference to "this", which holds the result of the decimation.
+     */
     template <class U>
     DspBuffer<T> & decimate(int rate, DspBuffer<U> & filter, bool trimTails = false);
+    
+    /**
+     * \brief Interpolation method.
+     *
+     * This method is equivalent to upsampling followed by filtering, but is much more efficient.
+     *
+     * \param rate Indicates how much to upsample.
+     * \param filter The filter that will convolve "this".
+     * \trimTails "False" tells the method to return the entire convolution.  "True"
+     *      tells the method to retain the size of "this" be trimming the tails at both
+     *      ends of the convolution.
+     * \return Reference to "this", which holds the result of the interpolation.
+     */
     template <class U>
     DspBuffer<T> & interp(int rate, DspBuffer<U> & filter, bool trimTails = false);
+    
+    /**
+     * \brief Resample method.
+     *
+     * This method is equivalent to upsampling by "interpRate", filtering, and downsampling
+     *      by "decimateRate", but is much more efficient.
+     *
+     * \param interpRate Indicates how much to upsample.
+     * \param decimateRate Indicates how much to downsample.
+     * \param filter The filter that will convolve "this".
+     * \trimTails "False" tells the method to return the entire convolution.  "True"
+     *      tells the method to retain the size of "this" be trimming the tails at both
+     *      ends of the convolution.
+     * \return Reference to "this", which holds the result of the resampling.
+     */
     template <class U>
     DspBuffer<T> & resample(int interpRate, int decimateRate, DspBuffer<U> & filter, bool trimTails = false);
 };
