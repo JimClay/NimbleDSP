@@ -1,3 +1,10 @@
+
+/**
+ * @file DspBuffer.h
+ *
+ * Definition of the template class DspBuffer.
+ */
+
 #ifndef SMART_DSP_DSPBUFFER
 #define SMART_DSP_DSPBUFFER
 
