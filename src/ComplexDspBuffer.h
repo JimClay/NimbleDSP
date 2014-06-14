@@ -19,7 +19,13 @@ namespace SmartDsp {
 
 enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 
-
+/**
+ * \brief DspBuffer class for complex numbers.
+ *
+ * The template type should be the "plain old data" type that you want to use, not "std::complex"
+ * or your own custom complex class.  The object will automatically convert the buffer type to
+ * std::complex<POD_type> for you.
+ */
 template <class T>
 class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
  public:
@@ -174,7 +180,7 @@ inline T magSq(const std::complex<T> &val) {
 template <class T>
 ComplexDspBuffer<T> & ComplexDspBuffer<T>::magSq() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].real(SmartDsp::magSq(buf[i]));
+        this->buf[i].real(SmartDsp::magSq(this->buf[i]));
         this->buf[i].imag(0);
     }
     return *this;
@@ -206,7 +212,13 @@ inline ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
 template <class T>
 ComplexDspBuffer<T> & ComplexDspBuffer<T>::angle() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].real(std::arg(buf[i]));
+        this->buf[i].real(std::arg(this->
+        
+        
+        
+        
+        
+        buf[i]));
         this->buf[i].imag(0);
     }
     return *this;
