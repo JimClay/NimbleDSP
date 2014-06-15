@@ -721,7 +721,7 @@ TEST(RealFixedPtDspBufferStatistics, Mean) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(4.5, meanF(buf)));
+    EXPECT_EQ(true, FloatsEqual(4.5, mean(buf)));
 }
 
 TEST(RealFixedPtDspBufferStatistics, Var) {
@@ -729,7 +729,7 @@ TEST(RealFixedPtDspBufferStatistics, Var) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(60000.0, varF(buf)));
+    EXPECT_EQ(true, FloatsEqual(60000.0, var(buf)));
 }
 
 TEST(RealFixedPtDspBufferStatistics, StdDev) {
@@ -737,7 +737,7 @@ TEST(RealFixedPtDspBufferStatistics, StdDev) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(244.9489742783178, stdDevF(buf)));
+    EXPECT_EQ(true, FloatsEqual(244.9489742783178, stdDev(buf)));
 }
 
 TEST(RealFixedPtDspBufferStatistics, Median) {

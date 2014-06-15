@@ -16,49 +16,182 @@
 namespace SlickDsp {
 
 
+/**
+ * \brief DspBuffer class for real, fixed point (i.e. short's, int's, etc.) numbers.
+ */
 template <class T>
 class RealFixedPtDspBuffer : public RealDspBuffer<T> {
  public:
-    // Constructors
-    RealFixedPtDspBuffer<T>(void) : RealDspBuffer<T>() {}
-    RealFixedPtDspBuffer<T>(unsigned size) : RealDspBuffer<T>(size) {}
+    /*****************************************************************************************
+                                        Constructors
+    *****************************************************************************************/
+    /**
+     * \brief Basic constructor.
+     *
+     * Just sets the size of \ref buf and the pointer to the scratch buffer, if one is provided.
+     * \param size Size of \ref buf.
+     * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
+     *      objects (in fact, I recommend it), but if there are multiple threads then it should
+     *      be shared only by objects that are accessed by a single thread.  Objects in other
+     *      threads should have a separate scratch buffer.  If no scratch buffer is provided
+     *      then one will be created in methods that require one and destroyed when the method
+     *      returns.
+     */
+    RealFixedPtDspBuffer<T>(unsigned size = DEFAULT_BUF_LEN, std::vector<T> *scratch = NULL) :
+            RealDspBuffer<T>(size, scratch) {}
+            
+    /**
+     * \brief Vector constructor.
+     *
+     * Sets buf equal to the input "data" parameter and sets the pointer to the scratch buffer,
+     *      if one is provided.
+     * \param data Vector that \ref buf will be set equal to.
+     * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
+     *      objects (in fact, I recommend it), but if there are multiple threads then it should
+     *      be shared only by objects that are accessed by a single thread.  Objects in other
+     *      threads should have a separate scratch buffer.  If no scratch buffer is provided
+     *      then one will be created in methods that require one and destroyed when the method
+     *      returns.
+     */
     template <typename U>
-    RealFixedPtDspBuffer<T>(std::vector<U> data) : RealDspBuffer<T>(data) {}
-    template <typename U>
-    RealFixedPtDspBuffer<T>(U *data, unsigned dataLen) : RealDspBuffer<T>(data, dataLen) {}
+    RealFixedPtDspBuffer<T>(std::vector<U> data, std::vector<T> *scratch = NULL) : RealDspBuffer<T>(data, scratch) {}
     
+    /**
+     * \brief Array constructor.
+     *
+     * Sets buf equal to the input "data" array and sets the pointer to the scratch buffer,
+     *      if one is provided.
+     * \param data Array that \ref buf will be set equal to.
+     * \param dataLen Length of "data".
+     * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
+     *      objects (in fact, I recommend it), but if there are multiple threads then it should
+     *      be shared only by objects that are accessed by a single thread.  Objects in other
+     *      threads should have a separate scratch buffer.  If no scratch buffer is provided
+     *      then one will be created in methods that require one and destroyed when the method
+     *      returns.
+     */
+    template <typename U>
+    RealFixedPtDspBuffer<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) :
+            RealDspBuffer<T>(data, dataLen, scratch) {}
+    
+    /**
+     * \brief Copy constructor.
+     */
     RealFixedPtDspBuffer<T>(const RealFixedPtDspBuffer<T>& other) {this->buf = other.buf;}
+    
+    /*****************************************************************************************
+                                            Operators
+    *****************************************************************************************/
+    /**
+     * \brief Assignment operator.
+     */
     RealFixedPtDspBuffer<T>& operator=(const DspBuffer<T>& rhs);
     
-    // Operators
+    /**
+     * \brief Pre-increment operator.
+     */
     RealFixedPtDspBuffer<T> & operator++();
+    
+    /**
+     * \brief Post-increment operator.
+     */
     RealFixedPtDspBuffer<T> operator++(int);
+    
+    /**
+     * \brief Pre-decrement operator.
+     */
     RealFixedPtDspBuffer<T> & operator--();
+    
+    /**
+     * \brief Post-decrement operator.
+     */
     RealFixedPtDspBuffer<T> operator--(int);
     
+    /**
+     * \brief Buffer modulo/assignment operator.
+     */
     template <class U>
     RealFixedPtDspBuffer<T> & operator%=(const RealFixedPtDspBuffer<U> &rhs);
+    
+    /**
+     * \brief Scalar modulo/assignment operator.
+     */
     RealFixedPtDspBuffer<T> & operator%=(const T &rhs);
     
+    /**
+     * \brief Bit-wise negation operator.
+     */
     RealFixedPtDspBuffer<T> & operator~();
+    
+    /**
+     * \brief Buffer bit-wise and/assignment operator.
+     */
     template <class U>
     RealFixedPtDspBuffer<T> & operator&=(const RealFixedPtDspBuffer<U> &rhs);
+    
+    /**
+     * \brief Scalar bit-wise and/assignment operator.
+     */
     RealFixedPtDspBuffer<T> & operator&=(const T &rhs);
+    
+    /**
+     * \brief Buffer bit-wise or/assignment operator.
+     */
     template <class U>
     RealFixedPtDspBuffer<T> & operator|=(const RealFixedPtDspBuffer<U> &rhs);
+    
+    /**
+     * \brief Scalar bit-wise or/assignment operator.
+     */
     RealFixedPtDspBuffer<T> & operator|=(const T &rhs);
+    
+    /**
+     * \brief Buffer bit-wise xor/assignment operator.
+     */
     template <class U>
     RealFixedPtDspBuffer<T> & operator^=(const RealFixedPtDspBuffer<U> &rhs);
+    
+    /**
+     * \brief Scalar bit-wise xor/assignment operator.
+     */
     RealFixedPtDspBuffer<T> & operator^=(const T &rhs);
+    
+    /**
+     * \brief Buffer right shift/assignment operator.
+     */
     template <class U>
     RealFixedPtDspBuffer<T> & operator>>=(const RealFixedPtDspBuffer<U> &rhs);
+    
+    /**
+     * \brief Scalar right shift/assignment operator.
+     */
     RealFixedPtDspBuffer<T> & operator>>=(const T &rhs);
+    
+    /**
+     * \brief Buffer left shift/assignment operator.
+     */
     template <class U>
     RealFixedPtDspBuffer<T> & operator<<=(const RealFixedPtDspBuffer<U> &rhs);
+    
+    /**
+     * \brief Scalar left shift/assignment operator.
+     */
     RealFixedPtDspBuffer<T> & operator<<=(const T &rhs);
     
-    // Methods
+    /*****************************************************************************************
+                                             Methods
+    *****************************************************************************************/
+    /**
+     * \brief Sets each element of \ref buf equal to its value to the power of "exponent".
+     *
+     * \param exponent Exponent to use.
+     * \return Reference to "this".
+     */
     RealDspBuffer<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
+    
+    /**
+     * \brief Returns the mode of the data in \ref buf.
+     */
     const T mode();
 };
 
@@ -124,6 +257,9 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator%=(const T &rhs)
     return *this;
 }
 
+/**
+ * \brief Buffer modulo operator.
+ */
 template <class T, class U>
 inline RealFixedPtDspBuffer<T> operator%(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
 {
@@ -131,6 +267,9 @@ inline RealFixedPtDspBuffer<T> operator%(RealFixedPtDspBuffer<T> lhs, const Real
     return lhs;
 }
 
+/**
+ * \brief Scalar modulo operator.
+ */
 template <class T>
 inline RealFixedPtDspBuffer<T> operator%(RealFixedPtDspBuffer<T> lhs, const T& rhs)
 {
@@ -167,6 +306,9 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator&=(const T &rhs)
     return *this;
 }
 
+/**
+ * \brief Buffer bit-wise and operator.
+ */
 template <class T, class U>
 inline RealFixedPtDspBuffer<T> operator&(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
 {
@@ -174,6 +316,9 @@ inline RealFixedPtDspBuffer<T> operator&(RealFixedPtDspBuffer<T> lhs, const Real
     return lhs;
 }
 
+/**
+ * \brief Scalar bit-wise and operator.
+ */
 template <class T>
 inline RealFixedPtDspBuffer<T> operator&(RealFixedPtDspBuffer<T> lhs, const T& rhs)
 {
@@ -201,6 +346,9 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator|=(const T &rhs)
     return *this;
 }
 
+/**
+ * \brief Buffer bit-wise or operator.
+ */
 template <class T, class U>
 inline RealFixedPtDspBuffer<T> operator|(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
 {
@@ -208,6 +356,9 @@ inline RealFixedPtDspBuffer<T> operator|(RealFixedPtDspBuffer<T> lhs, const Real
     return lhs;
 }
 
+/**
+ * \brief Scalar bit-wise or operator.
+ */
 template <class T>
 inline RealFixedPtDspBuffer<T> operator|(RealFixedPtDspBuffer<T> lhs, const T& rhs)
 {
@@ -235,6 +386,9 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator^=(const T &rhs)
     return *this;
 }
 
+/**
+ * \brief Buffer bit-wise xor operator.
+ */
 template <class T, class U>
 inline RealFixedPtDspBuffer<T> operator^(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
 {
@@ -242,6 +396,9 @@ inline RealFixedPtDspBuffer<T> operator^(RealFixedPtDspBuffer<T> lhs, const Real
     return lhs;
 }
 
+/**
+ * \brief Scalar bit-wise xor operator.
+ */
 template <class T>
 inline RealFixedPtDspBuffer<T> operator^(RealFixedPtDspBuffer<T> lhs, const T& rhs)
 {
@@ -269,6 +426,9 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator>>=(const T &rhs)
     return *this;
 }
 
+/**
+ * \brief Buffer right shift operator.
+ */
 template <class T, class U>
 inline RealFixedPtDspBuffer<T> operator>>(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
 {
@@ -276,6 +436,9 @@ inline RealFixedPtDspBuffer<T> operator>>(RealFixedPtDspBuffer<T> lhs, const Rea
     return lhs;
 }
 
+/**
+ * \brief Scalar right shift operator.
+ */
 template <class T>
 inline RealFixedPtDspBuffer<T> operator>>(RealFixedPtDspBuffer<T> lhs, const T& rhs)
 {
@@ -303,6 +466,9 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator<<=(const T &rhs)
     return *this;
 }
 
+/**
+ * \brief Buffer left shift operator.
+ */
 template <class T, class U>
 inline RealFixedPtDspBuffer<T> operator<<(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
 {
@@ -310,6 +476,9 @@ inline RealFixedPtDspBuffer<T> operator<<(RealFixedPtDspBuffer<T> lhs, const Rea
     return lhs;
 }
 
+/**
+ * \brief Scalar left shift operator.
+ */
 template <class T>
 inline RealFixedPtDspBuffer<T> operator<<(RealFixedPtDspBuffer<T> lhs, const T& rhs)
 {
@@ -365,29 +534,12 @@ const T RealFixedPtDspBuffer<T>::mode() {
     return modeVal;
 }
 
+/**
+ * \brief Returns the mode of the data in \ref buf.
+ */
 template <class T>
 const T mode(RealFixedPtDspBuffer<T> & buffer) {
     return buffer.mode();
-}
-
-template <class T>
-const SLICKDSP_FLOAT_TYPE meanF(RealFixedPtDspBuffer<T> & buffer) {
-    return buffer.mean();
-}
-
-template <class T>
-const SLICKDSP_FLOAT_TYPE varF(RealFixedPtDspBuffer<T> & buffer) {
-    return buffer.var();
-}
-
-template <class T>
-const SLICKDSP_FLOAT_TYPE stdF(RealFixedPtDspBuffer<T> & buffer) {
-    return buffer.stdDev();
-}
-
-template <class T>
-const SLICKDSP_FLOAT_TYPE stdDevF(RealFixedPtDspBuffer<T> & buffer) {
-    return buffer.stdDev();
 }
 
 };
