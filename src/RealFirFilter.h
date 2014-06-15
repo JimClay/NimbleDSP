@@ -1,19 +1,19 @@
 //
 //  RealFirFilter.h
-//  SmartDsp
+//  SlickDsp
 //
 //  Created by Jim Clay on 6/1/14.
 //
 //
 
-#ifndef SmartDsp_RealFirFilter_h
-#define SmartDsp_RealFirFilter_h
+#ifndef SlickDsp_RealFirFilter_h
+#define SlickDsp_RealFirFilter_h
 
 #include <math.h>
 #include "RealDspBuffer.h"
 
 
-namespace SmartDsp {
+namespace SlickDsp {
 
 
 template <class T>

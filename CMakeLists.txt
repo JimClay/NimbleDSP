@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project (SmartDsp)
+project (SlickDsp)
 
 file (GLOB SOURCE_HEADERS "src/*.h")
 
@@ -13,5 +13,5 @@ INCLUDE_DIRECTORIES(src ${KISSFFT_DIR} ${KISSFFT_DIR}/tools ${GOOGLETEST_DIR}/in
 add_subdirectory (${GOOGLETEST_DIR} gtest)
 
 AUX_SOURCE_DIRECTORY(test TEST_SOURCES)
-add_executable (SmartDspTests ${SOURCE_HEADERS} ${TEST_SOURCES})
-target_link_libraries (SmartDspTests kissfft gtest)
+add_executable (SlickDspTests ${SOURCE_HEADERS} ${TEST_SOURCES})
+target_link_libraries (SlickDspTests kissfft gtest)

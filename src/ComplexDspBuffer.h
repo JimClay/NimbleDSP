@@ -1,6 +1,6 @@
 //
 //  ComplexDspBuffer.h
-//  SmartDsp
+//  SlickDsp
 //
 //  Created by Jim Clay on 6/1/14.
 //
@@ -12,8 +12,8 @@
  * Definition of the template class ComplexDspBuffer.
  */
 
-#ifndef SmartDsp_ComplexDspBuffer_h
-#define SmartDsp_ComplexDspBuffer_h
+#ifndef SlickDsp_ComplexDspBuffer_h
+#define SlickDsp_ComplexDspBuffer_h
 
 #include <complex>
 #include "DspBuffer.h"
@@ -21,7 +21,7 @@
 
 
 
-namespace SmartDsp {
+namespace SlickDsp {
 
 enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 
@@ -46,7 +46,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     /**
      * \brief Basic constructor.
      *
-     * Sets \ref domain to SmartDsp::TIME_DOMAIN and calls DspBuffer<T>::DspBuffer(size, scratch).
+     * Sets \ref domain to SlickDsp::TIME_DOMAIN and calls DspBuffer<T>::DspBuffer(size, scratch).
      * \param size Size of \ref buf.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
@@ -71,7 +71,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      * \param dataDomain Indicates whether the data is time domain data or frequency domain.
-     *      Valid values are SmartDsp::TIME_DOMAIN and SmartDsp::FREQUENCY_DOMAIN.
+     *      Valid values are SlickDsp::TIME_DOMAIN and SlickDsp::FREQUENCY_DOMAIN.
      */
     template <typename U>
     ComplexDspBuffer<T>(std::vector<U> data, DomainType dataDomain=TIME_DOMAIN) : DspBuffer< std::complex<T> >(data) {domain = dataDomain;}
@@ -90,7 +90,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      * \param dataDomain Indicates whether the data is time domain data or frequency domain.
-     *      Valid values are SmartDsp::TIME_DOMAIN and SmartDsp::FREQUENCY_DOMAIN.
+     *      Valid values are SlickDsp::TIME_DOMAIN and SlickDsp::FREQUENCY_DOMAIN.
      */
     template <typename U>
     ComplexDspBuffer<T>(U *data, unsigned dataLen, DomainType dataDomain=TIME_DOMAIN) : DspBuffer< std::complex<T> >(data, dataLen) {domain = dataDomain;}
@@ -182,22 +182,22 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      * \param exponent Exponent to use.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & pow(const std::complex<SMARTDSP_FLOAT_TYPE> & exponent);
+    ComplexDspBuffer<T> & pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent);
     
     /**
      * \brief Returns the mean (average) of the data in \ref buf.
      */
-    const std::complex<SMARTDSP_FLOAT_TYPE> mean() const;
+    const std::complex<SLICKDSP_FLOAT_TYPE> mean() const;
     
     /**
      * \brief Returns the variance of the data in \ref buf.
      */
-    const SMARTDSP_FLOAT_TYPE var() const;
+    const SLICKDSP_FLOAT_TYPE var() const;
     
     /**
      * \brief Returns the standard deviation of the data in \ref buf.
      */
-    const SMARTDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
+    const SLICKDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
     
     /**
      * \brief Sets the upper and lower limit of the values in \ref buf.
@@ -233,7 +233,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     /**
      * \brief Sets \ref buf equal to the FFT of the data in \ref buf.
      *
-     * Sets \ref domain equal to SmartDsp::FREQUENCY_DOMAIN.
+     * Sets \ref domain equal to SlickDsp::FREQUENCY_DOMAIN.
      * \return Reference to "this".
      */
     ComplexDspBuffer<T> & fft();
@@ -241,7 +241,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     /**
      * \brief Sets \ref buf equal to the inverse FFT of the data in \ref buf.
      *
-     * Sets \ref domain equal to SmartDsp::TIME_DOMAIN.
+     * Sets \ref domain equal to SlickDsp::TIME_DOMAIN.
      * \return Reference to "this".
      */
     ComplexDspBuffer<T> & ifft();
@@ -437,7 +437,7 @@ inline ComplexDspBuffer<T> operator/(ComplexDspBuffer<T> lhs, const std::complex
 }
     
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SMARTDSP_FLOAT_TYPE> & exponent) {
+ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent) {
     for (unsigned i=0; i<this->size(); i++) {
         this->buf[i] = std::pow(this->buf[i], exponent);
     }
@@ -451,35 +451,35 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SMARTDSP_FLOAT
  * \return Reference to "buffer".
  */
 template <class T>
-inline ComplexDspBuffer<T> & pow(ComplexDspBuffer<T> & buffer, const std::complex<SMARTDSP_FLOAT_TYPE> exponent) {
+inline ComplexDspBuffer<T> & pow(ComplexDspBuffer<T> & buffer, const std::complex<SLICKDSP_FLOAT_TYPE> exponent) {
     return buffer.pow(exponent);
 }
 
 template <class T>
-const std::complex<SMARTDSP_FLOAT_TYPE> ComplexDspBuffer<T>::mean() const {
+const std::complex<SLICKDSP_FLOAT_TYPE> ComplexDspBuffer<T>::mean() const {
     assert(this->size() > 0);
-    std::complex<SMARTDSP_FLOAT_TYPE> sum = 0;
+    std::complex<SLICKDSP_FLOAT_TYPE> sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
         sum += this->buf[i];
     }
-    return sum / ((SMARTDSP_FLOAT_TYPE) this->size());
+    return sum / ((SLICKDSP_FLOAT_TYPE) this->size());
 }
 
 /**
  * \brief Returns the mean (average) of the data in "buffer".
  */
 template <class T>
-inline const std::complex<SMARTDSP_FLOAT_TYPE> mean(ComplexDspBuffer<T> & buffer) {
+inline const std::complex<SLICKDSP_FLOAT_TYPE> mean(ComplexDspBuffer<T> & buffer) {
     return buffer.mean();
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE ComplexDspBuffer<T>::var() const {
+const SLICKDSP_FLOAT_TYPE ComplexDspBuffer<T>::var() const {
     assert(this->size() > 1);
-    std::complex<SMARTDSP_FLOAT_TYPE> meanVal = this->mean();
-    std::complex<SMARTDSP_FLOAT_TYPE> sum = 0;
+    std::complex<SLICKDSP_FLOAT_TYPE> meanVal = this->mean();
+    std::complex<SLICKDSP_FLOAT_TYPE> sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
-        std::complex<SMARTDSP_FLOAT_TYPE> varDiff = this->buf[i] - meanVal;
+        std::complex<SLICKDSP_FLOAT_TYPE> varDiff = this->buf[i] - meanVal;
         sum += varDiff * std::conj(varDiff);
     }
     return sum.real() / (this->size() - 1);
@@ -489,7 +489,7 @@ const SMARTDSP_FLOAT_TYPE ComplexDspBuffer<T>::var() const {
  * \brief Returns the variance of the data in "buffer".
  */
 template <class T>
-inline const SMARTDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
+inline const SLICKDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
     return buffer.var();
 }
 
@@ -497,7 +497,7 @@ inline const SMARTDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
  * \brief Returns the standard deviation of the data in "buffer".
  */
 template <class T>
-inline const SMARTDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
+inline const SLICKDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
     return buffer.stdDev();
 }
 
@@ -532,7 +532,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::fft() {
 /**
  * \brief Sets "buffer" equal to the FFT of the data in buffer.
  *
- * Sets \ref domain equal to SmartDsp::FREQUENCY_DOMAIN.
+ * Sets \ref domain equal to SlickDsp::FREQUENCY_DOMAIN.
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
  */
@@ -569,7 +569,7 @@ inline T magSq(const std::complex<T> &val) {
 template <class T>
 ComplexDspBuffer<T> & ComplexDspBuffer<T>::magSq() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].real(SmartDsp::magSq(this->buf[i]));
+        this->buf[i].real(SlickDsp::magSq(this->buf[i]));
         this->buf[i].imag(0);
     }
     return *this;
@@ -600,7 +600,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::ifft() {
 /**
  * \brief Sets "buffer" equal to the inverse FFT of the data in buffer.
  *
- * Sets \ref domain equal to SmartDsp::TIME_DOMAIN.
+ * Sets \ref domain equal to SlickDsp::TIME_DOMAIN.
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
  */

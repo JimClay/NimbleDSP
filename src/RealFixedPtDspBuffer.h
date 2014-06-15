@@ -1,19 +1,19 @@
 //
 //  RealFixedPtDspBuffer.h
-//  SmartDsp
+//  SlickDsp
 //
 //  Created by Jim Clay on 6/1/14.
 //
 //
 
-#ifndef SmartDsp_RealFixedPtDspBuffer_h
-#define SmartDsp_RealFixedPtDspBuffer_h
+#ifndef SlickDsp_RealFixedPtDspBuffer_h
+#define SlickDsp_RealFixedPtDspBuffer_h
 
 #include <math.h>
 #include "RealDspBuffer.h"
 
 
-namespace SmartDsp {
+namespace SlickDsp {
 
 
 template <class T>
@@ -58,7 +58,7 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
     RealFixedPtDspBuffer<T> & operator<<=(const T &rhs);
     
     // Methods
-    RealDspBuffer<T> & pow(const SMARTDSP_FLOAT_TYPE exponent);
+    RealDspBuffer<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
     const T mode();
 };
 
@@ -318,7 +318,7 @@ inline RealFixedPtDspBuffer<T> operator<<(RealFixedPtDspBuffer<T> lhs, const T& 
 }
 
 template <class T>
-RealDspBuffer<T> & RealFixedPtDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
+RealDspBuffer<T> & RealFixedPtDspBuffer<T>::pow(const SLICKDSP_FLOAT_TYPE exponent) {
     for (unsigned i=0; i<this->size(); i++) {
         this->buf[i] = (T) std::round(std::pow(this->buf[i], exponent));
     }
@@ -371,22 +371,22 @@ const T mode(RealFixedPtDspBuffer<T> & buffer) {
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE meanF(RealFixedPtDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE meanF(RealFixedPtDspBuffer<T> & buffer) {
     return buffer.mean();
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE varF(RealFixedPtDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE varF(RealFixedPtDspBuffer<T> & buffer) {
     return buffer.var();
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE stdF(RealFixedPtDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE stdF(RealFixedPtDspBuffer<T> & buffer) {
     return buffer.stdDev();
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE stdDevF(RealFixedPtDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE stdDevF(RealFixedPtDspBuffer<T> & buffer) {
     return buffer.stdDev();
 }
 

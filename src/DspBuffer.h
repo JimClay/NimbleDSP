@@ -5,8 +5,8 @@
  * Definition of the template class DspBuffer.
  */
 
-#ifndef SMART_DSP_DSPBUFFER
-#define SMART_DSP_DSPBUFFER
+#ifndef SlickDsp_DspBuffer_h
+#define SlickDsp_DspBuffer_h
 
 
 #include <vector>
@@ -18,19 +18,19 @@
 #include "kiss_fftr.h"
 
 
-namespace SmartDsp {
+namespace SlickDsp {
 
 const unsigned DEFAULT_BUF_LEN = 0;
 
-#ifndef SMARTDSP_FLOAT_TYPE
-#define SMARTDSP_FLOAT_TYPE    double
+#ifndef SLICKDSP_FLOAT_TYPE
+#define SLICKDSP_FLOAT_TYPE    double
 #endif
 
 #define VECTOR_TO_ARRAY(x)      (&((x)[0]))
 
 
 /**
- * \brief Base class for SmartDsp.
+ * \brief Base class for SlickDsp.
  *
  * Although you can instantiate objects of this type, that's not what this class is intended for.  It is the
  * base class that all of the other classes descend from which allows for a great deal of flexibility

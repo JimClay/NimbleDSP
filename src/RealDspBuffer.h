@@ -1,19 +1,19 @@
 //
 //  RealDspBuffer.h
-//  SmartDsp
+//  SlickDsp
 //
 //  Created by Jim Clay on 6/7/14.
 //
 //
 
-#ifndef SmartDsp_RealDspBuffer_h
-#define SmartDsp_RealDspBuffer_h
+#ifndef SlickDsp_RealDspBuffer_h
+#define SlickDsp_RealDspBuffer_h
 
 #include "DspBuffer.h"
 
-using namespace SmartDsp;
+using namespace SlickDsp;
 
-namespace SmartDsp {
+namespace SlickDsp {
 
 template <class T>
 class RealDspBuffer : public DspBuffer<T> {
@@ -30,11 +30,11 @@ class RealDspBuffer : public DspBuffer<T> {
     RealDspBuffer<T>& operator=(const DspBuffer<T>& rhs) {this->buf = rhs.buf; return *this;}
     
     // Methods
-    RealDspBuffer<T> & pow(const SMARTDSP_FLOAT_TYPE exponent);
+    RealDspBuffer<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
     
-    const SMARTDSP_FLOAT_TYPE mean() const;
-    const SMARTDSP_FLOAT_TYPE var() const;
-    const SMARTDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
+    const SLICKDSP_FLOAT_TYPE mean() const;
+    const SLICKDSP_FLOAT_TYPE var() const;
+    const SLICKDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
     const T median();
     
     const T max(unsigned *maxLoc = NULL) const;
@@ -43,7 +43,7 @@ class RealDspBuffer : public DspBuffer<T> {
 };
 
 template <class T>
-RealDspBuffer<T> & RealDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
+RealDspBuffer<T> & RealDspBuffer<T>::pow(const SLICKDSP_FLOAT_TYPE exponent) {
     for (unsigned i=0; i<this->size(); i++) {
         this->buf[i] = (T) std::pow(this->buf[i], exponent);
     }
@@ -51,14 +51,14 @@ RealDspBuffer<T> & RealDspBuffer<T>::pow(const SMARTDSP_FLOAT_TYPE exponent) {
 }
 
 template <class T>
-RealDspBuffer<T> & pow(RealDspBuffer<T> & buffer, const SMARTDSP_FLOAT_TYPE exponent) {
+RealDspBuffer<T> & pow(RealDspBuffer<T> & buffer, const SLICKDSP_FLOAT_TYPE exponent) {
     return buffer.pow(exponent);
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE RealDspBuffer<T>::mean() const {
+const SLICKDSP_FLOAT_TYPE RealDspBuffer<T>::mean() const {
     assert(this->size() > 0);
-    SMARTDSP_FLOAT_TYPE sum = 0;
+    SLICKDSP_FLOAT_TYPE sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
         sum += this->buf[i];
     }
@@ -66,29 +66,29 @@ const SMARTDSP_FLOAT_TYPE RealDspBuffer<T>::mean() const {
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE mean(RealDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE mean(RealDspBuffer<T> & buffer) {
     return buffer.mean();
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE RealDspBuffer<T>::var() const {
+const SLICKDSP_FLOAT_TYPE RealDspBuffer<T>::var() const {
     assert(this->size() > 1);
-    SMARTDSP_FLOAT_TYPE meanVal = mean();
-    SMARTDSP_FLOAT_TYPE sum = 0;
+    SLICKDSP_FLOAT_TYPE meanVal = mean();
+    SLICKDSP_FLOAT_TYPE sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
-        SMARTDSP_FLOAT_TYPE varDiff = ((SMARTDSP_FLOAT_TYPE) this->buf[i]) - meanVal;
+        SLICKDSP_FLOAT_TYPE varDiff = ((SLICKDSP_FLOAT_TYPE) this->buf[i]) - meanVal;
         sum += varDiff * varDiff;
     }
     return sum / (this->size() - 1);
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE var(RealDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE var(RealDspBuffer<T> & buffer) {
     return buffer.var();
 }
 
 template <class T>
-const SMARTDSP_FLOAT_TYPE stdDev(RealDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE stdDev(RealDspBuffer<T> & buffer) {
     return buffer.stdDev();
 }
 

@@ -2,7 +2,7 @@
 #include "RealDspBuffer.h"
 #include "gtest/gtest.h"
 
-using namespace SmartDsp;
+using namespace SlickDsp;
 
 extern bool FloatsEqual(double float1, double float2);
 

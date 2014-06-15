@@ -1,7 +1,7 @@
 #include "DspBuffer.h"
 #include "gtest/gtest.h"
 
-using namespace SmartDsp;
+using namespace SlickDsp;
 
 bool FloatsEqual(double float1, double float2) {
     double epsilon = .00000001;
