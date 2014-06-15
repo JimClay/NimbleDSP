@@ -85,6 +85,8 @@ TEST(ComplexDspBufferOperators, PlusBuf) {
     EXPECT_EQ(numElements, buf3.buf.size());
     for (unsigned i=0; i<buf3.buf.size(); i++) {
         EXPECT_EQ(2.0*inputData[i], buf3.buf[i]);
+        EXPECT_EQ(inputData[i], buf1[i]);
+        EXPECT_EQ(inputData[i], buf2[i]);
     }
 }
 
@@ -146,6 +148,8 @@ TEST(ComplexDspBufferOperators, MinusBuf) {
     EXPECT_EQ(numElements, buf3.buf.size());
     for (unsigned i=0; i<buf3.buf.size(); i++) {
         EXPECT_EQ(inputData[i] - inputData2[i], buf3.buf[i]);
+        EXPECT_EQ(inputData[i], buf1[i]);
+        EXPECT_EQ(inputData2[i], buf2[i]);
     }
 }
 
@@ -160,6 +164,7 @@ TEST(ComplexDspBufferOperators, MinusScalar) {
     EXPECT_EQ(numElements, buf2.buf.size());
     for (unsigned i=0; i<buf2.buf.size(); i++) {
         EXPECT_EQ(inputData[i] - operand, buf2.buf[i]);
+        EXPECT_EQ(inputData[i], buf1[i]);
     }
 }
 
@@ -206,6 +211,8 @@ TEST(ComplexDspBufferOperators, MultiplyBuf) {
     EXPECT_EQ(numElements, buf3.buf.size());
     for (unsigned i=0; i<buf3.buf.size(); i++) {
         EXPECT_EQ(inputData[i]*inputData2[i], buf3.buf[i]);
+        EXPECT_EQ(inputData[i], buf1[i]);
+        EXPECT_EQ(inputData2[i], buf2[i]);
     }
 }
 
@@ -266,6 +273,8 @@ TEST(ComplexDspBufferOperators, DivideBuf) {
     EXPECT_EQ(numElements, buf3.buf.size());
     for (unsigned i=0; i<buf3.buf.size(); i++) {
         EXPECT_EQ(inputData[i]/inputData2[i], buf3.buf[i]);
+        EXPECT_EQ(inputData[i], buf1[i]);
+        EXPECT_EQ(inputData2[i], buf2[i]);
     }
 }
 
