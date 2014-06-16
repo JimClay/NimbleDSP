@@ -78,8 +78,8 @@ public:
     /**
      * \brief Basic constructor.
      *
-     * Just sets the size of \ref DspBuffer::buf and the pointer to the scratch buffer, if one is provided.
-     * \param size Size of \ref DspBuffer::buf.
+     * Just sets the size of \ref buf and the pointer to the scratch buffer, if one is provided.
+     * \param size Size of \ref buf.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -94,7 +94,7 @@ public:
      *
      * Sets buf equal to the input "data" parameter and sets the pointer to the scratch buffer,
      *      if one is provided.
-     * \param data Vector that \ref DspBuffer::buf will be set equal to.
+     * \param data Vector that \ref buf will be set equal to.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -110,7 +110,7 @@ public:
      *
      * Sets buf equal to the input "data" array and sets the pointer to the scratch buffer,
      *      if one is provided.
-     * \param data Array that \ref DspBuffer::buf will be set equal to.
+     * \param data Array that \ref buf will be set equal to.
      * \param dataLen Length of "data".
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
@@ -198,7 +198,7 @@ public:
                                             Methods
     *****************************************************************************************/
     /**
-     * \brief Returns the size of \ref DspBuffer::buf.
+     * \brief Returns the size of \ref buf.
      */
     const unsigned size() const {return buf.size();};
     
@@ -214,60 +214,60 @@ public:
     DspBuffer<T> & rotate(int numToShift);
     
     /**
-     * \brief Reverses the order of the elements in \ref DspBuffer::buf.
+     * \brief Reverses the order of the elements in \ref buf.
      *
      * \return Reference to "this".
      */
     DspBuffer<T> & reverse();
     
     /**
-     * \brief Finds the first instance of "val" in \ref DspBuffer::buf.
+     * \brief Finds the first instance of "val" in \ref buf.
      *
-     * \param val The value to look for in \ref DspBuffer::buf.
+     * \param val The value to look for in \ref buf.
      * \return Index of first instance of "val".  If there aren't any elements equal to "val"
      *      it returns -1.
      */
     const int find(const T val) const;
     
     /**
-     * \brief Changes the elements of \ref DspBuffer::buf to their absolute value.
+     * \brief Changes the elements of \ref buf to their absolute value.
      *
      * \return Reference to "this".
      */
     DspBuffer<T> & abs();
     
     /**
-     * \brief Sets each element of \ref DspBuffer::buf to e^(element).
+     * \brief Sets each element of \ref buf to e^(element).
      *
      * \return Reference to "this".
      */
     DspBuffer<T> & exp();
     
     /**
-     * \brief Sets each element of \ref DspBuffer::buf to the natural log of the element.
+     * \brief Sets each element of \ref buf to the natural log of the element.
      *
      * \return Reference to "this".
      */
     DspBuffer<T> & log();
     
     /**
-     * \brief Sets each element of \ref DspBuffer::buf to the natural log of the element.
+     * \brief Sets each element of \ref buf to the natural log of the element.
      *
      * \return Reference to "this".
      */
     DspBuffer<T> & ln() {return log();}
     
     /**
-     * \brief Sets each element of \ref DspBuffer::buf to the base 10 log of the element.
+     * \brief Sets each element of \ref buf to the base 10 log of the element.
      *
      * \return Reference to "this".
      */
     DspBuffer<T> & log10();
     
     /**
-     * \brief Sets the length of \ref DspBuffer::buf to "len".
+     * \brief Sets the length of \ref buf to "len".
      *
-     * \param len The new length for \ref DspBuffer::buf.  If len is longer than buf's current size, the
+     * \param len The new length for \ref buf.  If len is longer than buf's current size, the
      *      new elements will be set to "val".  If len is less than buf's current size the extra
      *      elements will be cut off and the other elements will remain the same.
      * \param val The value to set any new elements to.  Defaults to 0.
@@ -276,9 +276,9 @@ public:
     DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val); return *this;}
     
     /**
-     * \brief Lengthens \ref DspBuffer::buf by "len" elements.
+     * \brief Lengthens \ref buf by "len" elements.
      *
-     * \param len The number of elements to add to \ref DspBuffer::buf.
+     * \param len The number of elements to add to \ref buf.
      * \param val The value to set the new elements to.  Defaults to 0.
      * \return Reference to "this".
      */
@@ -305,23 +305,23 @@ public:
     DspBuffer<T> & downsample(int rate, int phase = 0);
     
     /**
-     * \brief Returns the sum of all the elements in \ref DspBuffer::buf.
+     * \brief Returns the sum of all the elements in \ref buf.
      */
 	T sum() const;
     
     /**
-     * \brief Replaces \ref DspBuffer::buf with the difference between successive samples in buf.
+     * \brief Replaces \ref buf with the difference between successive samples in buf.
      *
-     * The resulting \ref DspBuffer::buf is one element shorter than it was previously.
+     * The resulting \ref buf is one element shorter than it was previously.
      * \return Reference to "this".
      */
 	DspBuffer<T> & diff();
     
     /**
-     * \brief Replaces \ref DspBuffer::buf with the difference between successive samples in buf.
+     * \brief Replaces \ref buf with the difference between successive samples in buf.
      *
      * \param previousVal The last value in the sample stream before the current contents
-     *      of \ref DspBuffer::buf.  previousVal allows the resulting buf to be the same size as the
+     *      of \ref buf.  previousVal allows the resulting buf to be the same size as the
      *      previous buf.
      * \return Reference to "this".
      */
@@ -604,7 +604,7 @@ DspBuffer<T> & DspBuffer<T>::reverse() {
 }
 
 /**
- * \brief Reverses the order of the elements in \ref DspBuffer::buf.
+ * \brief Reverses the order of the elements in \ref buf.
  *
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
@@ -625,10 +625,10 @@ const int DspBuffer<T>::find(const T val) const {
 }
 
 /**
- * \brief Finds the first instance of "val" in \ref DspBuffer::buf.
+ * \brief Finds the first instance of "val" in \ref buf.
  *
  * \param buffer Buffer to operate on.
- * \param val The value to look for in \ref DspBuffer::buf.
+ * \param val The value to look for in \ref buf.
  * \return Index of first instance of "val".  If there aren't any elements equal to "val"
  *      it returns -1.
  */
@@ -646,7 +646,7 @@ DspBuffer<T> & DspBuffer<T>::abs() {
 }
 
 /**
- * \brief Changes the elements of \ref DspBuffer::buf to their absolute value.
+ * \brief Changes the elements of \ref buf to their absolute value.
  *
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
@@ -665,7 +665,7 @@ DspBuffer<T> & DspBuffer<T>::exp() {
 }
 
 /**
- * \brief Sets each element of \ref DspBuffer::buf to e^(element).
+ * \brief Sets each element of \ref buf to e^(element).
  *
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
@@ -684,7 +684,7 @@ DspBuffer<T> & DspBuffer<T>::log() {
 }
 
 /**
- * \brief Sets each element of \ref DspBuffer::buf to the natural log of the element.
+ * \brief Sets each element of \ref buf to the natural log of the element.
  *
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
@@ -695,7 +695,7 @@ DspBuffer<T> & log(DspBuffer<T> & buffer) {
 }
 
 /**
- * \brief Sets each element of \ref DspBuffer::buf to the natural log of the element.
+ * \brief Sets each element of \ref buf to the natural log of the element.
  *
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
@@ -714,7 +714,7 @@ DspBuffer<T> & DspBuffer<T>::log10() {
 }
 
 /**
- * \brief Sets each element of \ref DspBuffer::buf to the base 10 log of the element.
+ * \brief Sets each element of \ref buf to the base 10 log of the element.
  *
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
@@ -725,10 +725,10 @@ DspBuffer<T> & log10(DspBuffer<T> & buffer) {
 }
 
 /**
- * \brief Sets the length of \ref DspBuffer::buf to "len".
+ * \brief Sets the length of \ref buf to "len".
  *
  * \param buffer Buffer to operate on.
- * \param len The new length for \ref DspBuffer::buf.  If len is longer than buf's current size, the
+ * \param len The new length for \ref buf.  If len is longer than buf's current size, the
  *      new elements will be set to "val".  If len is less than buf's current size the extra
  *      elements will be cut off and the other elements will remain the same.
  * \param val The value to set any new elements to.  Defaults to 0.
@@ -740,10 +740,10 @@ DspBuffer<T> & resize(DspBuffer<T> & buffer, int len, T val = 0) {
 }
 
 /**
- * \brief Lengthens \ref DspBuffer::buf by "len" elements.
+ * \brief Lengthens \ref buf by "len" elements.
  *
  * \param buffer Buffer to operate on.
- * \param len The number of elements to add to \ref DspBuffer::buf.
+ * \param len The number of elements to add to \ref buf.
  * \param val The value to set the new elements to.  Defaults to 0.
  * \return Reference to "buffer".
  */
@@ -824,7 +824,7 @@ T DspBuffer<T>::sum() const {
 }
 
 /**
- * \brief Returns the sum of all the elements in \ref DspBuffer::buf.
+ * \brief Returns the sum of all the elements in \ref buf.
  *
  * \param buffer Buffer to operate on.
  */
@@ -844,9 +844,9 @@ DspBuffer<T> & DspBuffer<T>::diff() {
 }
 
 /**
- * \brief Replaces \ref DspBuffer::buf with the difference between successive samples in buf.
+ * \brief Replaces \ref buf with the difference between successive samples in buf.
  *
- * The resulting \ref DspBuffer::buf is one element shorter than it was previously.
+ * The resulting \ref buf is one element shorter than it was previously.
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
  */
@@ -868,11 +868,11 @@ DspBuffer<T> & DspBuffer<T>::diff(T & previousVal) {
 }
 
 /**
- * \brief Replaces \ref DspBuffer::buf with the difference between successive samples in buf.
+ * \brief Replaces \ref buf with the difference between successive samples in buf.
  *
  * \param buffer Buffer to operate on.
  * \param previousVal The last value in the sample stream before the current contents
- *      of \ref DspBuffer::buf.  previousVal allows the resulting buf to be the same size as the
+ *      of \ref buf.  previousVal allows the resulting buf to be the same size as the
  *      previous buf.
  * \return Reference to "buffer".
  */
