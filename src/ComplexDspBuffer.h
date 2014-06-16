@@ -36,7 +36,7 @@ template <class T>
 class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
  public:
     /**
-     * \brief Indicates whether the data in \ref buf is time domain data or frequency domain.
+     * \brief Indicates whether the data in \ref DspBuffer::buf is time domain data or frequency domain.
      */
     DomainType domain;
     
@@ -47,7 +47,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      * \brief Basic constructor.
      *
      * Sets \ref domain to SlickDsp::TIME_DOMAIN and calls DspBuffer<T>::DspBuffer(size, scratch).
-     * \param size Size of \ref buf.
+     * \param size Size of \ref DspBuffer::buf.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -63,7 +63,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *
      * Sets buf equal to the input "data" parameter and sets the pointer to the scratch buffer,
      *      if one is provided.  Also sets \ref domain to dataDomain.
-     * \param data Vector that \ref buf will be set equal to.
+     * \param data Vector that \ref DspBuffer::buf will be set equal to.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -74,14 +74,16 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      Valid values are SlickDsp::TIME_DOMAIN and SlickDsp::FREQUENCY_DOMAIN.
      */
     template <typename U>
-    ComplexDspBuffer<T>(std::vector<U> data, DomainType dataDomain=TIME_DOMAIN) : DspBuffer< std::complex<T> >(data) {domain = dataDomain;}
+    ComplexDspBuffer<T>(std::vector<U> data, DomainType dataDomain=TIME_DOMAIN,
+                std::vector< std::complex<T> > *scratch = NULL) : DspBuffer< std::complex<T> >(data, scratch)
+                    {domain = dataDomain;}
     
     /**
      * \brief Array constructor.
      *
      * Sets buf equal to the input "data" array and sets the pointer to the scratch buffer,
      *      if one is provided.  Also sets \ref domain to dataDomain.
-     * \param data Array that \ref buf will be set equal to.
+     * \param data Array that \ref DspBuffer::buf will be set equal to.
      * \param dataLen Length of "data".
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
@@ -93,12 +95,15 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      Valid values are SlickDsp::TIME_DOMAIN and SlickDsp::FREQUENCY_DOMAIN.
      */
     template <typename U>
-    ComplexDspBuffer<T>(U *data, unsigned dataLen, DomainType dataDomain=TIME_DOMAIN) : DspBuffer< std::complex<T> >(data, dataLen) {domain = dataDomain;}
+    ComplexDspBuffer<T>(U *data, unsigned dataLen, DomainType dataDomain=TIME_DOMAIN,
+                std::vector< std::complex<T> > *scratch = NULL) : DspBuffer< std::complex<T> >(data, dataLen, scratch)
+                    {domain = dataDomain;}
     
     /**
      * \brief Copy constructor.
      */
-    ComplexDspBuffer<T>(const ComplexDspBuffer<T>& other) {this->buf = other.buf; domain = other.domain;}
+    ComplexDspBuffer<T>(const ComplexDspBuffer<T>& other)
+            {this->buf = other.buf; domain = other.domain; this->scratchBuf = other.scratchBuf;}
     
     /*****************************************************************************************
                                             Operators
@@ -177,7 +182,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
                                             Methods
     *****************************************************************************************/
     /**
-     * \brief Sets each element of \ref buf equal to its value to the power of "exponent".
+     * \brief Sets each element of \ref DspBuffer::buf equal to its value to the power of "exponent".
      *
      * \param exponent Exponent to use.
      * \return Reference to "this".
@@ -185,53 +190,53 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     ComplexDspBuffer<T> & pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent);
     
     /**
-     * \brief Returns the mean (average) of the data in \ref buf.
+     * \brief Returns the mean (average) of the data in \ref DspBuffer::buf.
      */
     const std::complex<SLICKDSP_FLOAT_TYPE> mean() const;
     
     /**
-     * \brief Returns the variance of the data in \ref buf.
+     * \brief Returns the variance of the data in \ref DspBuffer::buf.
      */
     const SLICKDSP_FLOAT_TYPE var() const;
     
     /**
-     * \brief Returns the standard deviation of the data in \ref buf.
+     * \brief Returns the standard deviation of the data in \ref DspBuffer::buf.
      */
     const SLICKDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
     
     /**
-     * \brief Sets the upper and lower limit of the values in \ref buf.
+     * \brief Sets the upper and lower limit of the values in \ref DspBuffer::buf.
      *
-     * \param Limiting value for the data in \ref buf.  Any values that
+     * \param val Limiting value for the data in \ref DspBuffer::buf.  Any values that
      *      are greater than "val" are made equal to "val", and
      *      any that are less than -val are made equal to -val.  This is done
-     *      independently on the real and imaginary elements of \ref buf.
+     *      independently on the real and imaginary elements of \ref DspBuffer::buf.
      * \return Reference to "this".
      */
     ComplexDspBuffer<T> & saturate(const std::complex<T> & val);
     
     /**
-     * \brief Conjugates the data in \ref buf.
+     * \brief Conjugates the data in \ref DspBuffer::buf.
      * \return Reference to "this".
      */
     ComplexDspBuffer<T> & conj();
     
     /**
-     * \brief Sets each element of \ref buf equal to its magnitude squared.
+     * \brief Sets each element of \ref DspBuffer::buf equal to its magnitude squared.
      * \return Reference to "this".
      */
     ComplexDspBuffer<T> & magSq();
     
     /**
-     * \brief Sets each element of \ref buf equal to its angle.
+     * \brief Sets each element of \ref DspBuffer::buf equal to its angle.
      *
-     * The angle is held in the real portion of \ref buf.
+     * The angle is held in the real portion of \ref DspBuffer::buf.
      * \return Reference to "this".
      */
     ComplexDspBuffer<T> & angle();
     
     /**
-     * \brief Sets \ref buf equal to the FFT of the data in \ref buf.
+     * \brief Sets \ref DspBuffer::buf equal to the FFT of the data in \ref DspBuffer::buf.
      *
      * Sets \ref domain equal to SlickDsp::FREQUENCY_DOMAIN.
      * \return Reference to "this".
@@ -239,7 +244,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     ComplexDspBuffer<T> & fft();
     
     /**
-     * \brief Sets \ref buf equal to the inverse FFT of the data in \ref buf.
+     * \brief Sets \ref DspBuffer::buf equal to the inverse FFT of the data in \ref DspBuffer::buf.
      *
      * Sets \ref domain equal to SlickDsp::TIME_DOMAIN.
      * \return Reference to "this".
@@ -447,6 +452,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SLICKDSP_FLOAT
 /**
  * \brief Sets each element of "buffer" equal to its value to the power of "exponent".
  *
+ * \param buffer Buffer to operate on.
  * \param exponent Exponent to use.
  * \return Reference to "buffer".
  */

@@ -26,8 +26,8 @@ class RealDspBuffer : public DspBuffer<T> {
     /**
      * \brief Basic constructor.
      *
-     * Just sets the size of \ref buf and the pointer to the scratch buffer, if one is provided.
-     * \param size Size of \ref buf.
+     * Just sets the size of \ref DspBuffer::buf and the pointer to the scratch buffer, if one is provided.
+     * \param size Size of \ref DspBuffer::buf.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -42,7 +42,7 @@ class RealDspBuffer : public DspBuffer<T> {
      *
      * Sets buf equal to the input "data" parameter and sets the pointer to the scratch buffer,
      *      if one is provided.
-     * \param data Vector that \ref buf will be set equal to.
+     * \param data Vector that \ref DspBuffer::buf will be set equal to.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -58,7 +58,7 @@ class RealDspBuffer : public DspBuffer<T> {
      *
      * Sets buf equal to the input "data" array and sets the pointer to the scratch buffer,
      *      if one is provided.
-     * \param data Array that \ref buf will be set equal to.
+     * \param data Array that \ref DspBuffer::buf will be set equal to.
      * \param dataLen Length of "data".
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
@@ -87,7 +87,7 @@ class RealDspBuffer : public DspBuffer<T> {
                                              Methods
     *****************************************************************************************/
     /**
-     * \brief Sets each element of \ref buf equal to its value to the power of "exponent".
+     * \brief Sets each element of \ref DspBuffer::buf equal to its value to the power of "exponent".
      *
      * \param exponent Exponent to use.
      * \return Reference to "this".
@@ -95,27 +95,27 @@ class RealDspBuffer : public DspBuffer<T> {
     RealDspBuffer<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
     
     /**
-     * \brief Returns the mean (average) of the data in \ref buf.
+     * \brief Returns the mean (average) of the data in \ref DspBuffer::buf.
      */
     const SLICKDSP_FLOAT_TYPE mean() const;
     
     /**
-     * \brief Returns the variance of the data in \ref buf.
+     * \brief Returns the variance of the data in \ref DspBuffer::buf.
      */
     const SLICKDSP_FLOAT_TYPE var() const;
     
     /**
-     * \brief Returns the standard deviation of the data in \ref buf.
+     * \brief Returns the standard deviation of the data in \ref DspBuffer::buf.
      */
     const SLICKDSP_FLOAT_TYPE stdDev() const {return std::sqrt(this->var());}
     
     /**
-     * \brief Returns the median element of \ref buf.
+     * \brief Returns the median element of \ref DspBuffer::buf.
      */
     const T median();
     
     /**
-     * \brief Returns the maximum element in \ref buf.
+     * \brief Returns the maximum element in \ref DspBuffer::buf.
      *
      * \param maxLoc If it isn't equal to NULL the index of the maximum element
      *      will be returned via this pointer.  If more than one element is equal
@@ -125,7 +125,7 @@ class RealDspBuffer : public DspBuffer<T> {
     const T max(unsigned *maxLoc = NULL) const;
     
     /**
-     * \brief Returns the minimum element in \ref buf.
+     * \brief Returns the minimum element in \ref DspBuffer::buf.
      *
      * \param minLoc If it isn't equal to NULL the index of the minimum element
      *      will be returned via this pointer.  If more than one element is equal
@@ -135,9 +135,9 @@ class RealDspBuffer : public DspBuffer<T> {
     const T min(unsigned *minLoc = NULL) const;
     
     /**
-     * \brief Sets the upper and lower limit of the values in \ref buf.
+     * \brief Sets the upper and lower limit of the values in \ref DspBuffer::buf.
      *
-     * \param Limiting value for the data in \ref buf.  Any values that
+     * \param val Limiting value for the data in \ref DspBuffer::buf.  Any values that
      *      are greater than "val" are made equal to "val", and
      *      any that are less than -val are made equal to -val.
      * \return Reference to "this".
@@ -319,7 +319,7 @@ RealDspBuffer<T> & RealDspBuffer<T>::saturate(T val) {
  * \brief Sets the upper and lower limit of the values in "buffer".
  *
  * \param buffer The buffer to operate on.
- * \param Limiting value for the data in \ref buf.  Any values that
+ * \param val Limiting value for the data in \ref DspBuffer::buf.  Any values that
  *      are greater than "val" are made equal to "val", and
  *      any that are less than -val are made equal to -val.
  * \return Reference to "buffer".

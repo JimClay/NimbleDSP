@@ -28,8 +28,8 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
     /**
      * \brief Basic constructor.
      *
-     * Just sets the size of \ref buf and the pointer to the scratch buffer, if one is provided.
-     * \param size Size of \ref buf.
+     * Just sets the size of \ref DspBuffer::buf and the pointer to the scratch buffer, if one is provided.
+     * \param size Size of \ref DspBuffer::buf.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -45,7 +45,7 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
      *
      * Sets buf equal to the input "data" parameter and sets the pointer to the scratch buffer,
      *      if one is provided.
-     * \param data Vector that \ref buf will be set equal to.
+     * \param data Vector that \ref DspBuffer::buf will be set equal to.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -61,7 +61,7 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
      *
      * Sets buf equal to the input "data" array and sets the pointer to the scratch buffer,
      *      if one is provided.
-     * \param data Array that \ref buf will be set equal to.
+     * \param data Array that \ref DspBuffer::buf will be set equal to.
      * \param dataLen Length of "data".
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
@@ -182,7 +182,7 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
                                              Methods
     *****************************************************************************************/
     /**
-     * \brief Sets each element of \ref buf equal to its value to the power of "exponent".
+     * \brief Sets each element of \ref DspBuffer::buf equal to its value to the power of "exponent".
      *
      * \param exponent Exponent to use.
      * \return Reference to "this".
@@ -190,7 +190,7 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
     RealDspBuffer<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
     
     /**
-     * \brief Returns the mode of the data in \ref buf.
+     * \brief Returns the mode of the data in \ref DspBuffer::buf.
      */
     const T mode();
 };
@@ -535,7 +535,7 @@ const T RealFixedPtDspBuffer<T>::mode() {
 }
 
 /**
- * \brief Returns the mode of the data in \ref buf.
+ * \brief Returns the mode of the data in \ref DspBuffer::buf.
  */
 template <class T>
 const T mode(RealFixedPtDspBuffer<T> & buffer) {
