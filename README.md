@@ -16,7 +16,7 @@ SlickDsp is a C++ digital signal processing (DSP) library that aims to be fast, 
 * Non-restrictive license (MIT) that allows you to keep your software proprietary if you want.
 
 ## Installation
-None required!  Well, mostly none.  All of the source code is header files so all you have to do is "include" it in your code and make sure that their directory is in your include path.  The libraries header files are all in the "src" directory.
+None required!  Well, mostly none.  All of the source code is header files so all you have to do is "include" it in your code and make sure that their directory is in your include path.  The library's header files are all in the "src" directory.
 
 You will also need a header file from KissFFT.  Download it from [here](https://sourceforge.net/projects/kissfft/) and unzip the package wherever you wish (though if you wish to build and run the unit tests you should put it at the same level as SlickDsp- see the Unit Tests section) and include its top-level directory in your include path.
 
