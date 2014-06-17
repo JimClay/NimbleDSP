@@ -401,6 +401,11 @@ TEST(RealDspBufferMethods, Min) {
     unsigned minLoc;
     EXPECT_EQ(2, min(buf, &minLoc));
     EXPECT_EQ(0, minLoc);
+    
+    reverse(buf);
+    EXPECT_EQ(2, min(buf));
+    EXPECT_EQ(2, min(buf, &minLoc));
+    EXPECT_EQ(7, minLoc);
 }
 
 TEST(RealDspBufferMethods, Find) {

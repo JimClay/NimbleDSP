@@ -751,11 +751,20 @@ TEST(RealFixedPtDspBufferStatistics, Median) {
 }
 
 TEST(RealFixedPtDspBufferStatistics, Mode) {
-    int inputData[] = {7, 3, 2, 8, 3, 6, 1};
+    int inputData[] = {7, 8, 3, 2, 3, 6, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealFixedPtDspBuffer<int> buf(inputData, numElements);
     
     EXPECT_EQ(3, mode(buf));
+}
+
+TEST(RealFixedPtDspBufferStatistics, ModeScratch) {
+    int inputData[] = {7, 8, 3, 2, 8, 3, 6, 1, 8};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+    std::vector<int> scratchBuf;
+	RealFixedPtDspBuffer<int> buf(inputData, numElements, &scratchBuf);
+    
+    EXPECT_EQ(8, mode(buf));
 }
 
 TEST(RealFixedPtDspBufferMethods, Rotate) {
