@@ -336,12 +336,12 @@ TEST(DspBufferMethods, Rotate) {
     
     rotate(buf, 3);
     for (unsigned i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(inputData[((numElements - 3) + i) % numElements], buf[i]);
+        EXPECT_EQ(inputData[(3 + i) % numElements], buf[i]);
     }
     
     rotate(buf, -1);
     for (unsigned i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(inputData[((numElements - 2) + i) % numElements], buf[i]);
+        EXPECT_EQ(inputData[(2 + i) % numElements], buf[i]);
     }
 }
 
@@ -563,7 +563,8 @@ TEST(DspBufferFilter, FilterOddTrim) {
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {2, 0, -5, -20, -35, -50, -65, -72, -70};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+    std::vector<double> scratchBuf;
+	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     DspBuffer<int> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
@@ -651,7 +652,8 @@ TEST(DspBufferFilter, DecimateEvenEven) {
     int filterTaps[] = {1, 2, 3, 4, 5, 6};
     double expectedData[] = {1, 0, -35, -90, -71};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+    std::vector<double> scratchBuf;
+	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     DspBuffer<int> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
@@ -777,7 +779,8 @@ TEST(DspBufferFilter, InterpEvenOdd) {
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {1, 2, 3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+    std::vector<double> scratchBuf;
+	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     DspBuffer<int> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
@@ -957,7 +960,8 @@ TEST(DspBufferFilter, Resample1) {
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {1, 3, 5, -1, -3, -9, -11, -9, -23, -21, -15, -37, -31, -21, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+    std::vector<double> scratchBuf;
+	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     DspBuffer<int> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;

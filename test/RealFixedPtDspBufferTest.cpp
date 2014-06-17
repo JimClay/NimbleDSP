@@ -770,12 +770,12 @@ TEST(RealFixedPtDspBufferMethods, Rotate) {
     
     rotate(buf, 3);
     for (unsigned i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(inputData[((numElements - 3) + i) % numElements], buf[i]);
+        EXPECT_EQ(inputData[(3 + i) % numElements], buf[i]);
     }
     
     rotate(buf, -1);
     for (unsigned i=0; i<buf.buf.size(); i++) {
-        EXPECT_EQ(inputData[((numElements - 2) + i) % numElements], buf[i]);
+        EXPECT_EQ(inputData[(2 + i) % numElements], buf[i]);
     }
 }
 

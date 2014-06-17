@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project (SlickDsp)
 
+#set(CMAKE_SUPPRESS_REGENERATION TRUE) # For doing test coverage
+
 file (GLOB SOURCE_HEADERS "src/*.h")
 
 set( KISSFFT_DIR ../kiss_fft130 )

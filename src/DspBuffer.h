@@ -568,7 +568,6 @@ inline bool operator!=(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {return
 
 template <class T>
 DspBuffer<T> & DspBuffer<T>::rotate(int numToShift) {
-    numToShift = size() - numToShift;
     while (numToShift < 0)
         numToShift += size();
     
