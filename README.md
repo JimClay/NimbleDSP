@@ -41,10 +41,15 @@ That being said, you may want to get the unit tests up and running.  If so, do t
     * Run the Cmake Gui.
     * Set the directory to run out of to the SlickDsp directory.
     * Set the directory to put the build files in to SlickDsp/build.
-    * Push the "Configure" button.  You will have to have a modern C++ compiler installed, like Visual Studio 2013.  I have done this with VC++ 2013, but not with any others.  It will probably work with any compiler that supports C++11, but I don't guarantee it- especially since Microsoft's standards support has often been spotty.
+    * Push the "Configure" button.  It will ask you what compiler it should use.  You will have to have a modern C++ compiler installed, like Visual Studio 2013.  I have done this with VC++ 2013 but not with any others.  It will probably work with any compiler that supports C++11, but I don't guarantee it- especially since Microsoft's standards support has often been spotty.
     * Push the "Generate" button.
     * Start Visual Studio (or whatever compiler you configured Cmake for), go to the build directory and open the SlickDsp.sln file.
-    * ##########
+    * Try to build the "solution".  It will probably produce some errors that talk about RuntimeLibrary mismatches.
+    * In the Solution Explorer window right click on kissfft and click on "Properties" in the menu that appears.
+    *  Go to Configuration Properties -> C/C++ -> Code Generation.  In that window there should be a parameter called "Runtime Library" that is set to "Multi-threaded Debug DLL (/MDd)".  Change it to "Multi-threaded Debug (/MTd)".
+    *  Follow the same process to change the runtime library for SlickDspTests.
+    *  Build the solution.
+    *  Open up a command line window in the SlickDsp/build/Debug directory and run SlickDspTests.exe.
 
 ## Documentation
 To create the code documentation do the following:
@@ -54,8 +59,10 @@ To create the code documentation do the following:
 * Open the config file "doxygen.cfg".
 * Tell Doxygen to run.  It will put the HTML documentation in the doc directory.
 
+Feel free to modify the config file to alter the HTML documentation to your tastes/needs, output LaTex and PDF, etc.
+
 ## License
-SlickDsp is offered under the MIT license.  KissFFT is available under the BSD license.  Both are very similar.  They basically let you do whatever you want- for the fine print read the license files.
+SlickDsp is offered under the MIT license.  KissFFT is available under the BSD license.  Both are very similar.  They basically let you do whatever you want short of suing the authors (having said that, I am not a lawyer, so don't take this README as legal advice).  For the fine print read the license files.
 
 ## Author
 Jim Clay
