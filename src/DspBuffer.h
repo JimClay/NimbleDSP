@@ -356,7 +356,7 @@ public:
      * \return Reference to "this", which holds the result of the decimation.
      */
     template <class U>
-    DspBuffer<T> & decimate(int rate, DspBuffer<U> & filter, bool trimTails = false);
+    DspBuffer<U> & decimate(DspBuffer<U> & data, int rate, bool trimTails = false);
     
     /**
      * \brief Interpolation method.
@@ -977,81 +977,81 @@ inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> & filter, bool trim
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trimTails) {
+DspBuffer<U> & DspBuffer<T>::decimate(DspBuffer<U> & data, int rate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
-    std::vector<T> scratch;
-    std::vector<T> *data;
+    std::vector<U> scratch;
+    std::vector<U> *dataTmp;
     
-    if (scratchBuf == NULL) {
-        data = &scratch;
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
     }
     else {
-        data = scratchBuf;
+        dataTmp = data.scratchBuf;
     }
-    *data = this->buf;
+    *dataTmp = data.buf;
     
     if (trimTails) {
-        this->resize((this->size() + rate - 1) / rate);
+        data.resize((data.size() + rate - 1) / rate);
         
         // Initial partial overlap
-        int initialTrim = (filter.size() - 1) / 2;
-        for (resultIndex=0; resultIndex<(((int)filter.size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
-            buf[resultIndex] = 0;
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0; resultIndex<(((int)this->size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (; resultIndex<((int)data->size() - initialTrim + rate - 1)/rate; resultIndex++) {
-            buf[resultIndex] = 0;
-            for (dataIndex=resultIndex*rate - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
+        for (; resultIndex<((int)dataTmp->size() - initialTrim + rate - 1)/rate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
         }
 
         // Final partial overlap
-        for (; resultIndex<(int)this->size(); resultIndex++) {
-            buf[resultIndex] = 0;
-            for (dataIndex=resultIndex*rate - ((filter.size()-1) - initialTrim), filterIndex=filter.size()-1;
-                 dataIndex<(int)data->size(); dataIndex++, filterIndex--) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
         }
     }
     else {
-        this->resize(((this->size() + filter.size() - 1) + (rate - 1)) / rate);
+        data.resize(((data.size() + this->size() - 1) + (rate - 1)) / rate);
         
         // Initial partial overlap
-        for (resultIndex=0; resultIndex<((int)filter.size()-1+rate-1)/rate; resultIndex++) {
-            buf[resultIndex] = 0;
+        for (resultIndex=0; resultIndex<((int)this->size()-1+rate-1)/rate; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (; resultIndex<((int)data->size()+rate-1)/rate; resultIndex++) {
-            buf[resultIndex] = 0;
-            for (dataIndex=resultIndex*rate - (filter.size()-1), filterIndex=filter.size()-1;
+        for (; resultIndex<((int)dataTmp->size()+rate-1)/rate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
         }
 
         // Final partial overlap
-        for (; resultIndex<(int)this->size(); resultIndex++) {
-            buf[resultIndex] = 0;
-            for (dataIndex=resultIndex*rate - (filter.size()-1), filterIndex=filter.size()-1;
-                 dataIndex<(int)data->size(); dataIndex++, filterIndex--) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
         }
     }
-    return *this;
+    return data;
 }
 
 /**
@@ -1070,7 +1070,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(int rate, DspBuffer<U> & filter, bool trim
  */
 template <class T, class U>
 inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false) {
-    return data.decimate(rate, filter, trimTails);
+    return filter.decimate(data, rate, trimTails);
 }
 
 template <class T>
