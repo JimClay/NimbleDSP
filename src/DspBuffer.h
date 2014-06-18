@@ -73,6 +73,7 @@ public:
 	std::vector<T> buf;
     
     template <class U> friend class DspBuffer;
+    template <class U> friend class RealFirFilter;
     
     /*****************************************************************************************
                                         Constructors
@@ -332,7 +333,7 @@ public:
     /**
      * \brief Convolution method.
      *
-     * \param filter The filter that will convolve "this".
+     * \param data The buffer that will be filtered.
      * \param trimTails "False" tells the method to return the entire convolution, which is
      *      the length of "this" plus the length of "filter" - 1.  "True" tells the
      *      method to retain the size of "this" be trimming the tails at both ends of
@@ -348,8 +349,8 @@ public:
      * This method is equivalent to filtering with the \ref conv method and downsampling
      * with the \ref downsample method, but much more efficient.
      *
+     * \param data The buffer that will be filtered.
      * \param rate Indicates how much to downsample.
-     * \param filter The filter that will convolve "this".
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
      *      tells the method to retain the size of "this" be trimming the tails at both
      *      ends of the convolution.
@@ -363,8 +364,8 @@ public:
      *
      * This method is equivalent to upsampling followed by filtering, but is much more efficient.
      *
+     * \param data The buffer that will be filtered.
      * \param rate Indicates how much to upsample.
-     * \param filter The filter that will convolve "this".
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
      *      tells the method to retain the size of "this" be trimming the tails at both
      *      ends of the convolution.
@@ -379,9 +380,9 @@ public:
      * This method is equivalent to upsampling by "interpRate", filtering, and downsampling
      *      by "decimateRate", but is much more efficient.
      *
+     * \param data The buffer that will be filtered.
      * \param interpRate Indicates how much to upsample.
      * \param decimateRate Indicates how much to downsample.
-     * \param filter The filter that will convolve "this".
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
      *      tells the method to retain the size of "this" be trimming the tails at both
      *      ends of the convolution.
@@ -968,7 +969,7 @@ DspBuffer<U> & DspBuffer<T>::conv(DspBuffer<U> & data, bool trimTails) {
  *      the length of "this" plus the length of "filter" - 1.  "True" tells the
  *      function to retain the size of "this" be trimming the tails at both ends of
  *      the convolution.
- * \return Reference to "buffer", which holds the result of the convolution.
+ * \return Reference to "data", which holds the result of the convolution.
  */
 template <class T, class U>
 inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false) {
@@ -1066,7 +1067,7 @@ DspBuffer<U> & DspBuffer<T>::decimate(DspBuffer<U> & data, int rate, bool trimTa
  * \param trimTails "False" tells the function to return the entire convolution.  "True"
  *      tells the function to retain the size of "this" be trimming the tails at both
  *      ends of the convolution.
- * \return Reference to "buffer", which holds the result of the decimation.
+ * \return Reference to "data", which holds the result of the decimation.
  */
 template <class T, class U>
 inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false) {
@@ -1192,7 +1193,7 @@ DspBuffer<U> & DspBuffer<T>::interp(DspBuffer<U> & data, int rate, bool trimTail
  * \param trimTails "False" tells the function to return the entire convolution.  "True"
  *      tells the function to retain the size of "this" be trimming the tails at both
  *      ends of the convolution.
- * \return Reference to "buffer", which holds the result of the interpolation.
+ * \return Reference to "data", which holds the result of the interpolation.
  */
 template <class T, class U>
 inline DspBuffer<T> & interp(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false) {
@@ -1339,7 +1340,7 @@ DspBuffer<U> & DspBuffer<T>::resample(DspBuffer<U> & data, int interpRate, int d
  * \param trimTails "False" tells the function to return the entire convolution.  "True"
  *      tells the function to retain the size of "this" be trimming the tails at both
  *      ends of the convolution.
- * \return Reference to "buffer", which holds the result of the resampling.
+ * \return Reference to "data", which holds the result of the resampling.
  */
 template <class T, class U>
 inline DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate, DspBuffer<U> & filter, bool trimTails = false) {
