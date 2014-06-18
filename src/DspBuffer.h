@@ -371,7 +371,7 @@ public:
      * \return Reference to "this", which holds the result of the interpolation.
      */
     template <class U>
-    DspBuffer<T> & interp(int rate, DspBuffer<U> & filter, bool trimTails = false);
+    DspBuffer<U> & interp(DspBuffer<U> & data, int rate, bool trimTails = false);
     
     /**
      * \brief Resample method.
@@ -388,7 +388,7 @@ public:
      * \return Reference to "this", which holds the result of the resampling.
      */
     template <class U>
-    DspBuffer<T> & resample(int interpRate, int decimateRate, DspBuffer<U> & filter, bool trimTails = false);
+    DspBuffer<U> & resample(DspBuffer<U> & data, int interpRate, int decimateRate, bool trimTails = false);
 };
 
 
@@ -1075,43 +1075,43 @@ inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<U> & fil
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTails) {
+DspBuffer<U> & DspBuffer<T>::interp(DspBuffer<U> & data, int rate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
     int dataStart, filterStart;
-    std::vector<T> scratch;
-    std::vector<T> *data;
+    std::vector<U> scratch;
+    std::vector<U> *dataTmp;
     
-    if (scratchBuf == NULL) {
-        data = &scratch;
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
     }
     else {
-        data = scratchBuf;
+        dataTmp = data.scratchBuf;
     }
-    *data = this->buf;
+    *dataTmp = data.buf;
     
     if (trimTails) {
-        this->resize(this->size() * rate);
+        data.resize(data.size() * rate);
 
         // Initial partial overlap
-        int initialTrim = (filter.size() - 1) / 2;
-        for (resultIndex=0, dataStart=0; resultIndex<(int)filter.size()-1 - initialTrim; resultIndex++) {
-            buf[resultIndex] = 0;
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1 - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
         }
        
         // Middle full overlap
-        for (dataStart=0, filterStart=(int)filter.size()-1; resultIndex<(int)data->size()*rate - initialTrim; resultIndex++) {
-            buf[resultIndex] = 0;
+        for (dataStart=0, filterStart=(int)this->size()-1; resultIndex<(int)dataTmp->size()*rate - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             ++filterStart;
-            if (filterStart >= (int)filter.size()) {
+            if (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= rate;
@@ -1120,14 +1120,14 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
         }
 
         // Final partial overlap
-        for (; resultIndex<(int)this->size(); resultIndex++) {
-            buf[resultIndex] = 0;
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
-                 dataIndex<(int)data->size(); dataIndex++, filterIndex-=rate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             ++filterStart;
-            if (filterStart >= (int)filter.size()) {
+            if (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= rate;
@@ -1136,25 +1136,25 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
         }
     }
     else {
-        this->resize(this->size() * rate + filter.size() - 1 - (rate - 1));
+        data.resize(data.size() * rate + this->size() - 1 - (rate - 1));
         
         // Initial partial overlap
-        for (resultIndex=0, dataStart=0; resultIndex<(int)filter.size()-1; resultIndex++) {
-            buf[resultIndex] = 0;
+        for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (dataStart=0, filterStart=resultIndex; resultIndex<(int)data->size()*rate; resultIndex++) {
-            buf[resultIndex] = 0;
+        for (dataStart=0, filterStart=resultIndex; resultIndex<(int)dataTmp->size()*rate; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             ++filterStart;
-            if (filterStart >= (int)filter.size()) {
+            if (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= rate;
@@ -1163,14 +1163,14 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
         }
 
         // Final partial overlap
-        for (; resultIndex<(int)this->size(); resultIndex++) {
-            buf[resultIndex] = 0;
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
-                 dataIndex<(int)data->size(); dataIndex++, filterIndex-=rate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             ++filterStart;
-            if (filterStart >= (int) filter.size()) {
+            if (filterStart >= (int) this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= rate;
@@ -1178,7 +1178,7 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
             }
         }
     }
-    return *this;
+    return data;
 }
 
 /**
@@ -1196,42 +1196,42 @@ DspBuffer<T> & DspBuffer<T>::interp(int rate, DspBuffer<U> & filter, bool trimTa
  */
 template <class T, class U>
 inline DspBuffer<T> & interp(DspBuffer<T> & data, int rate, DspBuffer<U> & filter, bool trimTails = false) {
-    return data.interp(rate, filter, trimTails);
+    return filter.interp(data, rate, trimTails);
 }
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffer<U> & filter, bool trimTails) {
+DspBuffer<U> & DspBuffer<T>::resample(DspBuffer<U> & data, int interpRate, int decimateRate,  bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
     int dataStart, filterStart;
-    std::vector<T> scratch;
-    std::vector<T> *data;
+    std::vector<U> scratch;
+    std::vector<U> *dataTmp;
     
-    if (scratchBuf == NULL) {
-        data = &scratch;
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
     }
     else {
-        data = scratchBuf;
+        dataTmp = data.scratchBuf;
     }
-    *data = this->buf;
+    *dataTmp = data.buf;
     
     if (trimTails) {
-        int interpLen = this->size() * interpRate;
+        int interpLen = data.size() * interpRate;
         int resampLen = (interpLen + decimateRate - 1) / decimateRate;
-        this->resize(resampLen);
+        data.resize(resampLen);
 
         // Initial partial overlap
-        int initialTrim = (filter.size() - 1) / 2;
+        int initialTrim = (this->size() - 1) / 2;
         for (resultIndex=0, dataStart=0, filterStart=initialTrim;
-             resultIndex<((int)filter.size()-1 - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
-            buf[resultIndex] = 0;
+             resultIndex<((int)this->size()-1 - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             filterStart += decimateRate;
-            while (filterStart >= (int)filter.size()) {
+            while (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= interpRate;
@@ -1240,14 +1240,14 @@ DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffe
         }
         
         // Middle full overlap
-        for (; resultIndex<((int)data->size()*interpRate - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
-            buf[resultIndex] = 0;
+        for (; resultIndex<((int)dataTmp->size()*interpRate - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             filterStart += decimateRate;
-            while (filterStart >= (int)filter.size()) {
+            while (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= interpRate;
@@ -1256,14 +1256,14 @@ DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffe
         }
         
         // Final partial overlap
-        for (; resultIndex<(int)this->size(); resultIndex++) {
-            buf[resultIndex] = 0;
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
-                 dataIndex<(int)data->size(); dataIndex++, filterIndex-=interpRate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             filterStart += decimateRate;
-            while (filterStart >= (int)filter.size()) {
+            while (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= interpRate;
@@ -1272,18 +1272,18 @@ DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffe
         }
     }
     else {
-        int interpLen = this->size() * interpRate + filter.size() - 1 - (interpRate - 1);
+        int interpLen = data.size() * interpRate + this->size() - 1 - (interpRate - 1);
         int resampLen = (interpLen + decimateRate - 1) / decimateRate;
-        this->resize(resampLen);
+        data.resize(resampLen);
         
         // Initial partial overlap
-        for (resultIndex=0, dataStart=0, filterStart=0; resultIndex<((int)filter.size()-1+decimateRate-1)/decimateRate; resultIndex++) {
-            buf[resultIndex] = 0;
+        for (resultIndex=0, dataStart=0, filterStart=0; resultIndex<((int)this->size()-1+decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             filterStart += decimateRate;
-            while (filterStart >= (int)filter.size()) {
+            while (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= interpRate;
@@ -1292,14 +1292,14 @@ DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffe
         }
         
         // Middle full overlap
-        for (; resultIndex<((int)data->size()*interpRate + decimateRate-1)/decimateRate; resultIndex++) {
-            buf[resultIndex] = 0;
+        for (; resultIndex<((int)dataTmp->size()*interpRate + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             filterStart += decimateRate;
-            while (filterStart >= (int)filter.size()) {
+            while (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= interpRate;
@@ -1308,14 +1308,14 @@ DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffe
         }
         
         // Final partial overlap
-        for (; resultIndex<(int)this->size(); resultIndex++) {
-            buf[resultIndex] = 0;
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
-                 dataIndex<(int)data->size(); dataIndex++, filterIndex-=interpRate) {
-                buf[resultIndex] += (*data)[dataIndex] * filter[filterIndex];
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
             }
             filterStart += decimateRate;
-            while (filterStart >= (int)filter.size()) {
+            while (filterStart >= (int)this->size()) {
                 // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
                 // increment the data index and decrement the filter index.
                 filterStart -= interpRate;
@@ -1323,7 +1323,7 @@ DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffe
             }
         }
     }
-    return *this;
+    return data;
 }
 
 /**
@@ -1343,7 +1343,7 @@ DspBuffer<T> & DspBuffer<T>::resample(int interpRate, int decimateRate, DspBuffe
  */
 template <class T, class U>
 inline DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate, DspBuffer<U> & filter, bool trimTails = false) {
-    return data.resample(interpRate, decimateRate, filter, trimTails);
+    return filter.resample(data, interpRate, decimateRate, trimTails);
 }
 
 };
