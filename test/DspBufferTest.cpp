@@ -531,7 +531,7 @@ TEST(DspBufferFilter, FilterOdd) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     
     conv(buf, filter);
@@ -548,7 +548,7 @@ TEST(DspBufferFilter, FilterEven) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     
     conv(buf, filter);
@@ -566,7 +566,7 @@ TEST(DspBufferFilter, FilterOddTrim) {
     std::vector<double> scratchBuf;
 	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     
     conv(buf, filter, true);
@@ -583,7 +583,7 @@ TEST(DspBufferFilter, FilterEvenTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     
     conv(buf, filter, true);
@@ -600,7 +600,7 @@ TEST(DspBufferFilter, FilterSameLen) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     
     conv(buf, filter);
@@ -617,7 +617,7 @@ TEST(DspBufferFilter, FilterSameLenTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     
     conv(buf, filter, true);
@@ -634,7 +634,7 @@ TEST(DspBufferFilter, FilterLonger) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     
     conv(buf, filter);
@@ -651,7 +651,7 @@ TEST(DspBufferFilter, FilterLongerTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     
     conv(buf, filter, true);
@@ -704,7 +704,7 @@ TEST(DspBufferFilter, DecimateEvenOdd) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 3;
     
@@ -723,7 +723,7 @@ TEST(DspBufferFilter, DecimateEvenEven) {
     std::vector<double> scratchBuf;
 	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 3;
     
@@ -741,7 +741,7 @@ TEST(DspBufferFilter, DecimateOddEven) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 4;
     
@@ -759,7 +759,7 @@ TEST(DspBufferFilter, DecimateOddOdd) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 4;
     
@@ -777,7 +777,7 @@ TEST(DspBufferFilter, DecimateEvenOddTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 3;
     
@@ -795,7 +795,7 @@ TEST(DspBufferFilter, DecimateEvenEvenTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 3;
     
@@ -813,7 +813,7 @@ TEST(DspBufferFilter, DecimateOddEvenTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 4;
     
@@ -831,7 +831,7 @@ TEST(DspBufferFilter, DecimateOddOddTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 4;
     
@@ -849,7 +849,7 @@ TEST(DspBufferFilter, DecimateFilterSame) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -867,7 +867,7 @@ TEST(DspBufferFilter, DecimateFilterSameTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -885,7 +885,7 @@ TEST(DspBufferFilter, DecimateFilterLonger) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -903,7 +903,7 @@ TEST(DspBufferFilter, DecimateFilterLongerTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -922,7 +922,7 @@ TEST(DspBufferFilter, InterpEvenOdd) {
     std::vector<double> scratchBuf;
 	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 3;
     
@@ -940,7 +940,7 @@ TEST(DspBufferFilter, InterpEvenEven) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 3;
     
@@ -958,7 +958,7 @@ TEST(DspBufferFilter, InterpOddEven) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 4;
     
@@ -976,7 +976,7 @@ TEST(DspBufferFilter, InterpOddOdd) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 4;
     
@@ -994,7 +994,7 @@ TEST(DspBufferFilter, InterpOddEvenRate2) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -1012,7 +1012,7 @@ TEST(DspBufferFilter, InterpOddOddRate2) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -1030,7 +1030,7 @@ TEST(DspBufferFilter, InterpEvenOddTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 3;
     
@@ -1048,7 +1048,7 @@ TEST(DspBufferFilter, InterpEvenEvenTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 3;
     
@@ -1066,7 +1066,7 @@ TEST(DspBufferFilter, InterpOddEvenRate2Trim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -1084,7 +1084,7 @@ TEST(DspBufferFilter, InterpOddOddRate2Trim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -1102,7 +1102,7 @@ TEST(DspBufferFilter, InterpFilterSame) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -1120,7 +1120,7 @@ TEST(DspBufferFilter, InterpFilterSameTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -1138,7 +1138,7 @@ TEST(DspBufferFilter, InterpFilterLonger) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -1156,7 +1156,7 @@ TEST(DspBufferFilter, InterpFilterLongerTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int rate = 2;
     
@@ -1175,7 +1175,7 @@ TEST(DspBufferFilter, Resample1) {
     std::vector<double> scratchBuf;
 	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;
@@ -1194,7 +1194,7 @@ TEST(DspBufferFilter, Resample2) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 3;
     int decimateRate = 4;
@@ -1213,7 +1213,7 @@ TEST(DspBufferFilter, Resample3) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 4;
     int decimateRate = 3;
@@ -1232,7 +1232,7 @@ TEST(DspBufferFilter, Resample4) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 4;
     int decimateRate = 9;
@@ -1251,7 +1251,7 @@ TEST(DspBufferFilter, Resample5) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 2;
     int decimateRate = 5;
@@ -1270,7 +1270,7 @@ TEST(DspBufferFilter, Resample6) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 2;
     int decimateRate = 3;
@@ -1289,7 +1289,7 @@ TEST(DspBufferFilter, Resample7) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;
@@ -1308,7 +1308,7 @@ TEST(DspBufferFilter, Resample8) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 3;
     int decimateRate = 4;
@@ -1327,7 +1327,7 @@ TEST(DspBufferFilter, Resample9) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 2;
     int decimateRate = 3;
@@ -1346,7 +1346,7 @@ TEST(DspBufferFilter, Resample10) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 2;
     int decimateRate = 9;
@@ -1365,7 +1365,7 @@ TEST(DspBufferFilter, ResampleFilterSame) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 2;
     int decimateRate = 3;
@@ -1384,7 +1384,7 @@ TEST(DspBufferFilter, ResampleFilterSameTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 2;
     int decimateRate = 3;
@@ -1403,7 +1403,7 @@ TEST(DspBufferFilter, ResampleFilterLonger) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 2;
     int decimateRate = 3;
@@ -1422,7 +1422,7 @@ TEST(DspBufferFilter, ResampleFilterLongerTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<int> filter(filterTaps, numElements);
+    DspBuffer<double> filter(filterTaps, numElements);
     DspBuffer<double> input = buf;
     int interpRate = 2;
     int decimateRate = 3;

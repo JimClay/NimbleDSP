@@ -9,6 +9,7 @@
 #define SlickDsp_RealDspBuffer_h
 
 #include "DspBuffer.h"
+#include "ComplexDspBuffer.h"
 
 using namespace SlickDsp;
 
@@ -143,6 +144,8 @@ class RealDspBuffer : public DspBuffer<T> {
      * \return Reference to "this".
      */
     RealDspBuffer<T> & saturate(T val);
+    
+    virtual ComplexDspBuffer<T> & convComplex(ComplexDspBuffer<T> & data, bool trimTails);
 };
 
 template <class T>
@@ -327,6 +330,98 @@ RealDspBuffer<T> & RealDspBuffer<T>::saturate(T val) {
 template <class T>
 RealDspBuffer<T> & saturate(RealDspBuffer<T> & buffer, T val) {
     return buffer.saturate(val);
+}
+
+template <class T>
+ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, bool trimTails) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    std::vector< std::complex<T> > scratch;
+    std::vector< std::complex<T> > *dataTmp;
+    
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
+    }
+    else {
+        dataTmp = data.scratchBuf;
+    }
+    *dataTmp = data.buf;
+    
+    if (trimTails) {
+        // Initial partial overlap
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0; resultIndex<((int)this->size()-1) - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(int)dataTmp->size() - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+    }
+    else {
+        data.resize(data.size() + this->size() - 1);
+        
+        // Initial partial overlap
+        for (resultIndex=0; resultIndex<(int)this->size()-1; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(int)dataTmp->size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+    }
+    return data;
+}
+
+/**
+ * \brief Convolution function.
+ *
+ * \param data Buffer to operate on.
+ * \param filter The filter that will convolve "this".
+ * \param trimTails "False" tells the function to return the entire convolution, which is
+ *      the length of "this" plus the length of "filter" - 1.  "True" tells the
+ *      function to retain the size of "this" be trimming the tails at both ends of
+ *      the convolution.
+ * \return Reference to "data", which holds the result of the convolution.
+ */
+template <class T>
+inline ComplexDspBuffer<T> & conv(ComplexDspBuffer<T> & data, RealDspBuffer<T> & filter, bool trimTails = false) {
+    return filter.convComplex(data, trimTails);
 }
 
 };

@@ -571,7 +571,7 @@ TEST(RealDspBufferMethods, FilterOdd) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     RealDspBuffer<double> input = buf;
     
     conv(buf, filter);
@@ -588,7 +588,7 @@ TEST(RealDspBufferMethods, FilterEven) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     RealDspBuffer<double> input = buf;
     
     conv(buf, filter);
@@ -605,7 +605,7 @@ TEST(RealDspBufferMethods, FilterOddTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     RealDspBuffer<double> input = buf;
     
     conv(buf, filter, true);
@@ -622,7 +622,7 @@ TEST(RealDspBufferMethods, FilterEvenTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     RealDspBuffer<double> input = buf;
     
     conv(buf, filter, true);
@@ -675,7 +675,7 @@ TEST(RealDspBufferFilter, DecimateEvenOdd) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     RealDspBuffer<double> input = buf;
     int rate = 3;
     
@@ -693,7 +693,7 @@ TEST(RealDspBufferFilter, InterpEvenOdd) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     RealDspBuffer<double> input = buf;
     int rate = 3;
     
@@ -711,7 +711,7 @@ TEST(RealDspBufferFilter, Resample1) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	RealDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealDspBuffer<int> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     RealDspBuffer<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;

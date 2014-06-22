@@ -20,6 +20,9 @@ enum FilterOperationType {STREAMING, ONE_SHOT_RETURN_ALL_RESULTS, ONE_SHOT_TRIM_
 const size_t LARGEST_DATA_TYPE = sizeof(std::complex<long double>);
 
 template <class T>
+class ComplexDspBuffer;
+
+template <class T>
 class RealFirFilter : public RealDspBuffer<T> {
  protected:
     std::vector<char> state;
@@ -43,7 +46,7 @@ class RealFirFilter : public RealDspBuffer<T> {
      *      returns.
      */
     RealFirFilter<T>(unsigned size = DEFAULT_BUF_LEN, FilterOperationType operation = STREAMING, std::vector<T> *scratch = NULL) : RealDspBuffer<T>(size, scratch)
-            {state.resize((size - 1) * LARGEST_DATA_TYPE); filtOperation = operation;}
+            {state.resize((size - 1) * sizeof(std::complex<T>)); filtOperation = operation;}
     
     /**
      * \brief Vector constructor.
@@ -60,7 +63,7 @@ class RealFirFilter : public RealDspBuffer<T> {
      */
     template <typename U>
     RealFirFilter<T>(std::vector<U> data, FilterOperationType operation = STREAMING, std::vector<T> *scratch = NULL) : RealDspBuffer<T>(data, scratch)
-            {state.resize((data.size() - 1) * LARGEST_DATA_TYPE); filtOperation = operation;}
+            {state.resize((data.size() - 1) * sizeof(std::complex<T>)); filtOperation = operation;}
     
     /**
      * \brief Array constructor.
@@ -78,7 +81,7 @@ class RealFirFilter : public RealDspBuffer<T> {
      */
     template <typename U>
     RealFirFilter<T>(U *data, unsigned dataLen, FilterOperationType operation = STREAMING, std::vector<T> *scratch = NULL) : RealDspBuffer<T>(data, dataLen, scratch)
-            {state.resize((dataLen - 1) * LARGEST_DATA_TYPE); filtOperation = operation;}
+            {state.resize((dataLen - 1) * sizeof(std::complex<T>)); filtOperation = operation;}
     
     /**
      * \brief Copy constructor.
@@ -106,8 +109,8 @@ class RealFirFilter : public RealDspBuffer<T> {
      *      the convolution.
      * \return Reference to "this", which holds the result of the convolution.
      */
-    template <class U>
-    DspBuffer<U> & conv(DspBuffer<U> & data, bool trimTails = false);
+    virtual DspBuffer<T> & conv(DspBuffer<T> & data, bool trimTails = false);
+    virtual ComplexDspBuffer<T> & convComplex(ComplexDspBuffer<T> & data, bool trimTails = false);
     
     /**
      * \brief Decimate method.
@@ -160,13 +163,13 @@ class RealFirFilter : public RealDspBuffer<T> {
 
 
 template <class T>
-template <class U>
-DspBuffer<U> & RealFirFilter<T>::conv(DspBuffer<U> & data, bool trimTails) {
+DspBuffer<T> & RealFirFilter<T>::conv(DspBuffer<T> & data, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
-    std::vector<U> scratch;
-    std::vector<U> *dataTmp;
+    std::vector<T> scratch;
+    std::vector<T> *dataTmp;
+    T *stateArray = (T *) VECTOR_TO_ARRAY(state);
     
     if (data.scratchBuf == NULL) {
         dataTmp = &scratch;
@@ -179,17 +182,23 @@ DspBuffer<U> & RealFirFilter<T>::conv(DspBuffer<U> & data, bool trimTails) {
 
     case STREAMING:
         dataTmp->resize((this->size() - 1) + data.size());
-        memcpy(VECTOR_TO_ARRAY(*dataTmp), VECTOR_TO_ARRAY(state), (this->size() - 1) * sizeof(U));
-        memcpy(&(dataTmp[this->size() - 1]), VECTOR_TO_ARRAY(data), data.size() * sizeof(U));
+        for (int i=0; i<this->size()-1; i++) {
+            (*dataTmp)[i] = stateArray[i];
+        }
+        for (int i=0; i<data.size(); i++) {
+            (*dataTmp)[i + this->size() - 1] = data[i];
+        }
         
         for (resultIndex=0; resultIndex<(int)data.size(); resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex, filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
-        memcpy(VECTOR_TO_ARRAY(state), &(dataTmp[data.size()]), (this->size() - 1) * sizeof(U));
+        for (int i=0; i<this->size()-1; i++) {
+            stateArray[i] = (*dataTmp)[i + data.size()];
+        }
         break;
 
     case ONE_SHOT_RETURN_ALL_RESULTS:
@@ -200,7 +209,7 @@ DspBuffer<U> & RealFirFilter<T>::conv(DspBuffer<U> & data, bool trimTails) {
         for (resultIndex=0; resultIndex<(int)this->size()-1; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         
@@ -209,7 +218,7 @@ DspBuffer<U> & RealFirFilter<T>::conv(DspBuffer<U> & data, bool trimTails) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
 
@@ -218,7 +227,7 @@ DspBuffer<U> & RealFirFilter<T>::conv(DspBuffer<U> & data, bool trimTails) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         break;
@@ -231,7 +240,7 @@ DspBuffer<U> & RealFirFilter<T>::conv(DspBuffer<U> & data, bool trimTails) {
         for (resultIndex=0; resultIndex<((int)this->size()-1) - initialTrim; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         
@@ -240,7 +249,7 @@ DspBuffer<U> & RealFirFilter<T>::conv(DspBuffer<U> & data, bool trimTails) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
 
@@ -249,7 +258,111 @@ DspBuffer<U> & RealFirFilter<T>::conv(DspBuffer<U> & data, bool trimTails) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+        break;
+    }
+    return data;
+}
+
+template <class T>
+ComplexDspBuffer<T> & RealFirFilter<T>::convComplex(ComplexDspBuffer<T> & data, bool trimTails) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    std::vector< std::complex<T> > scratch;
+    std::vector< std::complex<T> > *dataTmp;
+    std::complex<T> *stateArray = (std::complex<T> *) VECTOR_TO_ARRAY(state);
+    
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
+    }
+    else {
+        dataTmp = data.scratchBuf;
+    }
+
+    switch (filtOperation) {
+
+    case STREAMING:
+        dataTmp->resize((this->size() - 1) + data.size());
+        for (int i=0; i<this->size()-1; i++) {
+            (*dataTmp)[i] = stateArray[i];
+        }
+        for (int i=0; i<data.size(); i++) {
+            (*dataTmp)[i + this->size() - 1] = data[i];
+        }
+        
+        for (resultIndex=0; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex, filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+        for (int i=0; i<this->size()-1; i++) {
+            stateArray[i] = (*dataTmp)[i + data.size()];
+        }
+        break;
+
+    case ONE_SHOT_RETURN_ALL_RESULTS:
+        *dataTmp = data.buf;
+        data.resize(data.size() + this->size() - 1);
+        
+        // Initial partial overlap
+        for (resultIndex=0; resultIndex<(int)this->size()-1; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(int)dataTmp->size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+        break;
+
+    case ONE_SHOT_TRIM_TAILS:
+        *dataTmp = data.buf;
+
+        // Initial partial overlap
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0; resultIndex<((int)this->size()-1) - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(int)dataTmp->size() - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         break;
@@ -282,7 +395,7 @@ DspBuffer<U> & RealFirFilter<T>::decimate(DspBuffer<U> & data, int rate, bool tr
         for (resultIndex=0; resultIndex<(((int)this->size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         
@@ -291,7 +404,7 @@ DspBuffer<U> & RealFirFilter<T>::decimate(DspBuffer<U> & data, int rate, bool tr
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
 
@@ -300,7 +413,7 @@ DspBuffer<U> & RealFirFilter<T>::decimate(DspBuffer<U> & data, int rate, bool tr
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
     }
@@ -311,7 +424,7 @@ DspBuffer<U> & RealFirFilter<T>::decimate(DspBuffer<U> & data, int rate, bool tr
         for (resultIndex=0; resultIndex<((int)this->size()-1+rate-1)/rate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         
@@ -320,7 +433,7 @@ DspBuffer<U> & RealFirFilter<T>::decimate(DspBuffer<U> & data, int rate, bool tr
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
 
@@ -329,7 +442,7 @@ DspBuffer<U> & RealFirFilter<T>::decimate(DspBuffer<U> & data, int rate, bool tr
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
     }
@@ -362,7 +475,7 @@ DspBuffer<U> & RealFirFilter<T>::interp(DspBuffer<U> & data, int rate, bool trim
         for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1 - initialTrim; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
        
@@ -371,7 +484,7 @@ DspBuffer<U> & RealFirFilter<T>::interp(DspBuffer<U> & data, int rate, bool trim
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -387,7 +500,7 @@ DspBuffer<U> & RealFirFilter<T>::interp(DspBuffer<U> & data, int rate, bool trim
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -405,7 +518,7 @@ DspBuffer<U> & RealFirFilter<T>::interp(DspBuffer<U> & data, int rate, bool trim
         for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         
@@ -414,7 +527,7 @@ DspBuffer<U> & RealFirFilter<T>::interp(DspBuffer<U> & data, int rate, bool trim
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -430,7 +543,7 @@ DspBuffer<U> & RealFirFilter<T>::interp(DspBuffer<U> & data, int rate, bool trim
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int) this->size()) {
@@ -473,7 +586,7 @@ DspBuffer<U> & RealFirFilter<T>::resample(DspBuffer<U> & data, int interpRate, i
              resultIndex<((int)this->size()-1 - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -489,7 +602,7 @@ DspBuffer<U> & RealFirFilter<T>::resample(DspBuffer<U> & data, int interpRate, i
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -505,7 +618,7 @@ DspBuffer<U> & RealFirFilter<T>::resample(DspBuffer<U> & data, int interpRate, i
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -525,7 +638,7 @@ DspBuffer<U> & RealFirFilter<T>::resample(DspBuffer<U> & data, int interpRate, i
         for (resultIndex=0, dataStart=0, filterStart=0; resultIndex<((int)this->size()-1+decimateRate-1)/decimateRate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -541,7 +654,7 @@ DspBuffer<U> & RealFirFilter<T>::resample(DspBuffer<U> & data, int interpRate, i
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -557,7 +670,7 @@ DspBuffer<U> & RealFirFilter<T>::resample(DspBuffer<U> & data, int interpRate, i
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {

@@ -14,6 +14,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <cmath>
+#include <complex>
 #include "kiss_fft.h"
 #include "kiss_fftr.h"
 
@@ -27,6 +28,9 @@ const unsigned DEFAULT_BUF_LEN = 0;
 #endif
 
 #define VECTOR_TO_ARRAY(x)      (&((x)[0]))
+
+template <class T>
+class ComplexDspBuffer;
 
 
 /**
@@ -73,6 +77,7 @@ public:
 	std::vector<T> buf;
     
     template <class U> friend class DspBuffer;
+    template <class U> friend class RealDspBuffer;
     template <class U> friend class RealFirFilter;
     
     /*****************************************************************************************
@@ -340,8 +345,7 @@ public:
      *      the convolution.
      * \return Reference to "this", which holds the result of the convolution.
      */
-    template <class U>
-    DspBuffer<U> & conv(DspBuffer<U> & data, bool trimTails = false);
+    virtual DspBuffer<T> & conv(DspBuffer<T> & data, bool trimTails = false);
     
     /**
      * \brief Decimate method.
@@ -884,13 +888,12 @@ DspBuffer<T> & diff(DspBuffer<T> & buffer, T & previousVal) {
 }
 
 template <class T>
-template <class U>
-DspBuffer<U> & DspBuffer<T>::conv(DspBuffer<U> & data, bool trimTails) {
+DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
-    std::vector<U> scratch;
-    std::vector<U> *dataTmp;
+    std::vector<T> scratch;
+    std::vector<T> *dataTmp;
     
     if (data.scratchBuf == NULL) {
         dataTmp = &scratch;
@@ -971,8 +974,8 @@ DspBuffer<U> & DspBuffer<T>::conv(DspBuffer<U> & data, bool trimTails) {
  *      the convolution.
  * \return Reference to "data", which holds the result of the convolution.
  */
-template <class T, class U>
-inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<U> & filter, bool trimTails = false) {
+template <class T>
+inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<T> & filter, bool trimTails = false) {
     return filter.conv(data, trimTails);
 }
 

@@ -584,7 +584,7 @@ TEST(ComplexDspBufferMethods, FilterOdd) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<double> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     ComplexDspBuffer<double> input = buf;
     
     conv(buf, filter);
@@ -601,7 +601,7 @@ TEST(ComplexDspBufferMethods, FilterEven) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<double> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     ComplexDspBuffer<double> input = buf;
     
     conv(buf, filter);
@@ -618,7 +618,7 @@ TEST(ComplexDspBufferMethods, FilterOddTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<double> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     ComplexDspBuffer<double> input = buf;
     
     conv(buf, filter, true);
@@ -635,7 +635,7 @@ TEST(ComplexDspBufferMethods, FilterEvenTrim) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    DspBuffer<double> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     ComplexDspBuffer<double> input = buf;
     
     conv(buf, filter, true);
