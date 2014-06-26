@@ -390,8 +390,8 @@ DspBuffer<T> & RealFirFilter<T>::decimate(DspBuffer<T> & data, int rate, bool tr
 
     switch (filtOperation) {
 
-    case STREAMING:
-        dataTmp->resize((this->size() - 1 - phase) + data.size());
+    case STREAMING: {
+        dataTmp->resize((this->size() - 1) + data.size());
         for (int i=0; i<this->size()-1; i++) {
             (*dataTmp)[i] = savedDataArray[i];
         }
@@ -399,41 +399,40 @@ DspBuffer<T> & RealFirFilter<T>::decimate(DspBuffer<T> & data, int rate, bool tr
             (*dataTmp)[i + this->size() - 1] = data[i];
         }
         
-        int dataIndexOffset;
-        if (phase == 0) {
-            dataIndexOffset = 0;
-        }
-        else {
-            dataIndexOffset = rate - phase;
-        }
+        int originalDataSize = data.size();
+        data.resize((data.size() - phase + rate - 1)/rate);
         for (resultIndex=0; resultIndex<(int)data.size(); resultIndex++) {
             data[resultIndex] = 0;
-            for (dataIndex=resultIndex + dataIndexOffset, filterIndex=this->size()-1;
+            for (dataIndex=resultIndex*rate + phase, filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
                 data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
+        int nextResultDataPoint = resultIndex * rate + phase;
+        phase = nextResultDataPoint - originalDataSize;
+
         for (int i=0; i<this->size()-1; i++) {
-            savedDataArray[i] = (*dataTmp)[i + data.size()];
+            savedDataArray[i] = (*dataTmp)[i + originalDataSize];
+        }
         }
         break;
 
     case ONE_SHOT_RETURN_ALL_RESULTS:
         *dataTmp = data.buf;
-        data.resize(data.size() + this->size() - 1);
+        data.resize(((data.size() + this->size() - 1) + (rate - 1)) / rate);
         
         // Initial partial overlap
-        for (resultIndex=0; resultIndex<(int)this->size()-1; resultIndex++) {
+        for (resultIndex=0; resultIndex<((int)this->size()-1+rate-1)/rate; resultIndex++) {
             data[resultIndex] = 0;
-            for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+            for (dataIndex=0, filterIndex=resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
                 data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (; resultIndex<(int)dataTmp->size(); resultIndex++) {
+        for (; resultIndex<((int)dataTmp->size()+rate-1)/rate; resultIndex++) {
             data[resultIndex] = 0;
-            for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
+            for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
                 data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
@@ -442,7 +441,7 @@ DspBuffer<T> & RealFirFilter<T>::decimate(DspBuffer<T> & data, int rate, bool tr
         // Final partial overlap
         for (; resultIndex<(int)data.size(); resultIndex++) {
             data[resultIndex] = 0;
-            for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
+            for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
                 data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
@@ -451,20 +450,21 @@ DspBuffer<T> & RealFirFilter<T>::decimate(DspBuffer<T> & data, int rate, bool tr
 
     case ONE_SHOT_TRIM_TAILS:
         *dataTmp = data.buf;
-
+        data.resize((data.size() + rate - 1) / rate);
+        
         // Initial partial overlap
         int initialTrim = (this->size() - 1) / 2;
-        for (resultIndex=0; resultIndex<((int)this->size()-1) - initialTrim; resultIndex++) {
+        for (resultIndex=0; resultIndex<(((int)this->size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
             data[resultIndex] = 0;
-            for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
                 data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
         }
         
         // Middle full overlap
-        for (; resultIndex<(int)dataTmp->size() - initialTrim; resultIndex++) {
+        for (; resultIndex<((int)dataTmp->size() - initialTrim + rate - 1)/rate; resultIndex++) {
             data[resultIndex] = 0;
-            for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+            for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
                 data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
@@ -473,7 +473,7 @@ DspBuffer<T> & RealFirFilter<T>::decimate(DspBuffer<T> & data, int rate, bool tr
         // Final partial overlap
         for (; resultIndex<(int)data.size(); resultIndex++) {
             data[resultIndex] = 0;
-            for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+            for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
                 data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
             }
