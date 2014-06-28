@@ -724,7 +724,7 @@ TEST(ComplexDspBufferFilter, Resample1) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    ComplexDspBuffer<double> filter(filterTaps, numElements);
+    RealDspBuffer<double> filter(filterTaps, numElements);
     ComplexDspBuffer<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;

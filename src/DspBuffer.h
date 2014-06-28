@@ -390,8 +390,7 @@ public:
      *      ends of the convolution.
      * \return Reference to "this", which holds the result of the resampling.
      */
-    template <class U>
-    DspBuffer<U> & resample(DspBuffer<U> & data, int interpRate, int decimateRate, bool trimTails = false);
+    virtual DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate, bool trimTails = false);
 };
 
 
@@ -1200,14 +1199,13 @@ inline DspBuffer<T> & interp(DspBuffer<T> & data, int rate, DspBuffer<T> & filte
 }
 
 template <class T>
-template <class U>
-DspBuffer<U> & DspBuffer<T>::resample(DspBuffer<U> & data, int interpRate, int decimateRate,  bool trimTails) {
+DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int decimateRate,  bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
     int dataStart, filterStart;
-    std::vector<U> scratch;
-    std::vector<U> *dataTmp;
+    std::vector<T> scratch;
+    std::vector<T> *dataTmp;
     
     if (data.scratchBuf == NULL) {
         dataTmp = &scratch;
@@ -1341,8 +1339,9 @@ DspBuffer<U> & DspBuffer<T>::resample(DspBuffer<U> & data, int interpRate, int d
  *      ends of the convolution.
  * \return Reference to "data", which holds the result of the resampling.
  */
-template <class T, class U>
-inline DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate, DspBuffer<U> & filter, bool trimTails = false) {
+template <class T>
+inline DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate,
+            DspBuffer<T> & filter, bool trimTails = false) {
     return filter.resample(data, interpRate, decimateRate, trimTails);
 }
 

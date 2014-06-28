@@ -176,6 +176,21 @@ class RealDspBuffer : public DspBuffer<T> {
      */
     virtual ComplexDspBuffer<T> & interpComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails = false);
     
+    /**
+     * \brief Resample method.
+     *
+     * This method is equivalent to upsampling by "interpRate", filtering, and downsampling
+     *      by "decimateRate", but is much more efficient.
+     *
+     * \param data The buffer that will be filtered.
+     * \param interpRate Indicates how much to upsample.
+     * \param decimateRate Indicates how much to downsample.
+     * \param trimTails "False" tells the method to return the entire convolution.  "True"
+     *      tells the method to retain the size of "this" be trimming the tails at both
+     *      ends of the convolution.
+     * \return Reference to "this", which holds the result of the resampling.
+     */
+    virtual ComplexDspBuffer<T> & resampleComplex(ComplexDspBuffer<T> & data, int interpRate, int decimateRate, bool trimTails = false);
 };
 
 template <class T>
@@ -674,6 +689,153 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
 template <class T>
 inline ComplexDspBuffer<T> & interp(ComplexDspBuffer<T> & data, int rate, RealDspBuffer<T> & filter, bool trimTails = false) {
     return filter.interpComplex(data, rate, trimTails);
+}
+
+template <class T>
+ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & data, int interpRate, int decimateRate,  bool trimTails) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    int dataStart, filterStart;
+    std::vector< std::complex<T> > scratch;
+    std::vector< std::complex<T> > *dataTmp;
+    
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
+    }
+    else {
+        dataTmp = data.scratchBuf;
+    }
+    *dataTmp = data.buf;
+    
+    if (trimTails) {
+        int interpLen = data.size() * interpRate;
+        int resampLen = (interpLen + decimateRate - 1) / decimateRate;
+        data.resize(resampLen);
+
+        // Initial partial overlap
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0, dataStart=0, filterStart=initialTrim;
+             resultIndex<((int)this->size()-1 - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<((int)dataTmp->size()*interpRate - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+        
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+    }
+    else {
+        int interpLen = data.size() * interpRate + this->size() - 1 - (interpRate - 1);
+        int resampLen = (interpLen + decimateRate - 1) / decimateRate;
+        data.resize(resampLen);
+        
+        // Initial partial overlap
+        for (resultIndex=0, dataStart=0, filterStart=0; resultIndex<((int)this->size()-1+decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<((int)dataTmp->size()*interpRate + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+        
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+    }
+    return data;
+}
+
+/**
+ * \brief Resample function.
+ *
+ * This function is equivalent to upsampling by "interpRate", filtering, and downsampling
+ *      by "decimateRate", but is much more efficient.
+ *
+ * \param data Buffer to operate on.
+ * \param interpRate Indicates how much to upsample.
+ * \param decimateRate Indicates how much to downsample.
+ * \param filter The filter that will convolve "data".
+ * \param trimTails "False" tells the function to return the entire convolution.  "True"
+ *      tells the function to retain the size of "this" be trimming the tails at both
+ *      ends of the convolution.
+ * \return Reference to "data", which holds the result of the resampling.
+ */
+template <class T>
+inline ComplexDspBuffer<T> & resample(ComplexDspBuffer<T> & data, int interpRate, int decimateRate,
+            RealDspBuffer<T> & filter, bool trimTails = false) {
+    return filter.resampleComplex(data, interpRate, decimateRate, trimTails);
 }
 
 };
