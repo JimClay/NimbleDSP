@@ -162,6 +162,20 @@ class RealDspBuffer : public DspBuffer<T> {
      */
     virtual ComplexDspBuffer<T> & decimateComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails = false);
     
+    /**
+     * \brief Interpolation method.
+     *
+     * This method is equivalent to upsampling followed by filtering, but is much more efficient.
+     *
+     * \param data The buffer that will be filtered.
+     * \param rate Indicates how much to upsample.
+     * \param trimTails "False" tells the method to return the entire convolution.  "True"
+     *      tells the method to retain the size of "this" be trimming the tails at both
+     *      ends of the convolution.
+     * \return Reference to "this", which holds the result of the interpolation.
+     */
+    virtual ComplexDspBuffer<T> & interpComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails = false);
+    
 };
 
 template <class T>
@@ -535,6 +549,131 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
 template <class T>
 inline ComplexDspBuffer<T> & decimate(ComplexDspBuffer<T> & data, int rate, RealDspBuffer<T> & filter, bool trimTails = false) {
     return filter.decimateComplex(data, rate, trimTails);
+}
+
+template <class T>
+ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    int dataStart, filterStart;
+    std::vector< std::complex<T> > scratch;
+    std::vector< std::complex<T> > *dataTmp;
+    
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
+    }
+    else {
+        dataTmp = data.scratchBuf;
+    }
+    *dataTmp = data.buf;
+    
+    if (trimTails) {
+        data.resize(data.size() * rate);
+
+        // Initial partial overlap
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1 - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+       
+        // Middle full overlap
+        for (dataStart=0, filterStart=(int)this->size()-1; resultIndex<(int)dataTmp->size()*rate - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            ++filterStart;
+            if (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= rate;
+                ++dataStart;
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            ++filterStart;
+            if (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= rate;
+                ++dataStart;
+            }
+        }
+    }
+    else {
+        data.resize(data.size() * rate + this->size() - 1 - (rate - 1));
+        
+        // Initial partial overlap
+        for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (dataStart=0, filterStart=resultIndex; resultIndex<(int)dataTmp->size()*rate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            ++filterStart;
+            if (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= rate;
+                ++dataStart;
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+            }
+            ++filterStart;
+            if (filterStart >= (int) this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= rate;
+                ++dataStart;
+            }
+        }
+    }
+    return data;
+}
+
+/**
+ * \brief Interpolation function.
+ *
+ * This function is equivalent to upsampling followed by filtering, but is much more efficient.
+ *
+ * \param data Buffer to operate on.
+ * \param rate Indicates how much to upsample.
+ * \param filter The filter that will convolve "this".
+ * \param trimTails "False" tells the function to return the entire convolution.  "True"
+ *      tells the function to retain the size of "this" be trimming the tails at both
+ *      ends of the convolution.
+ * \return Reference to "data", which holds the result of the interpolation.
+ */
+template <class T>
+inline ComplexDspBuffer<T> & interp(ComplexDspBuffer<T> & data, int rate, RealDspBuffer<T> & filter, bool trimTails = false) {
+    return filter.interpComplex(data, rate, trimTails);
 }
 
 };

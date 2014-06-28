@@ -325,3 +325,81 @@ TEST(RealFirFilter, DecimateStream1) {
         EXPECT_EQ(expectedData3[i], buf[i]);
     }
 }
+
+TEST(DspBufferFilter, InterpNoTrim1) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    double filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {1, 2, 3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+    std::vector<double> scratchBuf;
+	RealDspBuffer<double> buf(inputData, numElements, &scratchBuf);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealFirFilter<double> filter(filterTaps, numElements);
+    RealDspBuffer<double> input = buf;
+    int rate = 3;
+    filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
+    
+    interp(buf, rate, filter);
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(DspBufferFilter, InterpTrim1) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    double filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+    std::vector<double> scratchBuf;
+	RealDspBuffer<double> buf(inputData, numElements, &scratchBuf);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealFirFilter<double> filter(filterTaps, numElements);
+    RealDspBuffer<double> input = buf;
+    int rate = 3;
+    filter.filtOperation = ONE_SHOT_TRIM_TAILS;
+    
+    interp(buf, rate, filter);
+    EXPECT_EQ(input.size()*rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(RealFirFilter, InterpStream1) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5};
+    double inputData2[] = {-6};
+    double inputData3[] = {-7, -8, -9, -10, -11, -12, -13, -14, -15, -16};
+    double filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {1, 2, 3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -36, -51, -24, -41, -58, -27, -46, -65, -30, -51, -72, -33, -56, -79, -36, -61, -86, -39, -66, -93, -42, -71, -100, -45, -76, -107, -48, -64, -80};
+    int rate = 3;
+    
+    unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealFirFilter<double> filter(filterTaps, numElements);
+
+    int numResults = 0;
+    numElements = sizeof(inputData)/sizeof(inputData[0]);
+	DspBuffer<double> buf(inputData, numElements);
+    interp(buf, rate, filter);
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+    numResults += buf.size();
+    
+    numElements = sizeof(inputData2)/sizeof(inputData[0]);
+	buf = DspBuffer<double>(inputData2, numElements);
+    interp(buf, rate, filter);
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i + numResults], buf[i]);
+    }
+    numResults += buf.size();
+    
+    numElements = sizeof(inputData3)/sizeof(inputData[0]);
+	buf = DspBuffer<double>(inputData3, numElements);
+    interp(buf, rate, filter);
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i + numResults], buf[i]);
+    }
+    numResults += buf.size();
+    EXPECT_GE(18*rate, numResults);
+}
