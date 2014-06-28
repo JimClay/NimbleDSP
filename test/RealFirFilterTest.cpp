@@ -403,3 +403,80 @@ TEST(RealFirFilter, InterpStream1) {
     numResults += buf.size();
     EXPECT_GE(18*rate, numResults);
 }
+
+TEST(RealFirFilter, InterpComplex1) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    double filterTaps[] = {1, 2, 3, 4, 5};
+    std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(2, 4), std::complex<double>(3, 6), std::complex<double>(4, 11), std::complex<double>(5, 16), std::complex<double>(0, 9), std::complex<double>(-1, 16), std::complex<double>(-2, 23), std::complex<double>(-3, 12), std::complex<double>(-6, 21), std::complex<double>(-9, 30), std::complex<double>(-6, 15), std::complex<double>(-11, 26), std::complex<double>(-16, 37), std::complex<double>(-9, 18), std::complex<double>(-16, 31), std::complex<double>(-23, 44), std::complex<double>(-12, 21), std::complex<double>(-21, 36), std::complex<double>(-30, 51), std::complex<double>(-15, 24), std::complex<double>(-26, 41), std::complex<double>(-37, 58), std::complex<double>(-18, 27), std::complex<double>(-31, 46), std::complex<double>(-44, 65), std::complex<double>(-21, 30), std::complex<double>(-28, 40), std::complex<double>(-35, 50), std::complex<double>(0, 0), std::complex<double>(0, 0)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealFirFilter<double> filter(filterTaps, numElements);
+    ComplexDspBuffer<double> input = buf;
+    int rate = 3;
+    filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
+    
+    
+    interp(buf, rate, filter);
+    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(RealFirFilter, InterpComplexTrim1) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    double filterTaps[] = {1, 2, 3, 4, 5};
+    std::complex<double> expectedData[] = {std::complex<double>(3, 6), std::complex<double>(4, 11), std::complex<double>(5, 16), std::complex<double>(0, 9), std::complex<double>(-1, 16), std::complex<double>(-2, 23), std::complex<double>(-3, 12), std::complex<double>(-6, 21), std::complex<double>(-9, 30), std::complex<double>(-6, 15), std::complex<double>(-11, 26), std::complex<double>(-16, 37), std::complex<double>(-9, 18), std::complex<double>(-16, 31), std::complex<double>(-23, 44), std::complex<double>(-12, 21), std::complex<double>(-21, 36), std::complex<double>(-30, 51), std::complex<double>(-15, 24), std::complex<double>(-26, 41), std::complex<double>(-37, 58), std::complex<double>(-18, 27), std::complex<double>(-31, 46), std::complex<double>(-44, 65), std::complex<double>(-21, 30), std::complex<double>(-28, 40), std::complex<double>(-35, 50), std::complex<double>(0, 0), std::complex<double>(0, 0)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealFirFilter<double> filter(filterTaps, numElements);
+    ComplexDspBuffer<double> input = buf;
+    int rate = 3;
+    filter.filtOperation = ONE_SHOT_TRIM_TAILS;
+    
+    interp(buf, rate, filter);
+    EXPECT_EQ(input.size()*rate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(RealFirFilter, InterpComplexStream1) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8)};
+    std::complex<double> inputData2[] = {std::complex<double>(-6, 9)};
+    std::complex<double> inputData3[] = {std::complex<double>(-7, 10), std::complex<double>(-8, 11), std::complex<double>(-9, 12), std::complex<double>(-10, 13), std::complex<double>(-11, 14), std::complex<double>(-12, 15), std::complex<double>(-13, 16), std::complex<double>(-14, 17), std::complex<double>(-15, 18), std::complex<double>(-16, 19)};
+    double filterTaps[] = {1, 2, 3, 4, 5};
+    std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(2, 4), std::complex<double>(3, 6), std::complex<double>(4, 8), std::complex<double>(5, 13), std::complex<double>(0, 6), std::complex<double>(0, 9), std::complex<double>(0, 12), std::complex<double>(-1, 19), std::complex<double>(-2, 8), std::complex<double>(-3, 12), std::complex<double>(-4, 16), std::complex<double>(-7, 25), std::complex<double>(-4, 10), std::complex<double>(-6, 15), std::complex<double>(-8, 20), std::complex<double>(-13, 31), std::complex<double>(-6, 12), std::complex<double>(-9, 18), std::complex<double>(-12, 24), std::complex<double>(-19, 37), std::complex<double>(-8, 14), std::complex<double>(-12, 21), std::complex<double>(-16, 28), std::complex<double>(-25, 43), std::complex<double>(-10, 16), std::complex<double>(-15, 24), std::complex<double>(-20, 32), std::complex<double>(-31, 49), std::complex<double>(-12, 18), std::complex<double>(-18, 27), std::complex<double>(-24, 36), std::complex<double>(-37, 55), std::complex<double>(-14, 20), std::complex<double>(-21, 30), std::complex<double>(-28, 40), std::complex<double>(-43, 61), std::complex<double>(-16, 22), std::complex<double>(-24, 33), std::complex<double>(-32, 44), std::complex<double>(-49, 67), std::complex<double>(-18, 24), std::complex<double>(-27, 36), std::complex<double>(-36, 48), std::complex<double>(-55, 73), std::complex<double>(-20, 26), std::complex<double>(-30, 39), std::complex<double>(-40, 52), std::complex<double>(-61, 79), std::complex<double>(-22, 28), std::complex<double>(-33, 42), std::complex<double>(-44, 56), std::complex<double>(-67, 85), std::complex<double>(-24, 30), std::complex<double>(-36, 45), std::complex<double>(-48, 60), std::complex<double>(-73, 91), std::complex<double>(-26, 32), std::complex<double>(-39, 48), std::complex<double>(-52, 64), std::complex<double>(-79, 97), std::complex<double>(-28, 34), std::complex<double>(-42, 51), std::complex<double>(-56, 68), std::complex<double>(-85, 103), std::complex<double>(-30, 36), std::complex<double>(-45, 54), std::complex<double>(-60, 72), std::complex<double>(-91, 109), std::complex<double>(-32, 38), std::complex<double>(-48, 57), std::complex<double>(-64, 76), std::complex<double>(-80, 95)};
+    int rate = 4;
+    
+    unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    RealFirFilter<double> filter(filterTaps, numElements);
+
+    int numResults = 0;
+    numElements = sizeof(inputData)/sizeof(inputData[0]);
+	ComplexDspBuffer<double> buf(inputData, numElements);
+    interp(buf, rate, filter);
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+    numResults += buf.size();
+    
+    numElements = sizeof(inputData2)/sizeof(inputData[0]);
+	buf = ComplexDspBuffer<double>(inputData2, numElements);
+    interp(buf, rate, filter);
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i + numResults], buf[i]);
+    }
+    numResults += buf.size();
+    
+    numElements = sizeof(inputData3)/sizeof(inputData[0]);
+	buf = ComplexDspBuffer<double>(inputData3, numElements);
+    interp(buf, rate, filter);
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i + numResults], buf[i]);
+    }
+    numResults += buf.size();
+    EXPECT_GE(18*rate, numResults);
+}
