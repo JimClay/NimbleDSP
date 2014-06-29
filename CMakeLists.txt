@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-project (SlickDsp)
+project (NimbleDSP)
 
 #set(CMAKE_SUPPRESS_REGENERATION TRUE) # For doing test coverage
 
@@ -15,5 +15,5 @@ INCLUDE_DIRECTORIES(src ${KISSFFT_DIR} ${KISSFFT_DIR}/tools ${GOOGLETEST_DIR}/in
 add_subdirectory (${GOOGLETEST_DIR} gtest)
 
 AUX_SOURCE_DIRECTORY(test TEST_SOURCES)
-add_executable (SlickDspTests ${SOURCE_HEADERS} ${TEST_SOURCES})
-target_link_libraries (SlickDspTests kissfft gtest)
+add_executable (NimbleDspTests ${SOURCE_HEADERS} ${TEST_SOURCES})
+target_link_libraries (NimbleDspTests kissfft gtest)
