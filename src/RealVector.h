@@ -22,25 +22,25 @@ THE SOFTWARE.
 
 
 /**
- * @file RealDspBuffer.h
+ * @file RealVector.h
  *
- * Definition of the template class RealDspBuffer.
+ * Definition of the template class RealVector.
  */
 
-#ifndef NimbleDSP_RealDspBuffer_h
-#define NimbleDSP_RealDspBuffer_h
+#ifndef NimbleDSP_RealVector_h
+#define NimbleDSP_RealVector_h
 
-#include "DspBuffer.h"
-#include "ComplexDspBuffer.h"
+#include "Vector.h"
+#include "ComplexVector.h"
 
 
 namespace NimbleDSP {
 
 /**
- * \brief DspBuffer class for real numbers.
+ * \brief Vector class for real numbers.
  */
 template <class T>
-class RealDspBuffer : public DspBuffer<T> {
+class RealVector : public Vector<T> {
  public:
     /*****************************************************************************************
                                         Constructors
@@ -57,7 +57,7 @@ class RealDspBuffer : public DspBuffer<T> {
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      */
-    RealDspBuffer<T>(unsigned size = DEFAULT_BUF_LEN, std::vector<T> *scratch = NULL) : DspBuffer<T>(size, scratch) {}
+    RealVector<T>(unsigned size = DEFAULT_BUF_LEN, std::vector<T> *scratch = NULL) : Vector<T>(size, scratch) {}
     
     /**
      * \brief Vector constructor.
@@ -73,7 +73,7 @@ class RealDspBuffer : public DspBuffer<T> {
      *      returns.
      */
     template <typename U>
-    RealDspBuffer<T>(std::vector<U> data, std::vector<T> *scratch = NULL) : DspBuffer<T>(data, scratch) {}
+    RealVector<T>(std::vector<U> data, std::vector<T> *scratch = NULL) : Vector<T>(data, scratch) {}
     
     /**
      * \brief Array constructor.
@@ -90,12 +90,12 @@ class RealDspBuffer : public DspBuffer<T> {
      *      returns.
      */
     template <typename U>
-    RealDspBuffer<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) : DspBuffer<T>(data, dataLen, scratch) {}
+    RealVector<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) : Vector<T>(data, dataLen, scratch) {}
     
     /**
      * \brief Copy constructor.
      */
-    RealDspBuffer<T>(const RealDspBuffer<T>& other) {this->buf = other.buf;}
+    RealVector<T>(const RealVector<T>& other) {this->vec = other.vec;}
     
     /*****************************************************************************************
                                             Operators
@@ -103,7 +103,7 @@ class RealDspBuffer : public DspBuffer<T> {
     /**
      * \brief Assignment operator.
      */
-    RealDspBuffer<T>& operator=(const DspBuffer<T>& rhs) {this->buf = rhs.buf; return *this;}
+    RealVector<T>& operator=(const Vector<T>& rhs) {this->vec = rhs.vec; return *this;}
     
     /*****************************************************************************************
                                              Methods
@@ -114,7 +114,7 @@ class RealDspBuffer : public DspBuffer<T> {
      * \param exponent Exponent to use.
      * \return Reference to "this".
      */
-    RealDspBuffer<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
+    RealVector<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
     
     /**
      * \brief Returns the mean (average) of the data in \ref buf.
@@ -164,7 +164,7 @@ class RealDspBuffer : public DspBuffer<T> {
      *      any that are less than -val are made equal to -val.
      * \return Reference to "this".
      */
-    RealDspBuffer<T> & saturate(T val);
+    RealVector<T> & saturate(T val);
     
     /**
      * \brief Convolution method for complex data.
@@ -176,7 +176,7 @@ class RealDspBuffer : public DspBuffer<T> {
      *      the convolution.
      * \return Reference to "data", which holds the result of the convolution.
      */
-    virtual ComplexDspBuffer<T> & convComplex(ComplexDspBuffer<T> & data, bool trimTails);
+    virtual ComplexVector<T> & convComplex(ComplexVector<T> & data, bool trimTails);
     
     /**
      * \brief Decimate method for complex data.
@@ -191,7 +191,7 @@ class RealDspBuffer : public DspBuffer<T> {
      *      ends of the convolution.
      * \return Reference to "data", which holds the result of the decimation.
      */
-    virtual ComplexDspBuffer<T> & decimateComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails = false);
+    virtual ComplexVector<T> & decimateComplex(ComplexVector<T> & data, int rate, bool trimTails = false);
     
     /**
      * \brief Interpolation method for complex data.
@@ -205,7 +205,7 @@ class RealDspBuffer : public DspBuffer<T> {
      *      ends of the convolution.
      * \return Reference to "data", which holds the result of the interpolation.
      */
-    virtual ComplexDspBuffer<T> & interpComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails = false);
+    virtual ComplexVector<T> & interpComplex(ComplexVector<T> & data, int rate, bool trimTails = false);
     
     /**
      * \brief Resample method for complex data.
@@ -221,13 +221,13 @@ class RealDspBuffer : public DspBuffer<T> {
      *      ends of the convolution.
      * \return Reference to "data", which holds the result of the resampling.
      */
-    virtual ComplexDspBuffer<T> & resampleComplex(ComplexDspBuffer<T> & data, int interpRate, int decimateRate, bool trimTails = false);
+    virtual ComplexVector<T> & resampleComplex(ComplexVector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
 };
 
 template <class T>
-RealDspBuffer<T> & RealDspBuffer<T>::pow(const SLICKDSP_FLOAT_TYPE exponent) {
+RealVector<T> & RealVector<T>::pow(const SLICKDSP_FLOAT_TYPE exponent) {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = (T) std::pow(this->buf[i], exponent);
+        this->vec[i] = (T) std::pow(this->vec[i], exponent);
     }
     return *this;
 }
@@ -240,16 +240,16 @@ RealDspBuffer<T> & RealDspBuffer<T>::pow(const SLICKDSP_FLOAT_TYPE exponent) {
  * \return Reference to "buffer".
  */
 template <class T>
-RealDspBuffer<T> & pow(RealDspBuffer<T> & buffer, const SLICKDSP_FLOAT_TYPE exponent) {
+RealVector<T> & pow(RealVector<T> & buffer, const SLICKDSP_FLOAT_TYPE exponent) {
     return buffer.pow(exponent);
 }
 
 template <class T>
-const SLICKDSP_FLOAT_TYPE RealDspBuffer<T>::mean() const {
+const SLICKDSP_FLOAT_TYPE RealVector<T>::mean() const {
     assert(this->size() > 0);
     SLICKDSP_FLOAT_TYPE sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
-        sum += this->buf[i];
+        sum += this->vec[i];
     }
     return sum / this->size();
 }
@@ -259,17 +259,17 @@ const SLICKDSP_FLOAT_TYPE RealDspBuffer<T>::mean() const {
  * \param buffer The buffer to operate on.
  */
 template <class T>
-const SLICKDSP_FLOAT_TYPE mean(RealDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE mean(RealVector<T> & buffer) {
     return buffer.mean();
 }
 
 template <class T>
-const SLICKDSP_FLOAT_TYPE RealDspBuffer<T>::var() const {
+const SLICKDSP_FLOAT_TYPE RealVector<T>::var() const {
     assert(this->size() > 1);
     SLICKDSP_FLOAT_TYPE meanVal = mean();
     SLICKDSP_FLOAT_TYPE sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
-        SLICKDSP_FLOAT_TYPE varDiff = ((SLICKDSP_FLOAT_TYPE) this->buf[i]) - meanVal;
+        SLICKDSP_FLOAT_TYPE varDiff = ((SLICKDSP_FLOAT_TYPE) this->vec[i]) - meanVal;
         sum += varDiff * varDiff;
     }
     return sum / (this->size() - 1);
@@ -280,7 +280,7 @@ const SLICKDSP_FLOAT_TYPE RealDspBuffer<T>::var() const {
  * \param buffer The buffer to operate on.
  */
 template <class T>
-const SLICKDSP_FLOAT_TYPE var(RealDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE var(RealVector<T> & buffer) {
     return buffer.var();
 }
 
@@ -289,14 +289,14 @@ const SLICKDSP_FLOAT_TYPE var(RealDspBuffer<T> & buffer) {
  * \param buffer The buffer to operate on.
  */
 template <class T>
-const SLICKDSP_FLOAT_TYPE stdDev(RealDspBuffer<T> & buffer) {
+const SLICKDSP_FLOAT_TYPE stdDev(RealVector<T> & buffer) {
     return buffer.stdDev();
 }
 
 template <class T>
-const T RealDspBuffer<T>::median() {
+const T RealVector<T>::median() {
     assert(this->size() > 0);
-    std::vector<T> scratchBuf = this->buf;
+    std::vector<T> scratchBuf = this->vec;
     std::sort(scratchBuf.begin(), scratchBuf.end());
     if (this->size() & 1) {
         // Odd number of samples
@@ -314,20 +314,20 @@ const T RealDspBuffer<T>::median() {
  * \param buffer The buffer to operate on.
  */
 template <class T>
-const T median(RealDspBuffer<T> & buffer) {
+const T median(RealVector<T> & buffer) {
     return buffer.median();
 }
 
 template <class T>
-const T RealDspBuffer<T>::max(unsigned *maxLoc) const {
+const T RealVector<T>::max(unsigned *maxLoc) const {
     assert(this->size() > 0);
-    T maxVal = this->buf[0];
+    T maxVal = this->vec[0];
     unsigned maxIndex = 0;
     
     for (unsigned i=1; i<this->size(); i++) {
         //if (buf[i] > maxVal) {
-        if (maxVal < this->buf[i]) {
-            maxVal = this->buf[i];
+        if (maxVal < this->vec[i]) {
+            maxVal = this->vec[i];
             maxIndex = i;
         }
     }
@@ -347,19 +347,19 @@ const T RealDspBuffer<T>::max(unsigned *maxLoc) const {
  *      Defaults to NULL.
  */
 template <class T>
-const T max(RealDspBuffer<T> & buffer, unsigned *maxLoc = NULL) {
+const T max(RealVector<T> & buffer, unsigned *maxLoc = NULL) {
     return buffer.max(maxLoc);
 }
 
 template <class T>
-const T RealDspBuffer<T>::min(unsigned *minLoc) const {
+const T RealVector<T>::min(unsigned *minLoc) const {
     assert(this->size() > 0);
-    T minVal = this->buf[0];
+    T minVal = this->vec[0];
     unsigned minIndex = 0;
     
     for (unsigned i=1; i<this->size(); i++) {
-        if (this->buf[i] < minVal) {
-            minVal = this->buf[i];
+        if (this->vec[i] < minVal) {
+            minVal = this->vec[i];
             minIndex = i;
         }
     }
@@ -379,17 +379,17 @@ const T RealDspBuffer<T>::min(unsigned *minLoc) const {
  *      Defaults to NULL.
  */
 template <class T>
-const T min(RealDspBuffer<T> & buffer, unsigned *minLoc = NULL) {
+const T min(RealVector<T> & buffer, unsigned *minLoc = NULL) {
     return buffer.min(minLoc);
 }
 
 template <class T>
-RealDspBuffer<T> & RealDspBuffer<T>::saturate(T val) {
+RealVector<T> & RealVector<T>::saturate(T val) {
     for (unsigned i=0; i<this->size(); i++) {
-        if (this->buf[i] > val)
-            this->buf[i] = val;
-        else if (this->buf[i] < -val)
-            this->buf[i] = -val;
+        if (this->vec[i] > val)
+            this->vec[i] = val;
+        else if (this->vec[i] < -val)
+            this->vec[i] = -val;
     }
     return *this;
 }
@@ -404,12 +404,12 @@ RealDspBuffer<T> & RealDspBuffer<T>::saturate(T val) {
  * \return Reference to "buffer".
  */
 template <class T>
-RealDspBuffer<T> & saturate(RealDspBuffer<T> & buffer, T val) {
+RealVector<T> & saturate(RealVector<T> & buffer, T val) {
     return buffer.saturate(val);
 }
 
 template <class T>
-ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, bool trimTails) {
+ComplexVector<T> & RealVector<T>::convComplex(ComplexVector<T> & data, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -422,7 +422,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, 
     else {
         dataTmp = data.scratchBuf;
     }
-    *dataTmp = data.buf;
+    *dataTmp = data.vec;
     
     if (trimTails) {
         // Initial partial overlap
@@ -430,7 +430,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, 
         for (resultIndex=0; resultIndex<((int)this->size()-1) - initialTrim; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
         
@@ -439,7 +439,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, 
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
 
@@ -448,7 +448,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, 
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
     }
@@ -459,7 +459,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, 
         for (resultIndex=0; resultIndex<(int)this->size()-1; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
         
@@ -468,7 +468,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, 
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
 
@@ -477,7 +477,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, 
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
     }
@@ -496,12 +496,12 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::convComplex(ComplexDspBuffer<T> & data, 
  * \return Reference to "data", which holds the result of the convolution.
  */
 template <class T>
-inline ComplexDspBuffer<T> & conv(ComplexDspBuffer<T> & data, RealDspBuffer<T> & filter, bool trimTails = false) {
+inline ComplexVector<T> & conv(ComplexVector<T> & data, RealVector<T> & filter, bool trimTails = false) {
     return filter.convComplex(data, trimTails);
 }
 
 template <class T>
-ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails) {
+ComplexVector<T> & RealVector<T>::decimateComplex(ComplexVector<T> & data, int rate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -514,7 +514,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
     else {
         dataTmp = data.scratchBuf;
     }
-    *dataTmp = data.buf;
+    *dataTmp = data.vec;
     
     if (trimTails) {
         data.resize((data.size() + rate - 1) / rate);
@@ -524,7 +524,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
         for (resultIndex=0; resultIndex<(((int)this->size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
         
@@ -533,7 +533,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
 
@@ -542,7 +542,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
     }
@@ -553,7 +553,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
         for (resultIndex=0; resultIndex<((int)this->size()-1+rate-1)/rate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
         
@@ -562,7 +562,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
 
@@ -571,7 +571,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
     }
@@ -593,12 +593,12 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::decimateComplex(ComplexDspBuffer<T> & da
  * \return Reference to "data", which holds the result of the decimation.
  */
 template <class T>
-inline ComplexDspBuffer<T> & decimate(ComplexDspBuffer<T> & data, int rate, RealDspBuffer<T> & filter, bool trimTails = false) {
+inline ComplexVector<T> & decimate(ComplexVector<T> & data, int rate, RealVector<T> & filter, bool trimTails = false) {
     return filter.decimateComplex(data, rate, trimTails);
 }
 
 template <class T>
-ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails) {
+ComplexVector<T> & RealVector<T>::interpComplex(ComplexVector<T> & data, int rate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -612,7 +612,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
     else {
         dataTmp = data.scratchBuf;
     }
-    *dataTmp = data.buf;
+    *dataTmp = data.vec;
     
     if (trimTails) {
         data.resize(data.size() * rate);
@@ -622,7 +622,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
         for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1 - initialTrim; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
        
@@ -631,7 +631,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -647,7 +647,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -665,7 +665,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
         for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
         }
         
@@ -674,7 +674,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -690,7 +690,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int) this->size()) {
@@ -718,12 +718,12 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::interpComplex(ComplexDspBuffer<T> & data
  * \return Reference to "data", which holds the result of the interpolation.
  */
 template <class T>
-inline ComplexDspBuffer<T> & interp(ComplexDspBuffer<T> & data, int rate, RealDspBuffer<T> & filter, bool trimTails = false) {
+inline ComplexVector<T> & interp(ComplexVector<T> & data, int rate, RealVector<T> & filter, bool trimTails = false) {
     return filter.interpComplex(data, rate, trimTails);
 }
 
 template <class T>
-ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & data, int interpRate, int decimateRate,  bool trimTails) {
+ComplexVector<T> & RealVector<T>::resampleComplex(ComplexVector<T> & data, int interpRate, int decimateRate,  bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -737,7 +737,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & da
     else {
         dataTmp = data.scratchBuf;
     }
-    *dataTmp = data.buf;
+    *dataTmp = data.vec;
     
     if (trimTails) {
         int interpLen = data.size() * interpRate;
@@ -750,7 +750,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & da
              resultIndex<((int)this->size()-1 - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -766,7 +766,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & da
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -782,7 +782,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & da
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -802,7 +802,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & da
         for (resultIndex=0, dataStart=0, filterStart=0; resultIndex<((int)this->size()-1+decimateRate-1)/decimateRate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -818,7 +818,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & da
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -834,7 +834,7 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & da
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * this->buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -864,8 +864,8 @@ ComplexDspBuffer<T> & RealDspBuffer<T>::resampleComplex(ComplexDspBuffer<T> & da
  * \return Reference to "data", which holds the result of the resampling.
  */
 template <class T>
-inline ComplexDspBuffer<T> & resample(ComplexDspBuffer<T> & data, int interpRate, int decimateRate,
-            RealDspBuffer<T> & filter, bool trimTails = false) {
+inline ComplexVector<T> & resample(ComplexVector<T> & data, int interpRate, int decimateRate,
+            RealVector<T> & filter, bool trimTails = false) {
     return filter.resampleComplex(data, interpRate, decimateRate, trimTails);
 }
 

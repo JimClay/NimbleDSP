@@ -22,26 +22,26 @@ THE SOFTWARE.
 
 
 /**
- * @file RealFixedPtDspBuffer.h
+ * @file RealFixedPtVector.h
  *
- * Definition of the template class RealFixedPtDspBuffer.
+ * Definition of the template class RealFixedPtVector.
  */
 
-#ifndef NimbleDSP_RealFixedPtDspBuffer_h
-#define NimbleDSP_RealFixedPtDspBuffer_h
+#ifndef NimbleDSP_RealFixedPtVector_h
+#define NimbleDSP_RealFixedPtVector_h
 
 #include <math.h>
-#include "RealDspBuffer.h"
+#include "RealVector.h"
 
 
 namespace NimbleDSP {
 
 
 /**
- * \brief DspBuffer class for real, fixed point (i.e. short's, int's, etc.) numbers.
+ * \brief Vector class for real, fixed point (i.e. short's, int's, etc.) numbers.
  */
 template <class T>
-class RealFixedPtDspBuffer : public RealDspBuffer<T> {
+class RealFixedPtVector : public RealVector<T> {
  public:
     /*****************************************************************************************
                                         Constructors
@@ -58,8 +58,8 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      */
-    RealFixedPtDspBuffer<T>(unsigned size = DEFAULT_BUF_LEN, std::vector<T> *scratch = NULL) :
-            RealDspBuffer<T>(size, scratch) {}
+    RealFixedPtVector<T>(unsigned size = DEFAULT_BUF_LEN, std::vector<T> *scratch = NULL) :
+            RealVector<T>(size, scratch) {}
             
     /**
      * \brief Vector constructor.
@@ -75,7 +75,7 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
      *      returns.
      */
     template <typename U>
-    RealFixedPtDspBuffer<T>(std::vector<U> data, std::vector<T> *scratch = NULL) : RealDspBuffer<T>(data, scratch) {}
+    RealFixedPtVector<T>(std::vector<U> data, std::vector<T> *scratch = NULL) : RealVector<T>(data, scratch) {}
     
     /**
      * \brief Array constructor.
@@ -92,13 +92,13 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
      *      returns.
      */
     template <typename U>
-    RealFixedPtDspBuffer<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) :
-            RealDspBuffer<T>(data, dataLen, scratch) {}
+    RealFixedPtVector<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) :
+            RealVector<T>(data, dataLen, scratch) {}
     
     /**
      * \brief Copy constructor.
      */
-    RealFixedPtDspBuffer<T>(const RealFixedPtDspBuffer<T>& other) {this->buf = other.buf;}
+    RealFixedPtVector<T>(const RealFixedPtVector<T>& other) {this->vec = other.vec;}
     
     /*****************************************************************************************
                                             Operators
@@ -106,98 +106,98 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
     /**
      * \brief Assignment operator.
      */
-    RealFixedPtDspBuffer<T>& operator=(const DspBuffer<T>& rhs);
+    RealFixedPtVector<T>& operator=(const Vector<T>& rhs);
     
     /**
      * \brief Pre-increment operator.
      */
-    RealFixedPtDspBuffer<T> & operator++();
+    RealFixedPtVector<T> & operator++();
     
     /**
      * \brief Post-increment operator.
      */
-    RealFixedPtDspBuffer<T> operator++(int);
+    RealFixedPtVector<T> operator++(int);
     
     /**
      * \brief Pre-decrement operator.
      */
-    RealFixedPtDspBuffer<T> & operator--();
+    RealFixedPtVector<T> & operator--();
     
     /**
      * \brief Post-decrement operator.
      */
-    RealFixedPtDspBuffer<T> operator--(int);
+    RealFixedPtVector<T> operator--(int);
     
     /**
      * \brief Buffer modulo/assignment operator.
      */
     template <class U>
-    RealFixedPtDspBuffer<T> & operator%=(const RealFixedPtDspBuffer<U> &rhs);
+    RealFixedPtVector<T> & operator%=(const RealFixedPtVector<U> &rhs);
     
     /**
      * \brief Scalar modulo/assignment operator.
      */
-    RealFixedPtDspBuffer<T> & operator%=(const T &rhs);
+    RealFixedPtVector<T> & operator%=(const T &rhs);
     
     /**
      * \brief Bit-wise negation operator.
      */
-    RealFixedPtDspBuffer<T> & operator~();
+    RealFixedPtVector<T> & operator~();
     
     /**
      * \brief Buffer bit-wise and/assignment operator.
      */
     template <class U>
-    RealFixedPtDspBuffer<T> & operator&=(const RealFixedPtDspBuffer<U> &rhs);
+    RealFixedPtVector<T> & operator&=(const RealFixedPtVector<U> &rhs);
     
     /**
      * \brief Scalar bit-wise and/assignment operator.
      */
-    RealFixedPtDspBuffer<T> & operator&=(const T &rhs);
+    RealFixedPtVector<T> & operator&=(const T &rhs);
     
     /**
      * \brief Buffer bit-wise or/assignment operator.
      */
     template <class U>
-    RealFixedPtDspBuffer<T> & operator|=(const RealFixedPtDspBuffer<U> &rhs);
+    RealFixedPtVector<T> & operator|=(const RealFixedPtVector<U> &rhs);
     
     /**
      * \brief Scalar bit-wise or/assignment operator.
      */
-    RealFixedPtDspBuffer<T> & operator|=(const T &rhs);
+    RealFixedPtVector<T> & operator|=(const T &rhs);
     
     /**
      * \brief Buffer bit-wise xor/assignment operator.
      */
     template <class U>
-    RealFixedPtDspBuffer<T> & operator^=(const RealFixedPtDspBuffer<U> &rhs);
+    RealFixedPtVector<T> & operator^=(const RealFixedPtVector<U> &rhs);
     
     /**
      * \brief Scalar bit-wise xor/assignment operator.
      */
-    RealFixedPtDspBuffer<T> & operator^=(const T &rhs);
+    RealFixedPtVector<T> & operator^=(const T &rhs);
     
     /**
      * \brief Buffer right shift/assignment operator.
      */
     template <class U>
-    RealFixedPtDspBuffer<T> & operator>>=(const RealFixedPtDspBuffer<U> &rhs);
+    RealFixedPtVector<T> & operator>>=(const RealFixedPtVector<U> &rhs);
     
     /**
      * \brief Scalar right shift/assignment operator.
      */
-    RealFixedPtDspBuffer<T> & operator>>=(const T &rhs);
+    RealFixedPtVector<T> & operator>>=(const T &rhs);
     
     /**
      * \brief Buffer left shift/assignment operator.
      */
     template <class U>
-    RealFixedPtDspBuffer<T> & operator<<=(const RealFixedPtDspBuffer<U> &rhs);
+    RealFixedPtVector<T> & operator<<=(const RealFixedPtVector<U> &rhs);
     
     /**
      * \brief Scalar left shift/assignment operator.
      */
-    RealFixedPtDspBuffer<T> & operator<<=(const T &rhs);
+    RealFixedPtVector<T> & operator<<=(const T &rhs);
     
     /*****************************************************************************************
                                              Methods
@@ -208,7 +208,7 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
      * \param exponent Exponent to use.
      * \return Reference to "this".
      */
-    RealDspBuffer<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
+    RealVector<T> & pow(const SLICKDSP_FLOAT_TYPE exponent);
     
     /**
      * \brief Returns the mode of the data in \ref buf.
@@ -218,62 +218,62 @@ class RealFixedPtDspBuffer : public RealDspBuffer<T> {
 
 
 template <class T>
-RealFixedPtDspBuffer<T>& RealFixedPtDspBuffer<T>::operator=(const DspBuffer<T>& rhs)
+RealFixedPtVector<T>& RealFixedPtVector<T>::operator=(const Vector<T>& rhs)
 {
-    this->buf = rhs.buf;
+    this->vec = rhs.vec;
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator++()
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator++()
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = this->buf[i] + 1;
+        this->vec[i] = this->vec[i] + 1;
     }
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> RealFixedPtDspBuffer<T>::operator++(int)
+RealFixedPtVector<T> RealFixedPtVector<T>::operator++(int)
 {
-    RealFixedPtDspBuffer<T> tmp(*this);
+    RealFixedPtVector<T> tmp(*this);
     operator++();
     return tmp;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator--()
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator--()
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = this->buf[i] - 1;
+        this->vec[i] = this->vec[i] - 1;
     }
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> RealFixedPtDspBuffer<T>::operator--(int)
+RealFixedPtVector<T> RealFixedPtVector<T>::operator--(int)
 {
-    RealFixedPtDspBuffer<T> tmp(*this);
+    RealFixedPtVector<T> tmp(*this);
     operator--();
     return tmp;
 }
 
 template <class T>
 template <class U>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator%=(const RealFixedPtDspBuffer<U> &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator%=(const RealFixedPtVector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] %= rhs.buf[i];
+        this->vec[i] %= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator%=(const T &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator%=(const T &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] %= rhs;
+        this->vec[i] %= rhs;
     }
     return *this;
 }
@@ -282,7 +282,7 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator%=(const T &rhs)
  * \brief Buffer modulo operator.
  */
 template <class T, class U>
-inline RealFixedPtDspBuffer<T> operator%(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
+inline RealFixedPtVector<T> operator%(RealFixedPtVector<T> lhs, const RealFixedPtVector<U>& rhs)
 {
     lhs %= rhs;
     return lhs;
@@ -292,37 +292,37 @@ inline RealFixedPtDspBuffer<T> operator%(RealFixedPtDspBuffer<T> lhs, const Real
  * \brief Scalar modulo operator.
  */
 template <class T>
-inline RealFixedPtDspBuffer<T> operator%(RealFixedPtDspBuffer<T> lhs, const T& rhs)
+inline RealFixedPtVector<T> operator%(RealFixedPtVector<T> lhs, const T& rhs)
 {
     lhs %= rhs;
     return lhs;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator~()
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator~()
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = ~(this->buf[i]);
+        this->vec[i] = ~(this->vec[i]);
     }
     return *this;
 }
 
 template <class T>
 template <class U>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator&=(const RealFixedPtDspBuffer<U> &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator&=(const RealFixedPtVector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] &= rhs.buf[i];
+        this->vec[i] &= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator&=(const T &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator&=(const T &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] &= rhs;
+        this->vec[i] &= rhs;
     }
     return *this;
 }
@@ -331,7 +331,7 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator&=(const T &rhs)
  * \brief Buffer bit-wise and operator.
  */
 template <class T, class U>
-inline RealFixedPtDspBuffer<T> operator&(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
+inline RealFixedPtVector<T> operator&(RealFixedPtVector<T> lhs, const RealFixedPtVector<U>& rhs)
 {
     lhs &= rhs;
     return lhs;
@@ -341,7 +341,7 @@ inline RealFixedPtDspBuffer<T> operator&(RealFixedPtDspBuffer<T> lhs, const Real
  * \brief Scalar bit-wise and operator.
  */
 template <class T>
-inline RealFixedPtDspBuffer<T> operator&(RealFixedPtDspBuffer<T> lhs, const T& rhs)
+inline RealFixedPtVector<T> operator&(RealFixedPtVector<T> lhs, const T& rhs)
 {
     lhs &= rhs;
     return lhs;
@@ -349,20 +349,20 @@ inline RealFixedPtDspBuffer<T> operator&(RealFixedPtDspBuffer<T> lhs, const T& r
 
 template <class T>
 template <class U>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator|=(const RealFixedPtDspBuffer<U> &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator|=(const RealFixedPtVector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] |= rhs.buf[i];
+        this->vec[i] |= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator|=(const T &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator|=(const T &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] |= rhs;
+        this->vec[i] |= rhs;
     }
     return *this;
 }
@@ -371,7 +371,7 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator|=(const T &rhs)
  * \brief Buffer bit-wise or operator.
  */
 template <class T, class U>
-inline RealFixedPtDspBuffer<T> operator|(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
+inline RealFixedPtVector<T> operator|(RealFixedPtVector<T> lhs, const RealFixedPtVector<U>& rhs)
 {
     lhs |= rhs;
     return lhs;
@@ -381,7 +381,7 @@ inline RealFixedPtDspBuffer<T> operator|(RealFixedPtDspBuffer<T> lhs, const Real
  * \brief Scalar bit-wise or operator.
  */
 template <class T>
-inline RealFixedPtDspBuffer<T> operator|(RealFixedPtDspBuffer<T> lhs, const T& rhs)
+inline RealFixedPtVector<T> operator|(RealFixedPtVector<T> lhs, const T& rhs)
 {
     lhs |= rhs;
     return lhs;
@@ -389,20 +389,20 @@ inline RealFixedPtDspBuffer<T> operator|(RealFixedPtDspBuffer<T> lhs, const T& r
 
 template <class T>
 template <class U>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator^=(const RealFixedPtDspBuffer<U> &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator^=(const RealFixedPtVector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] ^= rhs.buf[i];
+        this->vec[i] ^= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator^=(const T &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator^=(const T &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] ^= rhs;
+        this->vec[i] ^= rhs;
     }
     return *this;
 }
@@ -411,7 +411,7 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator^=(const T &rhs)
  * \brief Buffer bit-wise xor operator.
  */
 template <class T, class U>
-inline RealFixedPtDspBuffer<T> operator^(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
+inline RealFixedPtVector<T> operator^(RealFixedPtVector<T> lhs, const RealFixedPtVector<U>& rhs)
 {
     lhs ^= rhs;
     return lhs;
@@ -421,7 +421,7 @@ inline RealFixedPtDspBuffer<T> operator^(RealFixedPtDspBuffer<T> lhs, const Real
  * \brief Scalar bit-wise xor operator.
  */
 template <class T>
-inline RealFixedPtDspBuffer<T> operator^(RealFixedPtDspBuffer<T> lhs, const T& rhs)
+inline RealFixedPtVector<T> operator^(RealFixedPtVector<T> lhs, const T& rhs)
 {
     lhs ^= rhs;
     return lhs;
@@ -429,20 +429,20 @@ inline RealFixedPtDspBuffer<T> operator^(RealFixedPtDspBuffer<T> lhs, const T& r
 
 template <class T>
 template <class U>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator>>=(const RealFixedPtDspBuffer<U> &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator>>=(const RealFixedPtVector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] >>= rhs.buf[i];
+        this->vec[i] >>= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator>>=(const T &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator>>=(const T &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] >>= rhs;
+        this->vec[i] >>= rhs;
     }
     return *this;
 }
@@ -451,7 +451,7 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator>>=(const T &rhs)
  * \brief Buffer right shift operator.
  */
 template <class T, class U>
-inline RealFixedPtDspBuffer<T> operator>>(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
+inline RealFixedPtVector<T> operator>>(RealFixedPtVector<T> lhs, const RealFixedPtVector<U>& rhs)
 {
     lhs >>= rhs;
     return lhs;
@@ -461,7 +461,7 @@ inline RealFixedPtDspBuffer<T> operator>>(RealFixedPtDspBuffer<T> lhs, const Rea
  * \brief Scalar right shift operator.
  */
 template <class T>
-inline RealFixedPtDspBuffer<T> operator>>(RealFixedPtDspBuffer<T> lhs, const T& rhs)
+inline RealFixedPtVector<T> operator>>(RealFixedPtVector<T> lhs, const T& rhs)
 {
     lhs >>= rhs;
     return lhs;
@@ -469,20 +469,20 @@ inline RealFixedPtDspBuffer<T> operator>>(RealFixedPtDspBuffer<T> lhs, const T& 
 
 template <class T>
 template <class U>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator<<=(const RealFixedPtDspBuffer<U> &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator<<=(const RealFixedPtVector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] <<= rhs.buf[i];
+        this->vec[i] <<= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator<<=(const T &rhs)
+RealFixedPtVector<T> & RealFixedPtVector<T>::operator<<=(const T &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] <<= rhs;
+        this->vec[i] <<= rhs;
     }
     return *this;
 }
@@ -491,7 +491,7 @@ RealFixedPtDspBuffer<T> & RealFixedPtDspBuffer<T>::operator<<=(const T &rhs)
  * \brief Buffer left shift operator.
  */
 template <class T, class U>
-inline RealFixedPtDspBuffer<T> operator<<(RealFixedPtDspBuffer<T> lhs, const RealFixedPtDspBuffer<U>& rhs)
+inline RealFixedPtVector<T> operator<<(RealFixedPtVector<T> lhs, const RealFixedPtVector<U>& rhs)
 {
     lhs <<= rhs;
     return lhs;
@@ -501,22 +501,22 @@ inline RealFixedPtDspBuffer<T> operator<<(RealFixedPtDspBuffer<T> lhs, const Rea
  * \brief Scalar left shift operator.
  */
 template <class T>
-inline RealFixedPtDspBuffer<T> operator<<(RealFixedPtDspBuffer<T> lhs, const T& rhs)
+inline RealFixedPtVector<T> operator<<(RealFixedPtVector<T> lhs, const T& rhs)
 {
     lhs <<= rhs;
     return lhs;
 }
 
 template <class T>
-RealDspBuffer<T> & RealFixedPtDspBuffer<T>::pow(const SLICKDSP_FLOAT_TYPE exponent) {
+RealVector<T> & RealFixedPtVector<T>::pow(const SLICKDSP_FLOAT_TYPE exponent) {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = (T) std::round(std::pow(this->buf[i], exponent));
+        this->vec[i] = (T) std::round(std::pow(this->vec[i], exponent));
     }
     return *this;
 }
     
 template <class T>
-const T RealFixedPtDspBuffer<T>::mode() {
+const T RealFixedPtVector<T>::mode() {
     assert(this->size() > 0);
     std::vector<T> tempScratch;
     std::vector<T> *scratch;
@@ -527,7 +527,7 @@ const T RealFixedPtDspBuffer<T>::mode() {
     else {
         scratch = this->scratchBuf;
     }
-    *scratch = this->buf;
+    *scratch = this->vec;
     std::sort(scratch->begin(), scratch->end());
     
     T modeVal = 0;
@@ -559,7 +559,7 @@ const T RealFixedPtDspBuffer<T>::mode() {
  * \brief Returns the mode of the data in \ref buf.
  */
 template <class T>
-const T mode(RealFixedPtDspBuffer<T> & buffer) {
+const T mode(RealFixedPtVector<T> & buffer) {
     return buffer.mode();
 }
 

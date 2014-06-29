@@ -22,16 +22,16 @@ THE SOFTWARE.
 
 
 /**
- * @file ComplexDspBuffer.h
+ * @file ComplexVector.h
  *
- * Definition of the template class ComplexDspBuffer.
+ * Definition of the template class ComplexVector.
  */
 
-#ifndef NimbleDSP_ComplexDspBuffer_h
-#define NimbleDSP_ComplexDspBuffer_h
+#ifndef NimbleDSP_ComplexVector_h
+#define NimbleDSP_ComplexVector_h
 
 #include <complex>
-#include "DspBuffer.h"
+#include "Vector.h"
 #include "kissfft.hh"
 
 
@@ -41,14 +41,14 @@ namespace NimbleDSP {
 enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 
 /**
- * \brief DspBuffer class for complex numbers.
+ * \brief Vector class for complex numbers.
  *
  * The template type should be the "plain old data" type that you want to use, not "std::complex"
  * or your own custom complex class.  The object will automatically convert the buffer type to
  * std::complex<POD_type> for you.
  */
 template <class T>
-class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
+class ComplexVector : public Vector< std::complex<T> > {
  public:
     /**
      * \brief Indicates whether the data in \ref buf is time domain data or frequency domain.
@@ -61,7 +61,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     /**
      * \brief Basic constructor.
      *
-     * Sets \ref domain to NimbleDSP::TIME_DOMAIN and calls DspBuffer<T>::DspBuffer(size, scratch).
+     * Sets \ref domain to NimbleDSP::TIME_DOMAIN and calls Vector<T>::Vector(size, scratch).
      * \param size Size of \ref buf.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
@@ -70,8 +70,8 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      */
-    ComplexDspBuffer<T>(unsigned size = DEFAULT_BUF_LEN, std::vector< std::complex<T> > *scratch = NULL) :
-            DspBuffer< std::complex<T> >(size, scratch) {domain = TIME_DOMAIN;}
+    ComplexVector<T>(unsigned size = DEFAULT_BUF_LEN, std::vector< std::complex<T> > *scratch = NULL) :
+            Vector< std::complex<T> >(size, scratch) {domain = TIME_DOMAIN;}
             
     /**
      * \brief Vector constructor.
@@ -89,8 +89,8 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      Valid values are NimbleDSP::TIME_DOMAIN and NimbleDSP::FREQUENCY_DOMAIN.
      */
     template <typename U>
-    ComplexDspBuffer<T>(std::vector<U> data, DomainType dataDomain=TIME_DOMAIN,
-                std::vector< std::complex<T> > *scratch = NULL) : DspBuffer< std::complex<T> >(data, scratch)
+    ComplexVector<T>(std::vector<U> data, DomainType dataDomain=TIME_DOMAIN,
+                std::vector< std::complex<T> > *scratch = NULL) : Vector< std::complex<T> >(data, scratch)
                     {domain = dataDomain;}
     
     /**
@@ -110,88 +110,88 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      Valid values are NimbleDSP::TIME_DOMAIN and NimbleDSP::FREQUENCY_DOMAIN.
      */
     template <typename U>
-    ComplexDspBuffer<T>(U *data, unsigned dataLen, DomainType dataDomain=TIME_DOMAIN,
-                std::vector< std::complex<T> > *scratch = NULL) : DspBuffer< std::complex<T> >(data, dataLen, scratch)
+    ComplexVector<T>(U *data, unsigned dataLen, DomainType dataDomain=TIME_DOMAIN,
+                std::vector< std::complex<T> > *scratch = NULL) : Vector< std::complex<T> >(data, dataLen, scratch)
                     {domain = dataDomain;}
     
     /**
      * \brief Copy constructor.
      */
-    ComplexDspBuffer<T>(const ComplexDspBuffer<T>& other)
-            {this->buf = other.buf; domain = other.domain; this->scratchBuf = other.scratchBuf;}
+    ComplexVector<T>(const ComplexVector<T>& other)
+            {this->vec = other.vec; domain = other.domain; this->scratchBuf = other.scratchBuf;}
     
     /*****************************************************************************************
                                             Operators
     *****************************************************************************************/
     /**
-     * \brief Assignment operator from ComplexDspBuffer.
+     * \brief Assignment operator from ComplexVector.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T>& operator=(const ComplexDspBuffer<T>& rhs);
+    ComplexVector<T>& operator=(const ComplexVector<T>& rhs);
     
     /**
-     * \brief Assignment operator from DspBuffer.
+     * \brief Assignment operator from Vector.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T>& operator=(const DspBuffer<T>& rhs);
+    ComplexVector<T>& operator=(const Vector<T>& rhs);
     
     /**
      * \brief Unary minus (negation) operator.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & operator-();
+    ComplexVector<T> & operator-();
     
     /**
      * \brief Add Buffer/Assignment operator.
      * \return Reference to "this".
      */
     template <class U>
-    ComplexDspBuffer<T> & operator+=(const DspBuffer<U> &rhs);
+    ComplexVector<T> & operator+=(const Vector<U> &rhs);
     
     /**
      * \brief Add Scalar/Assignment operator.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & operator+=(const std::complex<T> &rhs);
+    ComplexVector<T> & operator+=(const std::complex<T> &rhs);
     
     /**
      * \brief Subtract Buffer/Assignment operator.
      * \return Reference to "this".
      */
     template <class U>
-    ComplexDspBuffer<T> & operator-=(const DspBuffer<U> &rhs);
+    ComplexVector<T> & operator-=(const Vector<U> &rhs);
     
     /**
      * \brief Subtract Scalar/Assignment operator.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & operator-=(const std::complex<T> &rhs);
+    ComplexVector<T> & operator-=(const std::complex<T> &rhs);
     
     /**
      * \brief Multiply Buffer/Assignment operator.
      * \return Reference to "this".
      */
     template <class U>
-    ComplexDspBuffer<T> & operator*=(const DspBuffer<U> &rhs);
+    ComplexVector<T> & operator*=(const Vector<U> &rhs);
     
     /**
      * \brief Multiply Scalar/Assignment operator.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & operator*=(const std::complex<T> &rhs);
+    ComplexVector<T> & operator*=(const std::complex<T> &rhs);
     
     /**
      * \brief Divide Buffer/Assignment operator.
      * \return Reference to "this".
      */
     template <class U>
-    ComplexDspBuffer<T> & operator/=(const DspBuffer<U> &rhs);
+    ComplexVector<T> & operator/=(const Vector<U> &rhs);
     
     /**
      * \brief Divide Scalar/Assignment operator.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & operator/=(const std::complex<T> &rhs);
+    ComplexVector<T> & operator/=(const std::complex<T> &rhs);
     
     /*****************************************************************************************
                                             Methods
@@ -202,7 +202,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      * \param exponent Exponent to use.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent);
+    ComplexVector<T> & pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent);
     
     /**
      * \brief Returns the mean (average) of the data in \ref buf.
@@ -228,19 +228,19 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      independently on the real and imaginary elements of \ref buf.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & saturate(const std::complex<T> & val);
+    ComplexVector<T> & saturate(const std::complex<T> & val);
     
     /**
      * \brief Conjugates the data in \ref buf.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & conj();
+    ComplexVector<T> & conj();
     
     /**
      * \brief Sets each element of \ref buf equal to its magnitude squared.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & magSq();
+    ComplexVector<T> & magSq();
     
     /**
      * \brief Sets each element of \ref buf equal to its angle.
@@ -248,7 +248,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      * The angle is held in the real portion of \ref buf.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & angle();
+    ComplexVector<T> & angle();
     
     /**
      * \brief Sets \ref buf equal to the FFT of the data in \ref buf.
@@ -256,7 +256,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      * Sets \ref domain equal to NimbleDSP::FREQUENCY_DOMAIN.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & fft();
+    ComplexVector<T> & fft();
     
     /**
      * \brief Sets \ref buf equal to the inverse FFT of the data in \ref buf.
@@ -264,54 +264,54 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      * Sets \ref domain equal to NimbleDSP::TIME_DOMAIN.
      * \return Reference to "this".
      */
-    ComplexDspBuffer<T> & ifft();
+    ComplexVector<T> & ifft();
 };
 
 
 template <class T>
-ComplexDspBuffer<T>& ComplexDspBuffer<T>::operator=(const ComplexDspBuffer<T>& rhs)
+ComplexVector<T>& ComplexVector<T>::operator=(const ComplexVector<T>& rhs)
 {
-    this->buf = rhs.buf;
+    this->vec = rhs.vec;
     domain = rhs.domain;
     return *this;
 }
 
 template <class T>
-ComplexDspBuffer<T>& ComplexDspBuffer<T>::operator=(const DspBuffer<T> & rhs)
+ComplexVector<T>& ComplexVector<T>::operator=(const Vector<T> & rhs)
 {
-    this->buf.resize(rhs.size());
+    this->vec.resize(rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = std::complex<T>(rhs[i]);
+        this->vec[i] = std::complex<T>(rhs[i]);
     }
     domain = TIME_DOMAIN;
     return *this;
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator-()
+ComplexVector<T> & ComplexVector<T>::operator-()
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = -(this->buf[i]);
+        this->vec[i] = -(this->vec[i]);
     }
     return *this;
 }
 
 template <class T>
 template <class U>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator+=(const DspBuffer<U> &rhs)
+ComplexVector<T> & ComplexVector<T>::operator+=(const Vector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] += rhs.buf[i];
+        this->vec[i] += rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator+=(const std::complex<T> & rhs)
+ComplexVector<T> & ComplexVector<T>::operator+=(const std::complex<T> & rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] += rhs;
+        this->vec[i] += rhs;
     }
     return *this;
 }
@@ -320,7 +320,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator+=(const std::complex<T> & rh
  * \brief Buffer addition operator.
  */
 template <class T, class U>
-inline ComplexDspBuffer<T> operator+(ComplexDspBuffer<T> lhs, const DspBuffer<U>& rhs)
+inline ComplexVector<T> operator+(ComplexVector<T> lhs, const Vector<U>& rhs)
 {
     lhs += rhs;
     return lhs;
@@ -330,7 +330,7 @@ inline ComplexDspBuffer<T> operator+(ComplexDspBuffer<T> lhs, const DspBuffer<U>
  * \brief Scalar addition operator.
  */
 template <class T>
-inline ComplexDspBuffer<T> operator+(ComplexDspBuffer<T> lhs, const std::complex<T> & rhs)
+inline ComplexVector<T> operator+(ComplexVector<T> lhs, const std::complex<T> & rhs)
 {
     lhs += rhs;
     return lhs;
@@ -338,20 +338,20 @@ inline ComplexDspBuffer<T> operator+(ComplexDspBuffer<T> lhs, const std::complex
 
 template <class T>
 template <class U>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator-=(const DspBuffer<U> &rhs)
+ComplexVector<T> & ComplexVector<T>::operator-=(const Vector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] -= rhs.buf[i];
+        this->vec[i] -= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator-=(const std::complex<T> &rhs)
+ComplexVector<T> & ComplexVector<T>::operator-=(const std::complex<T> &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] -= rhs;
+        this->vec[i] -= rhs;
     }
     return *this;
 }
@@ -360,7 +360,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator-=(const std::complex<T> &rhs
  * \brief Buffer subtraction operator.
  */
 template <class T, class U>
-inline ComplexDspBuffer<T> operator-(ComplexDspBuffer<T> lhs, const DspBuffer<U>& rhs)
+inline ComplexVector<T> operator-(ComplexVector<T> lhs, const Vector<U>& rhs)
 {
     lhs -= rhs;
     return lhs;
@@ -370,7 +370,7 @@ inline ComplexDspBuffer<T> operator-(ComplexDspBuffer<T> lhs, const DspBuffer<U>
  * \brief Scalar subtraction operator.
  */
 template <class T>
-inline ComplexDspBuffer<T> operator-(ComplexDspBuffer<T> lhs, const std::complex<T> & rhs)
+inline ComplexVector<T> operator-(ComplexVector<T> lhs, const std::complex<T> & rhs)
 {
     lhs -= rhs;
     return lhs;
@@ -378,20 +378,20 @@ inline ComplexDspBuffer<T> operator-(ComplexDspBuffer<T> lhs, const std::complex
 
 template <class T>
 template <class U>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator*=(const DspBuffer<U> &rhs)
+ComplexVector<T> & ComplexVector<T>::operator*=(const Vector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] *= rhs.buf[i];
+        this->vec[i] *= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator*=(const std::complex<T> &rhs)
+ComplexVector<T> & ComplexVector<T>::operator*=(const std::complex<T> &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] *= rhs;
+        this->vec[i] *= rhs;
     }
     return *this;
 }
@@ -400,7 +400,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator*=(const std::complex<T> &rhs
  * \brief Buffer multiplication operator.
  */
 template <class T, class U>
-inline ComplexDspBuffer<T> operator*(ComplexDspBuffer<T> lhs, const DspBuffer<U>& rhs)
+inline ComplexVector<T> operator*(ComplexVector<T> lhs, const Vector<U>& rhs)
 {
     lhs *= rhs;
     return lhs;
@@ -410,7 +410,7 @@ inline ComplexDspBuffer<T> operator*(ComplexDspBuffer<T> lhs, const DspBuffer<U>
  * \brief Scalar multiplication operator.
  */
 template <class T>
-inline ComplexDspBuffer<T> operator*(ComplexDspBuffer<T> lhs, const std::complex<T> & rhs)
+inline ComplexVector<T> operator*(ComplexVector<T> lhs, const std::complex<T> & rhs)
 {
     lhs *= rhs;
     return lhs;
@@ -418,20 +418,20 @@ inline ComplexDspBuffer<T> operator*(ComplexDspBuffer<T> lhs, const std::complex
 
 template <class T>
 template <class U>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator/=(const DspBuffer<U> &rhs)
+ComplexVector<T> & ComplexVector<T>::operator/=(const Vector<U> &rhs)
 {
     assert(this->size() == rhs.size());
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] /= rhs.buf[i];
+        this->vec[i] /= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator/=(const std::complex<T> &rhs)
+ComplexVector<T> & ComplexVector<T>::operator/=(const std::complex<T> &rhs)
 {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] /= rhs;
+        this->vec[i] /= rhs;
     }
     return *this;
 }
@@ -440,7 +440,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::operator/=(const std::complex<T> &rhs
  * \brief Buffer division operator.
  */
 template <class T, class U>
-inline ComplexDspBuffer<T> operator/(ComplexDspBuffer<T> lhs, const DspBuffer<U> & rhs)
+inline ComplexVector<T> operator/(ComplexVector<T> lhs, const Vector<U> & rhs)
 {
     lhs /= rhs;
     return lhs;
@@ -450,16 +450,16 @@ inline ComplexDspBuffer<T> operator/(ComplexDspBuffer<T> lhs, const DspBuffer<U>
  * \brief Scalar division operator.
  */
 template <class T>
-inline ComplexDspBuffer<T> operator/(ComplexDspBuffer<T> lhs, const std::complex<T> & rhs)
+inline ComplexVector<T> operator/(ComplexVector<T> lhs, const std::complex<T> & rhs)
 {
     lhs /= rhs;
     return lhs;
 }
     
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent) {
+ComplexVector<T> & ComplexVector<T>::pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent) {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i] = std::pow(this->buf[i], exponent);
+        this->vec[i] = std::pow(this->vec[i], exponent);
     }
     return *this;
 }
@@ -472,16 +472,16 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::pow(const std::complex<SLICKDSP_FLOAT
  * \return Reference to "buffer".
  */
 template <class T>
-inline ComplexDspBuffer<T> & pow(ComplexDspBuffer<T> & buffer, const std::complex<SLICKDSP_FLOAT_TYPE> exponent) {
+inline ComplexVector<T> & pow(ComplexVector<T> & buffer, const std::complex<SLICKDSP_FLOAT_TYPE> exponent) {
     return buffer.pow(exponent);
 }
 
 template <class T>
-const std::complex<SLICKDSP_FLOAT_TYPE> ComplexDspBuffer<T>::mean() const {
+const std::complex<SLICKDSP_FLOAT_TYPE> ComplexVector<T>::mean() const {
     assert(this->size() > 0);
     std::complex<SLICKDSP_FLOAT_TYPE> sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
-        sum += this->buf[i];
+        sum += this->vec[i];
     }
     return sum / ((SLICKDSP_FLOAT_TYPE) this->size());
 }
@@ -490,17 +490,17 @@ const std::complex<SLICKDSP_FLOAT_TYPE> ComplexDspBuffer<T>::mean() const {
  * \brief Returns the mean (average) of the data in "buffer".
  */
 template <class T>
-inline const std::complex<SLICKDSP_FLOAT_TYPE> mean(ComplexDspBuffer<T> & buffer) {
+inline const std::complex<SLICKDSP_FLOAT_TYPE> mean(ComplexVector<T> & buffer) {
     return buffer.mean();
 }
 
 template <class T>
-const SLICKDSP_FLOAT_TYPE ComplexDspBuffer<T>::var() const {
+const SLICKDSP_FLOAT_TYPE ComplexVector<T>::var() const {
     assert(this->size() > 1);
     std::complex<SLICKDSP_FLOAT_TYPE> meanVal = this->mean();
     std::complex<SLICKDSP_FLOAT_TYPE> sum = 0;
     for (unsigned i=0; i<this->size(); i++) {
-        std::complex<SLICKDSP_FLOAT_TYPE> varDiff = this->buf[i] - meanVal;
+        std::complex<SLICKDSP_FLOAT_TYPE> varDiff = this->vec[i] - meanVal;
         sum += varDiff * std::conj(varDiff);
     }
     return sum.real() / (this->size() - 1);
@@ -510,7 +510,7 @@ const SLICKDSP_FLOAT_TYPE ComplexDspBuffer<T>::var() const {
  * \brief Returns the variance of the data in "buffer".
  */
 template <class T>
-inline const SLICKDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
+inline const SLICKDSP_FLOAT_TYPE var(ComplexVector<T> & buffer) {
     return buffer.var();
 }
 
@@ -518,34 +518,34 @@ inline const SLICKDSP_FLOAT_TYPE var(ComplexDspBuffer<T> & buffer) {
  * \brief Returns the standard deviation of the data in "buffer".
  */
 template <class T>
-inline const SLICKDSP_FLOAT_TYPE stdDev(ComplexDspBuffer<T> & buffer) {
+inline const SLICKDSP_FLOAT_TYPE stdDev(ComplexVector<T> & buffer) {
     return buffer.stdDev();
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::saturate(const std::complex<T> & val) {
+ComplexVector<T> & ComplexVector<T>::saturate(const std::complex<T> & val) {
     for (unsigned i=0; i<this->size(); i++) {
-        if (this->buf[i].real() > val.real())
-            this->buf[i].real(val.real());
-        else if (this->buf[i].real() < -val.real())
-            this->buf[i].real(-val.real());
-        if (this->buf[i].imag() > val.imag())
-            this->buf[i].imag(val.imag());
-        else if (this->buf[i].imag() < -val.imag())
-            this->buf[i].imag(-val.imag());
+        if (this->vec[i].real() > val.real())
+            this->vec[i].real(val.real());
+        else if (this->vec[i].real() < -val.real())
+            this->vec[i].real(-val.real());
+        if (this->vec[i].imag() > val.imag())
+            this->vec[i].imag(val.imag());
+        else if (this->vec[i].imag() < -val.imag())
+            this->vec[i].imag(-val.imag());
     }
     return *this;
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::fft() {
+ComplexVector<T> & ComplexVector<T>::fft() {
     assert(domain == TIME_DOMAIN);
     kissfft<T> fftEngine = kissfft<T>(this->size(), false);
     std::vector< std::complex<T> > fftResults(this->size());
     
-    fftEngine.transform((typename kissfft_utils::traits<T>::cpx_type *) VECTOR_TO_ARRAY(this->buf),
+    fftEngine.transform((typename kissfft_utils::traits<T>::cpx_type *) VECTOR_TO_ARRAY(this->vec),
                         (typename kissfft_utils::traits<T>::cpx_type *) VECTOR_TO_ARRAY(fftResults));
-    this->buf = fftResults;
+    this->vec = fftResults;
     domain = FREQUENCY_DOMAIN;
     return *this;
 }
@@ -558,14 +558,14 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::fft() {
  * \return Reference to "buffer".
  */
 template <class T>
-inline ComplexDspBuffer<T> & fft(ComplexDspBuffer<T> &buffer) {
+inline ComplexVector<T> & fft(ComplexVector<T> &buffer) {
     return buffer.fft();
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::conj() {
+ComplexVector<T> & ComplexVector<T>::conj() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].imag(-this->buf[i].imag());
+        this->vec[i].imag(-this->vec[i].imag());
     }
     return *this;
 }
@@ -575,7 +575,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::conj() {
  * \return Reference to "buffer".
  */
 template <class T>
-inline ComplexDspBuffer<T> & conj(ComplexDspBuffer<T> & buffer) {
+inline ComplexVector<T> & conj(ComplexVector<T> & buffer) {
     return buffer.conj();
 }
 
@@ -588,10 +588,10 @@ inline T magSq(const std::complex<T> &val) {
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::magSq() {
+ComplexVector<T> & ComplexVector<T>::magSq() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].real(NimbleDSP::magSq(this->buf[i]));
-        this->buf[i].imag(0);
+        this->vec[i].real(NimbleDSP::magSq(this->vec[i]));
+        this->vec[i].imag(0);
     }
     return *this;
 }
@@ -601,19 +601,19 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::magSq() {
  * \return Reference to "buffer".
  */
 template <class T>
-inline ComplexDspBuffer<T> & magSq(ComplexDspBuffer<T> & buffer) {
+inline ComplexVector<T> & magSq(ComplexVector<T> & buffer) {
     return buffer.magSq();
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::ifft() {
+ComplexVector<T> & ComplexVector<T>::ifft() {
     assert(domain == FREQUENCY_DOMAIN);
     kissfft<T> fftEngine = kissfft<T>(this->size(), true);
     std::vector< std::complex<T> > fftResults(this->size());
     
-    fftEngine.transform((typename kissfft_utils::traits<T>::cpx_type *) VECTOR_TO_ARRAY(this->buf),
+    fftEngine.transform((typename kissfft_utils::traits<T>::cpx_type *) VECTOR_TO_ARRAY(this->vec),
                         (typename kissfft_utils::traits<T>::cpx_type *) VECTOR_TO_ARRAY(fftResults));
-    this->buf = fftResults;
+    this->vec = fftResults;
     domain = TIME_DOMAIN;
     return *this;
 }
@@ -626,15 +626,15 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::ifft() {
  * \return Reference to "buffer".
  */
 template <class T>
-inline ComplexDspBuffer<T> & ifft(ComplexDspBuffer<T> &buffer) {
+inline ComplexVector<T> & ifft(ComplexVector<T> &buffer) {
     return buffer.ifft();
 }
 
 template <class T>
-ComplexDspBuffer<T> & ComplexDspBuffer<T>::angle() {
+ComplexVector<T> & ComplexVector<T>::angle() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].real(std::arg(this->buf[i]));
-        this->buf[i].imag(0);
+        this->vec[i].real(std::arg(this->vec[i]));
+        this->vec[i].imag(0);
     }
     return *this;
 }
@@ -646,7 +646,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::angle() {
  * \return Reference to "buffer".
  */
 template <class T>
-inline ComplexDspBuffer<T> & angle(ComplexDspBuffer<T> & buffer) {
+inline ComplexVector<T> & angle(ComplexVector<T> & buffer) {
     return buffer.angle();
 }
 

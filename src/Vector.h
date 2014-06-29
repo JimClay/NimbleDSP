@@ -22,13 +22,13 @@ THE SOFTWARE.
 
 
 /**
- * @file DspBuffer.h
+ * @file Vector.h
  *
- * Definition of the template class DspBuffer.
+ * Definition of the template class Vector.
  */
 
-#ifndef NimbleDSP_DspBuffer_h
-#define NimbleDSP_DspBuffer_h
+#ifndef NimbleDSP_Vector_h
+#define NimbleDSP_Vector_h
 
 
 #include <vector>
@@ -60,10 +60,10 @@ const unsigned DEFAULT_BUF_LEN = 0;
  * through polymorphism.  It also reduces the amount of code because we don't have to replicate the same
  * functionality in each class.
  *
- * Derived classes: RealDspBuffer and ComplexDspBuffer.
+ * Derived classes: RealVector and ComplexVector.
  */
 template <class T>
-class DspBuffer {
+class Vector {
 
 protected:
     /** 
@@ -72,14 +72,14 @@ protected:
     std::vector<T> *scratchBuf;
     
     /** 
-     * \brief Initializes buf to a given size and fills it with zeros.
+     * \brief Initializes vec to a given size and fills it with zeros.
      */
-    void initSize(unsigned size) {buf = std::vector<T>(size);}
+    void initSize(unsigned size) {vec = std::vector<T>(size);}
     
     /** 
-     * \brief Initializes buf with the size and contents of "array".
+     * \brief Initializes vec with the size and contents of "array".
      *
-     * \param array Array to set buf equal to.
+     * \param array Array to set vec equal to.
      * \param arrayLen Number of elements in array.
      */
     template <class U>
@@ -93,10 +93,10 @@ public:
      * dynamic memory, have a rich set of support functions, are fast and efficient, and can
      * be accessed like a normal array when that is convenient.
      *****************************************************************************************/
-	std::vector<T> buf;
+	std::vector<T> vec;
     
-    template <class U> friend class DspBuffer;
-    template <class U> friend class RealDspBuffer;
+    template <class U> friend class Vector;
+    template <class U> friend class RealVector;
     template <class U> friend class RealFirFilter;
     
     /*****************************************************************************************
@@ -105,8 +105,8 @@ public:
     /**
      * \brief Basic constructor.
      *
-     * Just sets the size of \ref buf and the pointer to the scratch buffer, if one is provided.
-     * \param size Size of \ref buf.
+     * Just sets the size of \ref vec and the pointer to the scratch buffer, if one is provided.
+     * \param size Size of \ref vec.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -114,14 +114,14 @@ public:
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      */
-    DspBuffer<T>(unsigned size = 0, std::vector<T> *scratch = NULL) {initSize(size); scratchBuf = scratch;}
+    Vector<T>(unsigned size = 0, std::vector<T> *scratch = NULL) {initSize(size); scratchBuf = scratch;}
     
     /**
      * \brief Vector constructor.
      *
-     * Sets buf equal to the input "data" parameter and sets the pointer to the scratch buffer,
+     * Sets vec equal to the input "data" parameter and sets the pointer to the scratch buffer,
      *      if one is provided.
-     * \param data Vector that \ref buf will be set equal to.
+     * \param data Vector that \ref vec will be set equal to.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
      *      be shared only by objects that are accessed by a single thread.  Objects in other
@@ -130,14 +130,14 @@ public:
      *      returns.
      */
     template <typename U>
-    DspBuffer<T>(std::vector<U> data, std::vector<T> *scratch = NULL) {initArray(VECTOR_TO_ARRAY(data), data.size()); scratchBuf = scratch;}
+    Vector<T>(std::vector<U> data, std::vector<T> *scratch = NULL) {initArray(VECTOR_TO_ARRAY(data), data.size()); scratchBuf = scratch;}
     
     /**
      * \brief Array constructor.
      *
-     * Sets buf equal to the input "data" array and sets the pointer to the scratch buffer,
+     * Sets vec equal to the input "data" array and sets the pointer to the scratch buffer,
      *      if one is provided.
-     * \param data Array that \ref buf will be set equal to.
+     * \param data Array that \ref vec will be set equal to.
      * \param dataLen Length of "data".
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
@@ -147,12 +147,12 @@ public:
      *      returns.
      */
     template <typename U>
-    DspBuffer<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) {initArray(data, dataLen); scratchBuf = scratch;}
+    Vector<T>(U *data, unsigned dataLen, std::vector<T> *scratch = NULL) {initArray(data, dataLen); scratchBuf = scratch;}
     
     /**
      * \brief Copy constructor.
      */
-    DspBuffer<T>(const DspBuffer<T>& other) {buf = other.buf; scratchBuf = other.scratchBuf;}
+    Vector<T>(const Vector<T>& other) {vec = other.vec; scratchBuf = other.scratchBuf;}
     
     /*****************************************************************************************
                                             Operators
@@ -160,74 +160,74 @@ public:
     /**
      * \brief Assignment operator.
      */
-    DspBuffer<T>& operator=(const DspBuffer<T>& rhs);
+    Vector<T>& operator=(const Vector<T>& rhs);
     
     /**
      * \brief Unary minus (negation) operator.
      */
-    DspBuffer<T> & operator-();
+    Vector<T> & operator-();
     
     /**
      * \brief Add Buffer/Assignment operator.
      */
     template <class U>
-    DspBuffer<T> & operator+=(const DspBuffer<U> &rhs);
+    Vector<T> & operator+=(const Vector<U> &rhs);
     
     /**
      * \brief Add Scalar/Assignment operator.
      */
-    DspBuffer<T> & operator+=(const T &rhs);
+    Vector<T> & operator+=(const T &rhs);
     
     /**
      * \brief Subtract Buffer/Assignment operator.
      */
     template <class U>
-    DspBuffer<T> & operator-=(const DspBuffer<U> &rhs);
+    Vector<T> & operator-=(const Vector<U> &rhs);
     
     /**
      * \brief Subtract Scalar/Assignment operator.
      */
-    DspBuffer<T> & operator-=(const T &rhs);
+    Vector<T> & operator-=(const T &rhs);
     
     /**
      * \brief Multiply Buffer/Assignment operator.
      */
     template <class U>
-    DspBuffer<T> & operator*=(const DspBuffer<U> &rhs);
+    Vector<T> & operator*=(const Vector<U> &rhs);
     
     /**
      * \brief Multiply Scalar/Assignment operator.
      */
-    DspBuffer<T> & operator*=(const T &rhs);
+    Vector<T> & operator*=(const T &rhs);
     
     /**
      * \brief Divide Buffer/Assignment operator.
      */
     template <class U>
-    DspBuffer<T> & operator/=(const DspBuffer<U> &rhs);
+    Vector<T> & operator/=(const Vector<U> &rhs);
     
     /**
      * \brief Divide Scalar/Assignment operator.
      */
-    DspBuffer<T> & operator/=(const T &rhs);
+    Vector<T> & operator/=(const T &rhs);
     
     /**
      * \brief Index assignment operator.
      */
-    T& operator[](unsigned index) {return buf[index];};
+    T& operator[](unsigned index) {return vec[index];};
     
     /**
      * \brief Index operator.
      */
-    const T& operator[](unsigned index) const {return buf[index];};
+    const T& operator[](unsigned index) const {return vec[index];};
     
     /*****************************************************************************************
                                             Methods
     *****************************************************************************************/
     /**
-     * \brief Returns the size of \ref buf.
+     * \brief Returns the size of \ref vec.
      */
-    const unsigned size() const {return buf.size();};
+    const unsigned size() const {return vec.size();};
     
     /**
      * \brief Circular rotation.
@@ -238,78 +238,78 @@ public:
      *      the left, and negative values shift it to the right.
      * \return Reference to "this".
      */
-    DspBuffer<T> & rotate(int numToShift);
+    Vector<T> & rotate(int numToShift);
     
     /**
-     * \brief Reverses the order of the elements in \ref buf.
+     * \brief Reverses the order of the elements in \ref vec.
      *
      * \return Reference to "this".
      */
-    DspBuffer<T> & reverse();
+    Vector<T> & reverse();
     
     /**
-     * \brief Finds the first instance of "val" in \ref buf.
+     * \brief Finds the first instance of "val" in \ref vec.
      *
-     * \param val The value to look for in \ref buf.
+     * \param val The value to look for in \ref vec.
      * \return Index of first instance of "val".  If there aren't any elements equal to "val"
      *      it returns -1.
      */
     const int find(const T val) const;
     
     /**
-     * \brief Changes the elements of \ref buf to their absolute value.
+     * \brief Changes the elements of \ref vec to their absolute value.
      *
      * \return Reference to "this".
      */
-    DspBuffer<T> & abs();
+    Vector<T> & abs();
     
     /**
-     * \brief Sets each element of \ref buf to e^(element).
+     * \brief Sets each element of \ref vec to e^(element).
      *
      * \return Reference to "this".
      */
-    DspBuffer<T> & exp();
+    Vector<T> & exp();
     
     /**
-     * \brief Sets each element of \ref buf to the natural log of the element.
+     * \brief Sets each element of \ref vec to the natural log of the element.
      *
      * \return Reference to "this".
      */
-    DspBuffer<T> & log();
+    Vector<T> & log();
     
     /**
-     * \brief Sets each element of \ref buf to the natural log of the element.
+     * \brief Sets each element of \ref vec to the natural log of the element.
      *
      * \return Reference to "this".
      */
-    DspBuffer<T> & ln() {return log();}
+    Vector<T> & ln() {return log();}
     
     /**
-     * \brief Sets each element of \ref buf to the base 10 log of the element.
+     * \brief Sets each element of \ref vec to the base 10 log of the element.
      *
      * \return Reference to "this".
      */
-    DspBuffer<T> & log10();
+    Vector<T> & log10();
     
     /**
-     * \brief Sets the length of \ref buf to "len".
+     * \brief Sets the length of \ref vec to "len".
      *
-     * \param len The new length for \ref buf.  If len is longer than buf's current size, the
-     *      new elements will be set to "val".  If len is less than buf's current size the extra
+     * \param len The new length for \ref vec.  If len is longer than vec's current size, the
+     *      new elements will be set to "val".  If len is less than vec's current size the extra
      *      elements will be cut off and the other elements will remain the same.
      * \param val The value to set any new elements to.  Defaults to 0.
      * \return Reference to "this".
      */
-    DspBuffer<T> & resize(unsigned len, T val = (T) 0) {buf.resize(len, val); return *this;}
+    Vector<T> & resize(unsigned len, T val = (T) 0) {vec.resize(len, val); return *this;}
     
     /**
-     * \brief Lengthens \ref buf by "len" elements.
+     * \brief Lengthens \ref vec by "len" elements.
      *
-     * \param len The number of elements to add to \ref buf.
+     * \param len The number of elements to add to \ref vec.
      * \param val The value to set the new elements to.  Defaults to 0.
      * \return Reference to "this".
      */
-    DspBuffer<T> & pad(unsigned len, T val = (T) 0) {buf.resize(size()+len, val); return *this;}
+    Vector<T> & pad(unsigned len, T val = (T) 0) {vec.resize(size()+len, val); return *this;}
     
     /**
      * \brief Inserts rate-1 zeros between samples.
@@ -319,7 +319,7 @@ public:
      *      after).  Valid values are 0 to "rate"-1.  Defaults to 0.
      * \return Reference to "this".
      */
-    DspBuffer<T> & upsample(int rate, int phase = 0);
+    Vector<T> & upsample(int rate, int phase = 0);
     
     /**
      * \brief Removes rate-1 samples out of every rate samples.
@@ -329,42 +329,42 @@ public:
      *      are 0 to "rate"-1.  Defaults to 0.
      * \return Reference to "this".
      */
-    DspBuffer<T> & downsample(int rate, int phase = 0);
+    Vector<T> & downsample(int rate, int phase = 0);
     
     /**
-     * \brief Returns the sum of all the elements in \ref buf.
+     * \brief Returns the sum of all the elements in \ref vec.
      */
 	T sum() const;
     
     /**
-     * \brief Replaces \ref buf with the difference between successive samples in buf.
+     * \brief Replaces \ref vec with the difference between successive samples in vec.
      *
-     * The resulting \ref buf is one element shorter than it was previously.
+     * The resulting \ref vec is one element shorter than it was previously.
      * \return Reference to "this".
      */
-	DspBuffer<T> & diff();
+	Vector<T> & diff();
     
     /**
-     * \brief Replaces \ref buf with the difference between successive samples in buf.
+     * \brief Replaces \ref vec with the difference between successive samples in vec.
      *
      * \param previousVal The last value in the sample stream before the current contents
-     *      of \ref buf.  previousVal allows the resulting buf to be the same size as the
-     *      previous buf.
+     *      of \ref vec.  previousVal allows the resulting vec to be the same size as the
+     *      previous vec.
      * \return Reference to "this".
      */
-    DspBuffer<T> & diff(T & previousVal);
+    Vector<T> & diff(T & previousVal);
     
     /**
      * \brief Convolution method.
      *
-     * \param data The buffer that will be filtered.
+     * \param data The vector that will be filtered.
      * \param trimTails "False" tells the method to return the entire convolution, which is
      *      the length of "data" plus the length of "this" (the filter) - 1.  "True" tells the
      *      method to retain the size of "data" by trimming the tails at both ends of
      *      the convolution.
      * \return Reference to "data", which holds the result of the convolution.
      */
-    virtual DspBuffer<T> & conv(DspBuffer<T> & data, bool trimTails = false);
+    virtual Vector<T> & conv(Vector<T> & data, bool trimTails = false);
     
     /**
      * \brief Decimate method.
@@ -372,28 +372,28 @@ public:
      * This method is equivalent to filtering with the \ref conv method and downsampling
      * with the \ref downsample method, but is much more efficient.
      *
-     * \param data The buffer that will be filtered.
+     * \param data The vector that will be filtered.
      * \param rate Indicates how much to downsample.
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
      *      tells the method to retain the size of "data" by trimming the tails at both
      *      ends of the convolution.
      * \return Reference to "data", which holds the result of the decimation.
      */
-    virtual DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, bool trimTails = false);
+    virtual Vector<T> & decimate(Vector<T> & data, int rate, bool trimTails = false);
     
     /**
      * \brief Interpolation method.
      *
      * This method is equivalent to upsampling followed by filtering, but is much more efficient.
      *
-     * \param data The buffer that will be filtered.
+     * \param data The vector that will be filtered.
      * \param rate Indicates how much to upsample.
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
      *      tells the method to retain the size of "data" by trimming the tails at both
      *      ends of the convolution.
      * \return Reference to "data", which holds the result of the interpolation.
      */
-    virtual DspBuffer<T> & interp(DspBuffer<T> & data, int rate, bool trimTails = false);
+    virtual Vector<T> & interp(Vector<T> & data, int rate, bool trimTails = false);
     
     /**
      * \brief Resample method.
@@ -401,7 +401,7 @@ public:
      * This method is equivalent to upsampling by "interpRate", filtering, and downsampling
      *      by "decimateRate", but is much more efficient.
      *
-     * \param data The buffer that will be filtered.
+     * \param data The vector that will be filtered.
      * \param interpRate Indicates how much to upsample.
      * \param decimateRate Indicates how much to downsample.
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
@@ -409,64 +409,64 @@ public:
      *      ends of the convolution.
      * \return Reference to "data", which holds the result of the resampling.
      */
-    virtual DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate, bool trimTails = false);
+    virtual Vector<T> & resample(Vector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
 };
 
 
 template <class T>
 template <class U>
-void DspBuffer<T>::initArray(U *array, unsigned arrayLen) {
-    buf = std::vector<T>(arrayLen);
+void Vector<T>::initArray(U *array, unsigned arrayLen) {
+    vec = std::vector<T>(arrayLen);
     for (unsigned i=0; i<arrayLen; i++) {
-        buf[i] = (T) array[i];
+        vec[i] = (T) array[i];
     }
 }
 
 template <class T>
-DspBuffer<T>& DspBuffer<T>::operator=(const DspBuffer<T>& rhs)
+Vector<T>& Vector<T>::operator=(const Vector<T>& rhs)
 {
-    buf = rhs.buf;
+    vec = rhs.vec;
     return *this;
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator-()
+Vector<T> & Vector<T>::operator-()
 {
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] = -buf[i];
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] = -vec[i];
     }
     return *this;
 }
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::operator+=(const DspBuffer<U> &rhs)
+Vector<T> & Vector<T>::operator+=(const Vector<U> &rhs)
 {
     assert(size() == rhs.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] += rhs.buf[i];
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] += rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator+=(const T &rhs)
+Vector<T> & Vector<T>::operator+=(const T &rhs)
 {
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] += rhs;
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] += rhs;
     }
     return *this;
 }
 
 template <class T, class U>
-inline DspBuffer<T> operator+(DspBuffer<T> lhs, const DspBuffer<U>& rhs)
+inline Vector<T> operator+(Vector<T> lhs, const Vector<U>& rhs)
 {
     lhs += rhs;
     return lhs;
 }
 
 template <class T>
-inline DspBuffer<T> operator+(DspBuffer<T> lhs, const T& rhs)
+inline Vector<T> operator+(Vector<T> lhs, const T& rhs)
 {
     lhs += rhs;
     return lhs;
@@ -474,33 +474,33 @@ inline DspBuffer<T> operator+(DspBuffer<T> lhs, const T& rhs)
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::operator-=(const DspBuffer<U> &rhs)
+Vector<T> & Vector<T>::operator-=(const Vector<U> &rhs)
 {
     assert(size() == rhs.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] -= rhs.buf[i];
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] -= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator-=(const T &rhs)
+Vector<T> & Vector<T>::operator-=(const T &rhs)
 {
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] -= rhs;
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] -= rhs;
     }
     return *this;
 }
 
 template <class T, class U>
-inline DspBuffer<T> operator-(DspBuffer<T> lhs, const DspBuffer<U>& rhs)
+inline Vector<T> operator-(Vector<T> lhs, const Vector<U>& rhs)
 {
     lhs -= rhs;
     return lhs;
 }
 
 template <class T>
-inline DspBuffer<T> operator-(DspBuffer<T> lhs, const T& rhs)
+inline Vector<T> operator-(Vector<T> lhs, const T& rhs)
 {
     lhs -= rhs;
     return lhs;
@@ -508,33 +508,33 @@ inline DspBuffer<T> operator-(DspBuffer<T> lhs, const T& rhs)
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::operator*=(const DspBuffer<U> &rhs)
+Vector<T> & Vector<T>::operator*=(const Vector<U> &rhs)
 {
     assert(size() == rhs.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] *= rhs.buf[i];
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] *= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator*=(const T &rhs)
+Vector<T> & Vector<T>::operator*=(const T &rhs)
 {
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] *= rhs;
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] *= rhs;
     }
     return *this;
 }
 
 template <class T, class U>
-inline DspBuffer<T> operator*(DspBuffer<T> lhs, const DspBuffer<U>& rhs)
+inline Vector<T> operator*(Vector<T> lhs, const Vector<U>& rhs)
 {
     lhs *= rhs;
     return lhs;
 }
 
 template <class T>
-inline DspBuffer<T> operator*(DspBuffer<T> lhs, const T& rhs)
+inline Vector<T> operator*(Vector<T> lhs, const T& rhs)
 {
     lhs *= rhs;
     return lhs;
@@ -542,40 +542,40 @@ inline DspBuffer<T> operator*(DspBuffer<T> lhs, const T& rhs)
 
 template <class T>
 template <class U>
-DspBuffer<T> & DspBuffer<T>::operator/=(const DspBuffer<U> &rhs)
+Vector<T> & Vector<T>::operator/=(const Vector<U> &rhs)
 {
     assert(size() == rhs.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] /= rhs.buf[i];
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] /= rhs.vec[i];
     }
     return *this;
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::operator/=(const T &rhs)
+Vector<T> & Vector<T>::operator/=(const T &rhs)
 {
-    for (unsigned i=0; i<buf.size(); i++) {
-        buf[i] /= rhs;
+    for (unsigned i=0; i<vec.size(); i++) {
+        vec[i] /= rhs;
     }
     return *this;
 }
 
 template <class T, class U>
-inline DspBuffer<T> operator/(DspBuffer<T> lhs, const DspBuffer<U>& rhs)
+inline Vector<T> operator/(Vector<T> lhs, const Vector<U>& rhs)
 {
     lhs /= rhs;
     return lhs;
 }
 
 template <class T>
-inline DspBuffer<T> operator/(DspBuffer<T> lhs, const T& rhs)
+inline Vector<T> operator/(Vector<T> lhs, const T& rhs)
 {
     lhs /= rhs;
     return lhs;
 }
 
 template <class T>
-inline bool operator==(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {
+inline bool operator==(const Vector<T>& lhs, const Vector<T>& rhs) {
     if (lhs.size() != rhs.size())
         return false;
     
@@ -587,10 +587,10 @@ inline bool operator==(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {
 }
 
 template <class T>
-inline bool operator!=(const DspBuffer<T>& lhs, const DspBuffer<T>& rhs) {return !(lhs == rhs);}
+inline bool operator!=(const Vector<T>& lhs, const Vector<T>& rhs) {return !(lhs == rhs);}
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::rotate(int numToShift) {
+Vector<T> & Vector<T>::rotate(int numToShift) {
     while (numToShift < 0)
         numToShift += size();
     
@@ -600,46 +600,46 @@ DspBuffer<T> & DspBuffer<T>::rotate(int numToShift) {
     if (numToShift == 0)
         return *this;
 
-    std::rotate(buf.begin(), buf.begin()+numToShift, buf.end());
+    std::rotate(vec.begin(), vec.begin()+numToShift, vec.end());
     return *this;
 }
 
 /**
  * \brief Circular rotation.
  *
- * \param buffer Buffer to rotate.
+ * \param vector Buffer to rotate.
  * \param numToShift Number of positions to shift in the circular rotation.  numToShift
  *      can be positive or negative.  If you visualize the 0 index value at the left and
  *      the end of the array at the right, positive numToShift values shift the array to
  *      the left, and negative values shift it to the right.
- * \return Reference to "buffer".
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & rotate(DspBuffer<T> & buffer, int numToShift) {
-    return buffer.rotate(numToShift);
+Vector<T> & rotate(Vector<T> & vector, int numToShift) {
+    return vector.rotate(numToShift);
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::reverse() {
-    std::reverse(buf.begin(), buf.end());
+Vector<T> & Vector<T>::reverse() {
+    std::reverse(vec.begin(), vec.end());
     return *this;
 }
 
 /**
- * \brief Reverses the order of the elements in \ref buf.
+ * \brief Reverses the order of the elements in \ref vec.
  *
- * \param buffer Buffer to operate on.
- * \return Reference to "buffer".
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & reverse(DspBuffer<T> & buffer) {
-    return buffer.reverse();
+Vector<T> & reverse(Vector<T> & vector) {
+    return vector.reverse();
 }
 
 template <class T>
-const int DspBuffer<T>::find(const T val) const {
+const int Vector<T>::find(const T val) const {
     for (unsigned i=0; i<size(); i++) {
-        if (buf[i] == val) {
+        if (vec[i] == val) {
             return (int) i;
         }
     }
@@ -647,146 +647,146 @@ const int DspBuffer<T>::find(const T val) const {
 }
 
 /**
- * \brief Finds the first instance of "val" in \ref buf.
+ * \brief Finds the first instance of "val" in \ref vec.
  *
- * \param buffer Buffer to operate on.
- * \param val The value to look for in \ref buf.
+ * \param vector Buffer to operate on.
+ * \param val The value to look for in \ref vec.
  * \return Index of first instance of "val".  If there aren't any elements equal to "val"
  *      it returns -1.
  */
 template <class T>
-const int find(DspBuffer<T> & buffer, const T val) {
-    return buffer.find(val);
+const int find(Vector<T> & vector, const T val) {
+    return vector.find(val);
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::abs() {
+Vector<T> & Vector<T>::abs() {
     for (unsigned i=0; i<size(); i++) {
-        buf[i] = (T) std::abs(buf[i]);
+        vec[i] = (T) std::abs(vec[i]);
     }
     return *this;
 }
 
 /**
- * \brief Changes the elements of \ref buf to their absolute value.
+ * \brief Changes the elements of \ref vec to their absolute value.
  *
- * \param buffer Buffer to operate on.
- * \return Reference to "buffer".
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & abs(DspBuffer<T> & buffer) {
-    return buffer.abs();
+Vector<T> & abs(Vector<T> & vector) {
+    return vector.abs();
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::exp() {
+Vector<T> & Vector<T>::exp() {
     for (unsigned i=0; i<size(); i++) {
-        buf[i] = (T) std::exp(buf[i]);
+        vec[i] = (T) std::exp(vec[i]);
     }
     return *this;
 }
 
 /**
- * \brief Sets each element of \ref buf to e^(element).
+ * \brief Sets each element of \ref vec to e^(element).
  *
- * \param buffer Buffer to operate on.
- * \return Reference to "buffer".
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & exp(DspBuffer<T> & buffer) {
-    return buffer.exp();
+Vector<T> & exp(Vector<T> & vector) {
+    return vector.exp();
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::log() {
+Vector<T> & Vector<T>::log() {
     for (unsigned i=0; i<size(); i++) {
-		buf[i] = (T) std::log(buf[i]);
+		vec[i] = (T) std::log(vec[i]);
     }
     return *this;
 }
 
 /**
- * \brief Sets each element of \ref buf to the natural log of the element.
+ * \brief Sets each element of \ref vec to the natural log of the element.
  *
- * \param buffer Buffer to operate on.
- * \return Reference to "buffer".
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & log(DspBuffer<T> & buffer) {
-    return buffer.log();
+Vector<T> & log(Vector<T> & vector) {
+    return vector.log();
 }
 
 /**
- * \brief Sets each element of \ref buf to the natural log of the element.
+ * \brief Sets each element of \ref vec to the natural log of the element.
  *
- * \param buffer Buffer to operate on.
- * \return Reference to "buffer".
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & ln(DspBuffer<T> & buffer) {
-    return buffer.log();
+Vector<T> & ln(Vector<T> & vector) {
+    return vector.log();
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::log10() {
+Vector<T> & Vector<T>::log10() {
     for (unsigned i=0; i<size(); i++) {
-		buf[i] = (T) std::log10(buf[i]);
+		vec[i] = (T) std::log10(vec[i]);
     }
     return *this;
 }
 
 /**
- * \brief Sets each element of \ref buf to the base 10 log of the element.
+ * \brief Sets each element of \ref vec to the base 10 log of the element.
  *
- * \param buffer Buffer to operate on.
- * \return Reference to "buffer".
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & log10(DspBuffer<T> & buffer) {
-    return buffer.log10();
+Vector<T> & log10(Vector<T> & vector) {
+    return vector.log10();
 }
 
 /**
- * \brief Sets the length of \ref buf to "len".
+ * \brief Sets the length of \ref vec to "len".
  *
- * \param buffer Buffer to operate on.
- * \param len The new length for \ref buf.  If len is longer than buf's current size, the
- *      new elements will be set to "val".  If len is less than buf's current size the extra
+ * \param vector Buffer to operate on.
+ * \param len The new length for \ref vec.  If len is longer than vec's current size, the
+ *      new elements will be set to "val".  If len is less than vec's current size the extra
  *      elements will be cut off and the other elements will remain the same.
  * \param val The value to set any new elements to.  Defaults to 0.
- * \return Reference to "buffer".
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & resize(DspBuffer<T> & buffer, int len, T val = 0) {
-    return buffer.resize(len, val);
+Vector<T> & resize(Vector<T> & vector, int len, T val = 0) {
+    return vector.resize(len, val);
 }
 
 /**
- * \brief Lengthens \ref buf by "len" elements.
+ * \brief Lengthens \ref vec by "len" elements.
  *
- * \param buffer Buffer to operate on.
- * \param len The number of elements to add to \ref buf.
+ * \param vector Buffer to operate on.
+ * \param len The number of elements to add to \ref vec.
  * \param val The value to set the new elements to.  Defaults to 0.
- * \return Reference to "buffer".
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & pad(DspBuffer<T> & buffer, int len, T val = 0) {
-    return buffer.pad(len, val);
+Vector<T> & pad(Vector<T> & vector, int len, T val = 0) {
+    return vector.pad(len, val);
 }
     
 template <class T>
-DspBuffer<T> & DspBuffer<T>::upsample(int rate, int phase) {
+Vector<T> & Vector<T>::upsample(int rate, int phase) {
 	assert(rate > 0);
 	assert(phase >= 0 && phase < rate);
 	if (rate == 1)
 		return *this;
 
-	int originalSize = buf.size();
-	buf.resize(originalSize*rate);
+	int originalSize = vec.size();
+	vec.resize(originalSize*rate);
 	int from, to;
-	for (from = originalSize - 1, to = buf.size() - (rate - phase); to > 0; from--, to -= rate) {
-		buf[to] = buf[from];
-		buf[from] = 0;
+	for (from = originalSize - 1, to = vec.size() - (rate - phase); to > 0; from--, to -= rate) {
+		vec[to] = vec[from];
+		vec[from] = 0;
 	}
 	return *this;
 }
@@ -794,117 +794,117 @@ DspBuffer<T> & DspBuffer<T>::upsample(int rate, int phase) {
 /**
  * \brief Inserts rate-1 zeros between samples.
  *
- * \param buffer Buffer to operate on.
+ * \param vector Buffer to operate on.
  * \param rate Indicates how many zeros should be inserted between samples.
  * \param phase Indicates how many of the zeros should be before the samples (as opposed to
  *      after).  Valid values are 0 to "rate"-1.  Defaults to 0.
- * \return Reference to "buffer".
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & upsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
-    return buffer.upsample(rate, phase);
+Vector<T> & upsample(Vector<T> & vector, int rate, int phase = 0) {
+    return vector.upsample(rate, phase);
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::downsample(int rate, int phase) {
+Vector<T> & Vector<T>::downsample(int rate, int phase) {
 	assert(rate > 0);
 	assert(phase >= 0 && phase < rate);
 	if (rate == 1)
 		return *this;
 
-	int newSize = buf.size() / rate;
+	int newSize = vec.size() / rate;
 	int from, to;
 	for (from = phase, to = 0; to < newSize; from += rate, to++) {
-		buf[to] = buf[from];
+		vec[to] = vec[from];
 	}
-	buf.resize(newSize);
+	vec.resize(newSize);
 	return *this;
 }
 
 /**
  * \brief Removes rate-1 samples out of every rate samples.
  *
- * \param buffer Buffer to operate on.
+ * \param vector Buffer to operate on.
  * \param rate Indicates how many samples should be removed.
  * \param phase Tells the function which sample should be the first to be kept.  Valid values
  *      are 0 to "rate"-1.  Defaults to 0.
- * \return Reference to "buffer".
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & downsample(DspBuffer<T> & buffer, int rate, int phase = 0) {
-    return buffer.downsample(rate, phase);
+Vector<T> & downsample(Vector<T> & vector, int rate, int phase = 0) {
+    return vector.downsample(rate, phase);
 }
 
 template <class T>
-T DspBuffer<T>::sum() const {
-	assert(buf.size() > 0);
-	T bufferSum = 0;
-	for (unsigned i=0; i<buf.size(); i++) {
-		bufferSum += buf[i];
+T Vector<T>::sum() const {
+	assert(vec.size() > 0);
+	T vectorSum = 0;
+	for (unsigned i=0; i<vec.size(); i++) {
+		vectorSum += vec[i];
 	}
-	return bufferSum;
+	return vectorSum;
 }
 
 /**
- * \brief Returns the sum of all the elements in \ref buf.
+ * \brief Returns the sum of all the elements in \ref vec.
  *
- * \param buffer Buffer to operate on.
+ * \param vector Buffer to operate on.
  */
 template <class T>
-T sum(const DspBuffer<T> & buffer) {
-	return buffer.sum();
+T sum(const Vector<T> & vector) {
+	return vector.sum();
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::diff() {
-	assert(buf.size() > 1);
-	for (unsigned i=0; i<(buf.size()-1); i++) {
-		buf[i] = buf[i + 1] - buf[i];
+Vector<T> & Vector<T>::diff() {
+	assert(vec.size() > 1);
+	for (unsigned i=0; i<(vec.size()-1); i++) {
+		vec[i] = vec[i + 1] - vec[i];
 	}
-    buf.resize(buf.size()-1);
+    vec.resize(vec.size()-1);
     return *this;
 }
 
 /**
- * \brief Replaces \ref buf with the difference between successive samples in buf.
+ * \brief Replaces \ref vec with the difference between successive samples in vec.
  *
- * The resulting \ref buf is one element shorter than it was previously.
- * \param buffer Buffer to operate on.
- * \return Reference to "buffer".
+ * The resulting \ref vec is one element shorter than it was previously.
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & diff(DspBuffer<T> & buffer) {
-    return buffer.diff();
+Vector<T> & diff(Vector<T> & vector) {
+    return vector.diff();
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::diff(T & previousVal) {
-	assert(buf.size() > 0);
-    T nextPreviousVal = buf[buf.size()-1];
-	for (unsigned i=buf.size()-1; i>0; i--) {
-		buf[i] = buf[i] - buf[i - 1];
+Vector<T> & Vector<T>::diff(T & previousVal) {
+	assert(vec.size() > 0);
+    T nextPreviousVal = vec[vec.size()-1];
+	for (unsigned i=vec.size()-1; i>0; i--) {
+		vec[i] = vec[i] - vec[i - 1];
 	}
-    buf[0] = buf[0] - previousVal;
+    vec[0] = vec[0] - previousVal;
     previousVal = nextPreviousVal;
     return *this;
 }
 
 /**
- * \brief Replaces \ref buf with the difference between successive samples in buf.
+ * \brief Replaces \ref vec with the difference between successive samples in vec.
  *
- * \param buffer Buffer to operate on.
+ * \param vector Buffer to operate on.
  * \param previousVal The last value in the sample stream before the current contents
- *      of \ref buf.  previousVal allows the resulting buf to be the same size as the
- *      previous buf.
- * \return Reference to "buffer".
+ *      of \ref vec.  previousVal allows the resulting vec to be the same size as the
+ *      previous vec.
+ * \return Reference to "vector".
  */
 template <class T>
-DspBuffer<T> & diff(DspBuffer<T> & buffer, T & previousVal) {
-    return buffer.diff(previousVal);
+Vector<T> & diff(Vector<T> & vector, T & previousVal) {
+    return vector.diff(previousVal);
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
+Vector<T> & Vector<T>::conv(Vector<T> & data, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -917,7 +917,7 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
     else {
         dataTmp = data.scratchBuf;
     }
-    *dataTmp = data.buf;
+    *dataTmp = data.vec;
     
     if (trimTails) {
         // Initial partial overlap
@@ -925,7 +925,7 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
         for (resultIndex=0; resultIndex<((int)this->size()-1) - initialTrim; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
         
@@ -934,7 +934,7 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
 
@@ -943,7 +943,7 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
     }
@@ -954,7 +954,7 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
         for (resultIndex=0; resultIndex<(int)this->size()-1; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
         
@@ -963,7 +963,7 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
 
@@ -972,7 +972,7 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
             data[resultIndex] = 0;
             for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
     }
@@ -991,12 +991,12 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
  * \return Reference to "data", which holds the result of the convolution.
  */
 template <class T>
-inline DspBuffer<T> & conv(DspBuffer<T> & data, DspBuffer<T> & filter, bool trimTails = false) {
+inline Vector<T> & conv(Vector<T> & data, Vector<T> & filter, bool trimTails = false) {
     return filter.conv(data, trimTails);
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTails) {
+Vector<T> & Vector<T>::decimate(Vector<T> & data, int rate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -1009,7 +1009,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
     else {
         dataTmp = data.scratchBuf;
     }
-    *dataTmp = data.buf;
+    *dataTmp = data.vec;
     
     if (trimTails) {
         data.resize((data.size() + rate - 1) / rate);
@@ -1019,7 +1019,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
         for (resultIndex=0; resultIndex<(((int)this->size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
         
@@ -1028,7 +1028,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
 
@@ -1037,7 +1037,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
     }
@@ -1048,7 +1048,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
         for (resultIndex=0; resultIndex<((int)this->size()-1+rate-1)/rate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
         
@@ -1057,7 +1057,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  filterIndex>=0; dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
 
@@ -1066,7 +1066,7 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
             data[resultIndex] = 0;
             for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
     }
@@ -1088,12 +1088,12 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
  * \return Reference to "data", which holds the result of the decimation.
  */
 template <class T>
-inline DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, DspBuffer<T> & filter, bool trimTails = false) {
+inline Vector<T> & decimate(Vector<T> & data, int rate, Vector<T> & filter, bool trimTails = false) {
     return filter.decimate(data, rate, trimTails);
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTails) {
+Vector<T> & Vector<T>::interp(Vector<T> & data, int rate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -1107,7 +1107,7 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
     else {
         dataTmp = data.scratchBuf;
     }
-    *dataTmp = data.buf;
+    *dataTmp = data.vec;
     
     if (trimTails) {
         data.resize(data.size() * rate);
@@ -1117,7 +1117,7 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
         for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1 - initialTrim; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
        
@@ -1126,7 +1126,7 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -1142,7 +1142,7 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -1160,7 +1160,7 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
         for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
         }
         
@@ -1169,7 +1169,7 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int)this->size()) {
@@ -1185,7 +1185,7 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             ++filterStart;
             if (filterStart >= (int) this->size()) {
@@ -1213,12 +1213,12 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
  * \return Reference to "data", which holds the result of the interpolation.
  */
 template <class T>
-inline DspBuffer<T> & interp(DspBuffer<T> & data, int rate, DspBuffer<T> & filter, bool trimTails = false) {
+inline Vector<T> & interp(Vector<T> & data, int rate, Vector<T> & filter, bool trimTails = false) {
     return filter.interp(data, rate, trimTails);
 }
 
 template <class T>
-DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int decimateRate,  bool trimTails) {
+Vector<T> & Vector<T>::resample(Vector<T> & data, int interpRate, int decimateRate,  bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -1232,7 +1232,7 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
     else {
         dataTmp = data.scratchBuf;
     }
-    *dataTmp = data.buf;
+    *dataTmp = data.vec;
     
     if (trimTails) {
         int interpLen = data.size() * interpRate;
@@ -1245,7 +1245,7 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
              resultIndex<((int)this->size()-1 - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -1261,7 +1261,7 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -1277,7 +1277,7 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -1297,7 +1297,7 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
         for (resultIndex=0, dataStart=0, filterStart=0; resultIndex<((int)this->size()-1+decimateRate-1)/decimateRate; resultIndex++) {
             data[resultIndex] = 0;
             for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -1313,7 +1313,7 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -1329,7 +1329,7 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
             data[resultIndex] = 0;
             for (dataIndex=dataStart, filterIndex=filterStart;
                  dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
-                data[resultIndex] += (*dataTmp)[dataIndex] * buf[filterIndex];
+                data[resultIndex] += (*dataTmp)[dataIndex] * vec[filterIndex];
             }
             filterStart += decimateRate;
             while (filterStart >= (int)this->size()) {
@@ -1359,8 +1359,8 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
  * \return Reference to "data", which holds the result of the resampling.
  */
 template <class T>
-inline DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate,
-            DspBuffer<T> & filter, bool trimTails = false) {
+inline Vector<T> & resample(Vector<T> & data, int interpRate, int decimateRate,
+            Vector<T> & filter, bool trimTails = false) {
     return filter.resample(data, interpRate, decimateRate, trimTails);
 }
 
