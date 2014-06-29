@@ -1,10 +1,31 @@
-//
-//  RealFirFilter.h
-//  SlickDsp
-//
-//  Created by Jim Clay on 6/1/14.
-//
-//
+/*
+Copyright (c) 2014, James Clay
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+
+/**
+ * @file RealFirFilter.h
+ *
+ * Definition of the template class RealFirFilter.
+ */
 
 #ifndef SlickDsp_RealFirFilter_h
 #define SlickDsp_RealFirFilter_h
@@ -17,20 +38,39 @@
 namespace SlickDsp {
     
 enum FilterOperationType {STREAMING, ONE_SHOT_RETURN_ALL_RESULTS, ONE_SHOT_TRIM_TAILS};
-const size_t LARGEST_DATA_TYPE = sizeof(std::complex<long double>);
 
-template <class T>
-class ComplexDspBuffer;
 
+/**
+ * \brief Class for real FIR filters.
+ */
 template <class T>
 class RealFirFilter : public RealDspBuffer<T> {
  protected:
+    /**
+     * \brief Saved data that is used for stream filtering.
+     */
     std::vector<char> savedData;
+    
+    /**
+     * \brief Indicates how many samples are in \ref savedData.  Used for stream filtering.
+     */
     int numSavedSamples;
+    
+    /**
+     * \brief Indicates the filter phase.  Used for stream filtering.
+     */
     int phase;
     
  public:
-     FilterOperationType filtOperation;
+    /**
+     * \brief Determines how the filter should filter.
+     *
+     * NimbleDSP::ONE_SHOT_RETURN_ALL_RESULTS is equivalent to "trimTails = false" of the Vector convolution methods.
+     * NimbleDSP::ONE_SHOT_TRIM_TAILS is equivalent to "trimTails = true" of the Vector convolution methods.
+     * NimbleDSP::STREAMING maintains the filter state from call to call so it can produce results as if it had
+     *      filtered one continuous set of data.
+     */
+    FilterOperationType filtOperation;
 
     /*****************************************************************************************
                                         Constructors
@@ -106,13 +146,20 @@ class RealFirFilter : public RealDspBuffer<T> {
      * \brief Convolution method.
      *
      * \param data The buffer that will be filtered.
-     * \param trimTails "False" tells the method to return the entire convolution, which is
-     *      the length of "this" plus the length of "filter" - 1.  "True" tells the
-     *      method to retain the size of "this" be trimming the tails at both ends of
-     *      the convolution.
-     * \return Reference to "this", which holds the result of the convolution.
+     * \param trimTails This parameter is ignored.  The operation of the filter is determined by how
+     *      \ref filtOperation is set.
+     * \return Reference to "data", which holds the result of the convolution.
      */
     virtual DspBuffer<T> & conv(DspBuffer<T> & data, bool trimTails = false);
+    
+    /**
+     * \brief Convolution method for complex data.
+     *
+     * \param data The buffer that will be filtered.
+     * \param trimTails This parameter is ignored.  The operation of the filter is determined by how
+     *      \ref filtOperation is set.
+     * \return Reference to "data", which holds the result of the convolution.
+     */
     virtual ComplexDspBuffer<T> & convComplex(ComplexDspBuffer<T> & data, bool trimTails = false);
     
     /**
@@ -123,12 +170,24 @@ class RealFirFilter : public RealDspBuffer<T> {
      *
      * \param data The buffer that will be filtered.
      * \param rate Indicates how much to downsample.
-     * \param trimTails "False" tells the method to return the entire convolution.  "True"
-     *      tells the method to retain the size of "this" be trimming the tails at both
-     *      ends of the convolution.
-     * \return Reference to "this", which holds the result of the decimation.
+     * \param trimTails This parameter is ignored.  The operation of the filter is determined by how
+     *      \ref filtOperation is set.
+     * \return Reference to "data", which holds the result of the decimation.
      */
     virtual DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, bool trimTails = false);
+    
+    /**
+     * \brief Decimate method for complex data.
+     *
+     * This method is equivalent to filtering with the \ref conv method and downsampling
+     * with the \ref downsample method, but much more efficient.
+     *
+     * \param data The buffer that will be filtered.
+     * \param rate Indicates how much to downsample.
+     * \param trimTails This parameter is ignored.  The operation of the filter is determined by how
+     *      \ref filtOperation is set.
+     * \return Reference to "data", which holds the result of the decimation.
+     */
     virtual ComplexDspBuffer<T> & decimateComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails = false);
     
     /**
@@ -138,12 +197,23 @@ class RealFirFilter : public RealDspBuffer<T> {
      *
      * \param data The buffer that will be filtered.
      * \param rate Indicates how much to upsample.
-     * \param trimTails "False" tells the method to return the entire convolution.  "True"
-     *      tells the method to retain the size of "this" be trimming the tails at both
-     *      ends of the convolution.
-     * \return Reference to "this", which holds the result of the interpolation.
+     * \param trimTails This parameter is ignored.  The operation of the filter is determined by how
+     *      \ref filtOperation is set.
+     * \return Reference to "data", which holds the result of the interpolation.
      */
     virtual DspBuffer<T> & interp(DspBuffer<T> & data, int rate, bool trimTails = false);
+    
+    /**
+     * \brief Interpolation method for complex data.
+     *
+     * This method is equivalent to upsampling followed by filtering, but is much more efficient.
+     *
+     * \param data The buffer that will be filtered.
+     * \param rate Indicates how much to upsample.
+     * \param trimTails This parameter is ignored.  The operation of the filter is determined by how
+     *      \ref filtOperation is set.
+     * \return Reference to "data", which holds the result of the interpolation.
+     */
     virtual ComplexDspBuffer<T> & interpComplex(ComplexDspBuffer<T> & data, int rate, bool trimTails = false);
     
     /**
@@ -155,12 +225,25 @@ class RealFirFilter : public RealDspBuffer<T> {
      * \param data The buffer that will be filtered.
      * \param interpRate Indicates how much to upsample.
      * \param decimateRate Indicates how much to downsample.
-     * \param trimTails "False" tells the method to return the entire convolution.  "True"
-     *      tells the method to retain the size of "this" be trimming the tails at both
-     *      ends of the convolution.
-     * \return Reference to "this", which holds the result of the resampling.
+     * \param trimTails This parameter is ignored.  The operation of the filter is determined by how
+     *      \ref filtOperation is set.
+     * \return Reference to "data", which holds the result of the resampling.
      */
     virtual DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate, bool trimTails = false);
+    
+    /**
+     * \brief Resample method for complex data.
+     *
+     * This method is equivalent to upsampling by "interpRate", filtering, and downsampling
+     *      by "decimateRate", but is much more efficient.
+     *
+     * \param data The buffer that will be filtered.
+     * \param interpRate Indicates how much to upsample.
+     * \param decimateRate Indicates how much to downsample.
+     * \param trimTails This parameter is ignored.  The operation of the filter is determined by how
+     *      \ref filtOperation is set.
+     * \return Reference to "data", which holds the result of the resampling.
+     */
     virtual ComplexDspBuffer<T> & resampleComplex(ComplexDspBuffer<T> & data, int interpRate, int decimateRate, bool trimTails = false);
 };
 

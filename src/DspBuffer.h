@@ -1,3 +1,25 @@
+/*
+Copyright (c) 2014, James Clay
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
 
 /**
  * @file DspBuffer.h
@@ -28,9 +50,6 @@ const unsigned DEFAULT_BUF_LEN = 0;
 #endif
 
 #define VECTOR_TO_ARRAY(x)      (&((x)[0]))
-
-template <class T>
-class ComplexDspBuffer;
 
 
 /**
@@ -340,10 +359,10 @@ public:
      *
      * \param data The buffer that will be filtered.
      * \param trimTails "False" tells the method to return the entire convolution, which is
-     *      the length of "this" plus the length of "filter" - 1.  "True" tells the
-     *      method to retain the size of "this" be trimming the tails at both ends of
+     *      the length of "data" plus the length of "this" (the filter) - 1.  "True" tells the
+     *      method to retain the size of "data" by trimming the tails at both ends of
      *      the convolution.
-     * \return Reference to "this", which holds the result of the convolution.
+     * \return Reference to "data", which holds the result of the convolution.
      */
     virtual DspBuffer<T> & conv(DspBuffer<T> & data, bool trimTails = false);
     
@@ -351,14 +370,14 @@ public:
      * \brief Decimate method.
      *
      * This method is equivalent to filtering with the \ref conv method and downsampling
-     * with the \ref downsample method, but much more efficient.
+     * with the \ref downsample method, but is much more efficient.
      *
      * \param data The buffer that will be filtered.
      * \param rate Indicates how much to downsample.
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
-     *      tells the method to retain the size of "this" be trimming the tails at both
+     *      tells the method to retain the size of "data" by trimming the tails at both
      *      ends of the convolution.
-     * \return Reference to "this", which holds the result of the decimation.
+     * \return Reference to "data", which holds the result of the decimation.
      */
     virtual DspBuffer<T> & decimate(DspBuffer<T> & data, int rate, bool trimTails = false);
     
@@ -370,9 +389,9 @@ public:
      * \param data The buffer that will be filtered.
      * \param rate Indicates how much to upsample.
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
-     *      tells the method to retain the size of "this" be trimming the tails at both
+     *      tells the method to retain the size of "data" by trimming the tails at both
      *      ends of the convolution.
-     * \return Reference to "this", which holds the result of the interpolation.
+     * \return Reference to "data", which holds the result of the interpolation.
      */
     virtual DspBuffer<T> & interp(DspBuffer<T> & data, int rate, bool trimTails = false);
     
@@ -386,9 +405,9 @@ public:
      * \param interpRate Indicates how much to upsample.
      * \param decimateRate Indicates how much to downsample.
      * \param trimTails "False" tells the method to return the entire convolution.  "True"
-     *      tells the method to retain the size of "this" be trimming the tails at both
+     *      tells the method to retain the size of "data" by trimming the tails at both
      *      ends of the convolution.
-     * \return Reference to "this", which holds the result of the resampling.
+     * \return Reference to "data", which holds the result of the resampling.
      */
     virtual DspBuffer<T> & resample(DspBuffer<T> & data, int interpRate, int decimateRate, bool trimTails = false);
 };
@@ -964,10 +983,10 @@ DspBuffer<T> & DspBuffer<T>::conv(DspBuffer<T> & data, bool trimTails) {
  * \brief Convolution function.
  *
  * \param data Buffer to operate on.
- * \param filter The filter that will convolve "this".
+ * \param filter The filter that will convolve "data".
  * \param trimTails "False" tells the function to return the entire convolution, which is
- *      the length of "this" plus the length of "filter" - 1.  "True" tells the
- *      function to retain the size of "this" be trimming the tails at both ends of
+ *      the length of "data" plus the length of "filter" - 1.  "True" tells the
+ *      function to retain the size of "data" by trimming the tails at both ends of
  *      the convolution.
  * \return Reference to "data", which holds the result of the convolution.
  */
@@ -1062,9 +1081,9 @@ DspBuffer<T> & DspBuffer<T>::decimate(DspBuffer<T> & data, int rate, bool trimTa
  *
  * \param data Buffer to operate on.
  * \param rate Indicates how much to downsample.
- * \param filter The filter that will convolve "this".
+ * \param filter The filter that will convolve "data".
  * \param trimTails "False" tells the function to return the entire convolution.  "True"
- *      tells the function to retain the size of "this" be trimming the tails at both
+ *      tells the function to retain the size of "data" by trimming the tails at both
  *      ends of the convolution.
  * \return Reference to "data", which holds the result of the decimation.
  */
@@ -1187,9 +1206,9 @@ DspBuffer<T> & DspBuffer<T>::interp(DspBuffer<T> & data, int rate, bool trimTail
  *
  * \param data Buffer to operate on.
  * \param rate Indicates how much to upsample.
- * \param filter The filter that will convolve "this".
+ * \param filter The filter that will convolve "data".
  * \param trimTails "False" tells the function to return the entire convolution.  "True"
- *      tells the function to retain the size of "this" be trimming the tails at both
+ *      tells the function to retain the size of "data" by trimming the tails at both
  *      ends of the convolution.
  * \return Reference to "data", which holds the result of the interpolation.
  */
@@ -1333,9 +1352,9 @@ DspBuffer<T> & DspBuffer<T>::resample(DspBuffer<T> & data, int interpRate, int d
  * \param data Buffer to operate on.
  * \param interpRate Indicates how much to upsample.
  * \param decimateRate Indicates how much to downsample.
- * \param filter The filter that will convolve "this".
+ * \param filter The filter that will convolve "data".
  * \param trimTails "False" tells the function to return the entire convolution.  "True"
- *      tells the function to retain the size of "this" be trimming the tails at both
+ *      tells the function to retain the size of "data" by trimming the tails at both
  *      ends of the convolution.
  * \return Reference to "data", which holds the result of the resampling.
  */
