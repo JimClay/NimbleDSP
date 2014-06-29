@@ -27,8 +27,8 @@ THE SOFTWARE.
  * Definition of the template class DspBuffer.
  */
 
-#ifndef SlickDsp_DspBuffer_h
-#define SlickDsp_DspBuffer_h
+#ifndef NimbleDSP_DspBuffer_h
+#define NimbleDSP_DspBuffer_h
 
 
 #include <vector>
@@ -41,7 +41,7 @@ THE SOFTWARE.
 #include "kiss_fftr.h"
 
 
-namespace SlickDsp {
+namespace NimbleDSP {
 
 const unsigned DEFAULT_BUF_LEN = 0;
 
@@ -53,7 +53,7 @@ const unsigned DEFAULT_BUF_LEN = 0;
 
 
 /**
- * \brief Base class for SlickDsp.
+ * \brief Base class for NimbleDSP.
  *
  * Although you can instantiate objects of this type, that's not what this class is intended for.  It is the
  * base class that all of the other classes descend from which allows for a great deal of flexibility

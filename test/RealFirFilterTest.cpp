@@ -23,7 +23,7 @@ THE SOFTWARE.
 #include "RealFirFilter.h"
 #include "gtest/gtest.h"
 
-using namespace SlickDsp;
+using namespace NimbleDSP;
 
 
 TEST(RealFirFilter, ConvStream1) {

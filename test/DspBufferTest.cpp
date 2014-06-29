@@ -23,7 +23,7 @@ THE SOFTWARE.
 #include "DspBuffer.h"
 #include "gtest/gtest.h"
 
-using namespace SlickDsp;
+using namespace NimbleDSP;
 
 bool FloatsEqual(double float1, double float2) {
     double epsilon = .00000001;

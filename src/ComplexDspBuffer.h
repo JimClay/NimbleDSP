@@ -27,8 +27,8 @@ THE SOFTWARE.
  * Definition of the template class ComplexDspBuffer.
  */
 
-#ifndef SlickDsp_ComplexDspBuffer_h
-#define SlickDsp_ComplexDspBuffer_h
+#ifndef NimbleDSP_ComplexDspBuffer_h
+#define NimbleDSP_ComplexDspBuffer_h
 
 #include <complex>
 #include "DspBuffer.h"
@@ -36,7 +36,7 @@ THE SOFTWARE.
 
 
 
-namespace SlickDsp {
+namespace NimbleDSP {
 
 enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 
@@ -61,7 +61,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     /**
      * \brief Basic constructor.
      *
-     * Sets \ref domain to SlickDsp::TIME_DOMAIN and calls DspBuffer<T>::DspBuffer(size, scratch).
+     * Sets \ref domain to NimbleDSP::TIME_DOMAIN and calls DspBuffer<T>::DspBuffer(size, scratch).
      * \param size Size of \ref buf.
      * \param scratch Pointer to a scratch buffer.  The scratch buffer can be shared by multiple
      *      objects (in fact, I recommend it), but if there are multiple threads then it should
@@ -86,7 +86,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      * \param dataDomain Indicates whether the data is time domain data or frequency domain.
-     *      Valid values are SlickDsp::TIME_DOMAIN and SlickDsp::FREQUENCY_DOMAIN.
+     *      Valid values are NimbleDSP::TIME_DOMAIN and NimbleDSP::FREQUENCY_DOMAIN.
      */
     template <typename U>
     ComplexDspBuffer<T>(std::vector<U> data, DomainType dataDomain=TIME_DOMAIN,
@@ -107,7 +107,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      * \param dataDomain Indicates whether the data is time domain data or frequency domain.
-     *      Valid values are SlickDsp::TIME_DOMAIN and SlickDsp::FREQUENCY_DOMAIN.
+     *      Valid values are NimbleDSP::TIME_DOMAIN and NimbleDSP::FREQUENCY_DOMAIN.
      */
     template <typename U>
     ComplexDspBuffer<T>(U *data, unsigned dataLen, DomainType dataDomain=TIME_DOMAIN,
@@ -253,7 +253,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     /**
      * \brief Sets \ref buf equal to the FFT of the data in \ref buf.
      *
-     * Sets \ref domain equal to SlickDsp::FREQUENCY_DOMAIN.
+     * Sets \ref domain equal to NimbleDSP::FREQUENCY_DOMAIN.
      * \return Reference to "this".
      */
     ComplexDspBuffer<T> & fft();
@@ -261,7 +261,7 @@ class ComplexDspBuffer : public DspBuffer< std::complex<T> > {
     /**
      * \brief Sets \ref buf equal to the inverse FFT of the data in \ref buf.
      *
-     * Sets \ref domain equal to SlickDsp::TIME_DOMAIN.
+     * Sets \ref domain equal to NimbleDSP::TIME_DOMAIN.
      * \return Reference to "this".
      */
     ComplexDspBuffer<T> & ifft();
@@ -553,7 +553,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::fft() {
 /**
  * \brief Sets "buffer" equal to the FFT of the data in buffer.
  *
- * Sets \ref domain equal to SlickDsp::FREQUENCY_DOMAIN.
+ * Sets \ref domain equal to NimbleDSP::FREQUENCY_DOMAIN.
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
  */
@@ -590,7 +590,7 @@ inline T magSq(const std::complex<T> &val) {
 template <class T>
 ComplexDspBuffer<T> & ComplexDspBuffer<T>::magSq() {
     for (unsigned i=0; i<this->size(); i++) {
-        this->buf[i].real(SlickDsp::magSq(this->buf[i]));
+        this->buf[i].real(NimbleDSP::magSq(this->buf[i]));
         this->buf[i].imag(0);
     }
     return *this;
@@ -621,7 +621,7 @@ ComplexDspBuffer<T> & ComplexDspBuffer<T>::ifft() {
 /**
  * \brief Sets "buffer" equal to the inverse FFT of the data in buffer.
  *
- * Sets \ref domain equal to SlickDsp::TIME_DOMAIN.
+ * Sets \ref domain equal to NimbleDSP::TIME_DOMAIN.
  * \param buffer Buffer to operate on.
  * \return Reference to "buffer".
  */

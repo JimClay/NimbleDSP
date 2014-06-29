@@ -27,15 +27,15 @@ THE SOFTWARE.
  * Definition of the template class RealFirFilter.
  */
 
-#ifndef SlickDsp_RealFirFilter_h
-#define SlickDsp_RealFirFilter_h
+#ifndef NimbleDSP_RealFirFilter_h
+#define NimbleDSP_RealFirFilter_h
 
 #include <complex>
 #include <math.h>
 #include "RealDspBuffer.h"
 
 
-namespace SlickDsp {
+namespace NimbleDSP {
     
 enum FilterOperationType {STREAMING, ONE_SHOT_RETURN_ALL_RESULTS, ONE_SHOT_TRIM_TAILS};
 

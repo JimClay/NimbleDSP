@@ -27,15 +27,15 @@ THE SOFTWARE.
  * Definition of the template class RealDspBuffer.
  */
 
-#ifndef SlickDsp_RealDspBuffer_h
-#define SlickDsp_RealDspBuffer_h
+#ifndef NimbleDSP_RealDspBuffer_h
+#define NimbleDSP_RealDspBuffer_h
 
 #include "DspBuffer.h"
 #include "ComplexDspBuffer.h"
 
-using namespace SlickDsp;
+using namespace NimbleDSP;
 
-namespace SlickDsp {
+namespace NimbleDSP {
 
 /**
  * \brief DspBuffer class for real numbers.

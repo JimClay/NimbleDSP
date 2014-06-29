@@ -27,14 +27,14 @@ THE SOFTWARE.
  * Definition of the template class RealFixedPtDspBuffer.
  */
 
-#ifndef SlickDsp_RealFixedPtDspBuffer_h
-#define SlickDsp_RealFixedPtDspBuffer_h
+#ifndef NimbleDSP_RealFixedPtDspBuffer_h
+#define NimbleDSP_RealFixedPtDspBuffer_h
 
 #include <math.h>
 #include "RealDspBuffer.h"
 
 
-namespace SlickDsp {
+namespace NimbleDSP {
 
 
 /**

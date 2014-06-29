@@ -23,7 +23,7 @@ THE SOFTWARE.
 #include "RealFixedPtDspBuffer.h"
 #include "gtest/gtest.h"
 
-using namespace SlickDsp;
+using namespace NimbleDSP;
 
 
 extern bool FloatsEqual(double float1, double float2);
