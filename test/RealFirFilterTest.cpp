@@ -36,10 +36,10 @@ TEST(RealFirFilter, ConvStream1) {
     double expectedData3[] = {-185, -200, -215, -230, -245, -260, -275, -290, -305, -320, -335, -350, -365, -380};
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -47,7 +47,7 @@ TEST(RealFirFilter, ConvStream1) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData2, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -55,7 +55,7 @@ TEST(RealFirFilter, ConvStream1) {
     }
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData3, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -72,11 +72,11 @@ TEST(RealFirFilter, ConvOneShot) {
     double expectedData2[] = {-3, -10, -22, -40, -65, -80, -95, -100, -94, -76, -45};
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements + filter.size() - 1, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -84,7 +84,7 @@ TEST(RealFirFilter, ConvOneShot) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData2, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements + filter.size() - 1, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -100,11 +100,11 @@ TEST(RealFirFilter, ConvOneShotTrim) {
     double expectedData2[] = {-22, -40, -65, -80, -95, -100, -94};
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -112,7 +112,7 @@ TEST(RealFirFilter, ConvOneShotTrim) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData2, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -125,10 +125,10 @@ TEST(RealFirFilter, ConvComplexOneShot) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(2, 7), std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-20, 65), std::complex<double>(-35, 80), std::complex<double>(-50, 95), std::complex<double>(-65, 110), std::complex<double>(-72, 114), std::complex<double>(-70, 106), std::complex<double>(-58, 85), std::complex<double>(-35, 50)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
     
     conv(buf, filter);
@@ -143,10 +143,10 @@ TEST(RealFirFilter, ConvComplexOneShotTrim) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     std::complex<double> expectedData[] = {std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-20, 65), std::complex<double>(-35, 80), std::complex<double>(-50, 95), std::complex<double>(-65, 110), std::complex<double>(-72, 114), std::complex<double>(-70, 106)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
     
     conv(buf, filter);
@@ -166,11 +166,11 @@ TEST(RealFirFilter, ConvComplexStream1) {
     std::complex<double> expectedData3[] = {std::complex<double>(-110, 155), std::complex<double>(-125, 170), std::complex<double>(-140, 185), std::complex<double>(-155, 200), std::complex<double>(-170, 215), std::complex<double>(-185, 230), std::complex<double>(-200, 245), std::complex<double>(-215, 260), std::complex<double>(-230, 275), std::complex<double>(-245, 290), std::complex<double>(-260, 305), std::complex<double>(-275, 320), std::complex<double>(-290, 335), std::complex<double>(-305, 350)};
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
-    ComplexDspBuffer<double> input = buf;
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     conv(buf, filter);
     EXPECT_EQ(input.size(), buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -178,7 +178,7 @@ TEST(RealFirFilter, ConvComplexStream1) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData2, numElements);
     input = buf;
     conv(buf, filter);
     EXPECT_EQ(input.size(), buf.size());
@@ -187,7 +187,7 @@ TEST(RealFirFilter, ConvComplexStream1) {
     }
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData3, numElements);
     input = buf;
     conv(buf, filter);
     EXPECT_EQ(input.size(), buf.size());
@@ -201,10 +201,10 @@ TEST(RealFirFilter, DecimateComplexOneShot) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(2, 16), std::complex<double>(-5, 50), std::complex<double>(-35, 80), std::complex<double>(-65, 110), std::complex<double>(-70, 106), std::complex<double>(-35, 50)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     int rate = 2;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
     
@@ -220,10 +220,10 @@ TEST(RealFirFilter, DecimateComplexOneShotTrim) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     std::complex<double> expectedData[] = {std::complex<double>(2, 16), std::complex<double>(-5, 50), std::complex<double>(-35, 80), std::complex<double>(-65, 110), std::complex<double>(-70, 106)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     int rate = 2;
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
     
@@ -245,10 +245,10 @@ TEST(RealFirFilter, DecimateComplexStream1) {
     int rate = 3;
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     decimate(buf, rate, filter);
     EXPECT_EQ(3, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -256,7 +256,7 @@ TEST(RealFirFilter, DecimateComplexStream1) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData2, numElements);
     decimate(buf, rate, filter);
     EXPECT_EQ(1, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -264,7 +264,7 @@ TEST(RealFirFilter, DecimateComplexStream1) {
     }
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData3, numElements);
     decimate(buf, rate, filter);
     EXPECT_EQ(5, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -277,10 +277,10 @@ TEST(RealFirFilter, DecimateOneShot) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {1, 2, -5, -35, -65, -70, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    DspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::DspBuffer<double> input = buf;
     int rate = 2;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
     
@@ -296,10 +296,10 @@ TEST(RealFirFilter, DecimateOneShotTrim) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {2, -5, -35, -65, -70};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	RealDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::RealDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    RealDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealDspBuffer<double> input = buf;
     int rate = 2;
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
     
@@ -321,10 +321,10 @@ TEST(RealFirFilter, DecimateStream1) {
     int rate = 3;
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     decimate(buf, rate, filter);
     EXPECT_EQ(3, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -332,7 +332,7 @@ TEST(RealFirFilter, DecimateStream1) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData2, numElements);
     decimate(buf, rate, filter);
     EXPECT_EQ(1, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -340,7 +340,7 @@ TEST(RealFirFilter, DecimateStream1) {
     }
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData3, numElements);
     decimate(buf, rate, filter);
     EXPECT_EQ(5, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -354,10 +354,10 @@ TEST(DspBufferFilter, InterpNoTrim1) {
     double expectedData[] = {1, 2, 3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
     std::vector<double> scratchBuf;
-	RealDspBuffer<double> buf(inputData, numElements, &scratchBuf);
+	NimbleDSP::RealDspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    RealDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealDspBuffer<double> input = buf;
     int rate = 3;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
     
@@ -374,10 +374,10 @@ TEST(DspBufferFilter, InterpTrim1) {
     double expectedData[] = {3, 4, 5, 0, -1, -2, -3, -6, -9, -6, -11, -16, -9, -16, -23, -12, -21, -30, -15, -26, -37, -18, -31, -44, -21, -28, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
     std::vector<double> scratchBuf;
-	RealDspBuffer<double> buf(inputData, numElements, &scratchBuf);
+	NimbleDSP::RealDspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    RealDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealDspBuffer<double> input = buf;
     int rate = 3;
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
     
@@ -397,11 +397,11 @@ TEST(RealFirFilter, InterpStream1) {
     int rate = 3;
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -409,7 +409,7 @@ TEST(RealFirFilter, InterpStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData2, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -417,7 +417,7 @@ TEST(RealFirFilter, InterpStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData3, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -431,10 +431,10 @@ TEST(RealFirFilter, InterpComplex1) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(2, 4), std::complex<double>(3, 6), std::complex<double>(4, 11), std::complex<double>(5, 16), std::complex<double>(0, 9), std::complex<double>(-1, 16), std::complex<double>(-2, 23), std::complex<double>(-3, 12), std::complex<double>(-6, 21), std::complex<double>(-9, 30), std::complex<double>(-6, 15), std::complex<double>(-11, 26), std::complex<double>(-16, 37), std::complex<double>(-9, 18), std::complex<double>(-16, 31), std::complex<double>(-23, 44), std::complex<double>(-12, 21), std::complex<double>(-21, 36), std::complex<double>(-30, 51), std::complex<double>(-15, 24), std::complex<double>(-26, 41), std::complex<double>(-37, 58), std::complex<double>(-18, 27), std::complex<double>(-31, 46), std::complex<double>(-44, 65), std::complex<double>(-21, 30), std::complex<double>(-28, 40), std::complex<double>(-35, 50), std::complex<double>(0, 0), std::complex<double>(0, 0)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     int rate = 3;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
     
@@ -451,10 +451,10 @@ TEST(RealFirFilter, InterpComplexTrim1) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     std::complex<double> expectedData[] = {std::complex<double>(3, 6), std::complex<double>(4, 11), std::complex<double>(5, 16), std::complex<double>(0, 9), std::complex<double>(-1, 16), std::complex<double>(-2, 23), std::complex<double>(-3, 12), std::complex<double>(-6, 21), std::complex<double>(-9, 30), std::complex<double>(-6, 15), std::complex<double>(-11, 26), std::complex<double>(-16, 37), std::complex<double>(-9, 18), std::complex<double>(-16, 31), std::complex<double>(-23, 44), std::complex<double>(-12, 21), std::complex<double>(-21, 36), std::complex<double>(-30, 51), std::complex<double>(-15, 24), std::complex<double>(-26, 41), std::complex<double>(-37, 58), std::complex<double>(-18, 27), std::complex<double>(-31, 46), std::complex<double>(-44, 65), std::complex<double>(-21, 30), std::complex<double>(-28, 40), std::complex<double>(-35, 50), std::complex<double>(0, 0), std::complex<double>(0, 0)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     int rate = 3;
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
     
@@ -474,11 +474,11 @@ TEST(RealFirFilter, InterpComplexStream1) {
     int rate = 4;
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -486,7 +486,7 @@ TEST(RealFirFilter, InterpComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData2, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -494,7 +494,7 @@ TEST(RealFirFilter, InterpComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData3, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -509,10 +509,10 @@ TEST(RealFirFilter, Resample1) {
     double expectedData[] = {1, 3, 5, -1, -3, -9, -11, -9, -23, -21, -15, -37, -31, -21, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
     std::vector<double> scratchBuf;
-	DspBuffer<double> buf(inputData, numElements, &scratchBuf);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    DspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::DspBuffer<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
@@ -529,10 +529,10 @@ TEST(RealFirFilter, ResampleTrim1) {
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {3, 5, -1, -3, -9, -11, -9, -23, -21, -15, -37, -31, -21, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    DspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::DspBuffer<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
@@ -554,11 +554,11 @@ TEST(RealFirFilter, ResampleStream1) {
     int decimateRate = 2;
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -566,7 +566,7 @@ TEST(RealFirFilter, ResampleStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData2, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -574,7 +574,7 @@ TEST(RealFirFilter, ResampleStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData3, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -593,11 +593,11 @@ TEST(RealFirFilter, ResampleStream2) {
     int decimateRate = 4;
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -605,7 +605,7 @@ TEST(RealFirFilter, ResampleStream2) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData2, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -613,7 +613,7 @@ TEST(RealFirFilter, ResampleStream2) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData3, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -628,10 +628,10 @@ TEST(RealFirFilter, ResampleComplex1) {
     std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(6, 12), std::complex<double>(11, 37), std::complex<double>(-4, 46), std::complex<double>(-15, 51), std::complex<double>(-36, 108), std::complex<double>(-51, 114), std::complex<double>(-60, 114), std::complex<double>(-69, 117), std::complex<double>(-74, 116), std::complex<double>(-75, 111), std::complex<double>(-156, 228), std::complex<double>(-156, 219), std::complex<double>(-150, 204), std::complex<double>(-149, 197), std::complex<double>(-144, 186), std::complex<double>(-135, 171), std::complex<double>(-276, 348), std::complex<double>(-261, 324), std::complex<double>(-240, 294), std::complex<double>(-229, 277), std::complex<double>(-214, 256), std::complex<double>(-195, 231), std::complex<double>(-396, 468), std::complex<double>(-366, 429), std::complex<double>(-330, 384), std::complex<double>(-309, 357), std::complex<double>(-284, 326), std::complex<double>(-255, 291), std::complex<double>(-516, 588), std::complex<double>(-471, 534), std::complex<double>(-420, 474), std::complex<double>(-389, 437), std::complex<double>(-250, 280)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
     std::vector< std::complex<double> > scratchBuf;
-	ComplexDspBuffer<double> buf(inputData, numElements, TIME_DOMAIN, &scratchBuf);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements, TIME_DOMAIN, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     int interpRate = 6;
     int decimateRate = 5;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
@@ -648,10 +648,10 @@ TEST(RealFirFilter, ResampleComplexTrim1) {
     int filterTaps[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
     std::complex<double> expectedData[] = {std::complex<double>(7, 14), std::complex<double>(10, 20), std::complex<double>(13, 32), std::complex<double>(0, 15), std::complex<double>(0, 24), std::complex<double>(0, 33), std::complex<double>(-3, 54), std::complex<double>(-6, 24), std::complex<double>(-9, 36), std::complex<double>(-14, 53), std::complex<double>(-8, 20), std::complex<double>(-14, 35), std::complex<double>(-20, 50), std::complex<double>(-32, 77), std::complex<double>(-15, 30), std::complex<double>(-24, 48), std::complex<double>(-33, 66), std::complex<double>(-54, 105), std::complex<double>(-24, 42), std::complex<double>(-36, 63), std::complex<double>(-53, 92), std::complex<double>(-20, 32), std::complex<double>(-35, 56), std::complex<double>(-50, 80), std::complex<double>(-77, 122), std::complex<double>(-30, 45), std::complex<double>(-48, 72), std::complex<double>(-66, 99), std::complex<double>(-105, 156), std::complex<double>(-42, 60), std::complex<double>(-63, 90), std::complex<double>(-92, 131), std::complex<double>(-32, 44), std::complex<double>(-56, 77), std::complex<double>(-80, 110), std::complex<double>(-122, 167), std::complex<double>(-45, 60), std::complex<double>(-72, 96), std::complex<double>(-99, 132), std::complex<double>(-156, 207), std::complex<double>(-60, 78), std::complex<double>(-90, 117), std::complex<double>(-131, 170), std::complex<double>(-44, 56), std::complex<double>(-77, 98), std::complex<double>(-110, 140), std::complex<double>(-167, 212), std::complex<double>(-60, 75), std::complex<double>(-96, 120), std::complex<double>(-132, 165), std::complex<double>(-207, 258), std::complex<double>(-78, 96), std::complex<double>(-117, 144), std::complex<double>(-170, 209), std::complex<double>(-56, 68), std::complex<double>(-98, 119), std::complex<double>(-140, 170), std::complex<double>(-212, 257), std::complex<double>(-75, 90), std::complex<double>(-120, 144), std::complex<double>(-165, 198), std::complex<double>(-258, 309), std::complex<double>(-96, 114), std::complex<double>(-144, 171), std::complex<double>(-209, 248), std::complex<double>(-68, 80), std::complex<double>(-119, 140), std::complex<double>(-170, 200), std::complex<double>(-257, 302), std::complex<double>(-90, 105), std::complex<double>(-144, 168), std::complex<double>(-198, 231), std::complex<double>(-309, 360), std::complex<double>(-114, 132), std::complex<double>(-171, 198), std::complex<double>(-248, 287), std::complex<double>(-80, 92), std::complex<double>(-140, 161), std::complex<double>(-200, 230), std::complex<double>(-302, 347), std::complex<double>(-105, 120), std::complex<double>(-168, 192), std::complex<double>(-231, 264), std::complex<double>(-360, 411), std::complex<double>(-132, 150), std::complex<double>(-198, 225), std::complex<double>(-287, 326), std::complex<double>(-92, 104), std::complex<double>(-161, 182), std::complex<double>(-230, 260), std::complex<double>(-347, 392), std::complex<double>(-120, 135), std::complex<double>(-192, 216), std::complex<double>(-264, 297), std::complex<double>(-411, 462), std::complex<double>(-150, 168), std::complex<double>(-225, 252), std::complex<double>(-300, 336), std::complex<double>(0, 0)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
-    ComplexDspBuffer<double> input = buf;
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexDspBuffer<double> input = buf;
     int interpRate = 11;
     int decimateRate = 3;
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
@@ -678,11 +678,11 @@ TEST(RealFirFilter, ResampleComplexStream1) {
     int decimateRate = 5;
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	ComplexDspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::ComplexDspBuffer<double> buf(inputData, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -690,7 +690,7 @@ TEST(RealFirFilter, ResampleComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData2, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -698,7 +698,7 @@ TEST(RealFirFilter, ResampleComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData3, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -706,7 +706,7 @@ TEST(RealFirFilter, ResampleComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData4)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData4, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData4, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -714,7 +714,7 @@ TEST(RealFirFilter, ResampleComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData5)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData5, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData5, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -722,7 +722,7 @@ TEST(RealFirFilter, ResampleComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData6)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData6, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData6, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -730,7 +730,7 @@ TEST(RealFirFilter, ResampleComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData7)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData7, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData7, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -738,7 +738,7 @@ TEST(RealFirFilter, ResampleComplexStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData8)/sizeof(inputData[0]);
-	buf = ComplexDspBuffer<double>(inputData8, numElements);
+	buf = NimbleDSP::ComplexDspBuffer<double>(inputData8, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -757,11 +757,11 @@ TEST(RealFirFilter, ResampleComplexStream2) {
     int decimateRate = 4;
     
     unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    RealFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	DspBuffer<double> buf(inputData, numElements);
+	NimbleDSP::DspBuffer<double> buf(inputData, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -769,7 +769,7 @@ TEST(RealFirFilter, ResampleComplexStream2) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData2, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData2, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -777,7 +777,7 @@ TEST(RealFirFilter, ResampleComplexStream2) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = DspBuffer<double>(inputData3, numElements);
+	buf = NimbleDSP::DspBuffer<double>(inputData3, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);

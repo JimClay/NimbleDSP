@@ -33,7 +33,6 @@ THE SOFTWARE.
 #include "DspBuffer.h"
 #include "ComplexDspBuffer.h"
 
-using namespace NimbleDSP;
 
 namespace NimbleDSP {
 
