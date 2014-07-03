@@ -125,4 +125,22 @@ TEST(RealIirFilter, Filter3) {
     }
 }
 
+TEST(RealIirFilter, Filter4) {
+    double den[] = {1, .2};
+    double num[] = {1, .05, .04, .03, .01};
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    double expectedData[] = {1.00000000, -0.15000000, -0.93000000, -1.83400000, -2.76320000, -3.70736000, -4.64852800, -5.59029440, -6.53194112};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	NimbleDSP::Vector<double> buf(inputData, numElements);
+    NimbleDSP::Vector<double> input = buf;
+    
+    RealIirFilter<double> filt(num, sizeof(num) / sizeof(num[0]), den, sizeof(den) / sizeof(den[0]));
+    
+    filter(buf, filt);
+    EXPECT_EQ(input.size(), buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+    }
+}
+
 

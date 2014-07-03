@@ -142,7 +142,7 @@ void RealIirFilter<T>::initArray(U *num, unsigned numLen, U *den, unsigned denLe
         denominator[i] = (T) den[i];
     }
     
-    state = std::vector<T>(denLen);
+    state = std::vector<T>(std::max(numLen, denLen));
 }
 
 template <class T>
@@ -154,8 +154,12 @@ Vector<U> & RealIirFilter<T>::filter(Vector<U> & data) {
     for (resultIndex=0; resultIndex<data.size(); resultIndex++) {
         newState0 = data[resultIndex];
         
+        // Update the state
+        for (i=state.size()-1; i>=denominator.size(); i--) {
+            state[i] = state[i - 1];
+        }
         // Update the state and apply the feedback
-        for (unsigned i=denominator.size()-1; i>0; i--) {
+        for (i=denominator.size()-1; i>0; i--) {
             state[i] = state[i - 1];
             newState0 -= denominator[i] * state[i];
         }
