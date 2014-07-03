@@ -65,7 +65,7 @@ const unsigned DEFAULT_BUF_LEN = 0;
 template <class T>
 class Vector {
 
-protected:
+ protected:
     /** 
      * \brief Buffer to store intermediate calculations when needed.
      */
@@ -85,7 +85,7 @@ protected:
     template <class U>
     void initArray(U *array, unsigned arrayLen);
     
-public:
+ public:
     /*************************************************************************************//**
      * \brief Vector that holds the object's data.
      *
