@@ -691,6 +691,32 @@ TEST(VectorMethods, Sum) {
     EXPECT_EQ(-27, sum(buf));
 }
 
+TEST(VectorMethods, Cumsum) {
+    double inputData[] = {1, 1, 2, 4, 7, 11, 16, 22};
+    double expectedData[] = {1, 2, 4, 8, 15, 26, 42, 64};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	NimbleDSP::Vector<double> buf(inputData, numElements);
+    
+    cumsum(buf);
+    EXPECT_EQ(numElements, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(VectorMethods, CumsumInitialVal) {
+    double inputData[] = {1, 1, 2, 4, 7, 11, 16, 22};
+    double expectedData[] = {2, 3, 5, 9, 16, 27, 43, 65};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	NimbleDSP::Vector<double> buf(inputData, numElements);
+    
+    cumsum(buf, 1.0);
+    EXPECT_EQ(numElements, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
 TEST(VectorMethods, Diff) {
     double inputData[] = {1, 1, 2, 4, 7, 11, 16, 22};
     double expectedData[] = {0, 1, 2, 3, 4, 5, 6};

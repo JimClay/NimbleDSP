@@ -337,6 +337,14 @@ class Vector {
 	T sum() const;
     
     /**
+     * \brief Replaces \ref vec with the cumulative sum of the samples in \ref vec.
+     *
+     * \param initialVal Initializing value for the cumulative sum.  Defaults to zero.
+     * \return Reference to "this".
+     */
+	Vector<T> & cumsum(T initialVal = 0);
+    
+    /**
      * \brief Replaces \ref vec with the difference between successive samples in vec.
      *
      * The resulting \ref vec is one element shorter than it was previously.
@@ -855,6 +863,28 @@ T sum(const Vector<T> & vector) {
 	return vector.sum();
 }
 
+template <class T>
+Vector<T> & Vector<T>::cumsum(T initialVal) {
+    T sum = initialVal;
+    for (unsigned i=0; i<vec.size(); i++) {
+        sum += vec[i];
+        vec[i] = sum;
+    }
+    return *this;
+}
+
+/**
+ * \brief Replaces "vector" with the cumulative sum of the samples in "vector".
+ *
+ * \param vector Data to operate on.
+ * \param initialVal Initializing value for the cumulative sum.  Defaults to zero.
+ * \return Reference to "vector".
+ */
+template <class T>
+Vector<T> & cumsum(Vector<T> & vector, T initialVal = 0) {
+    return vector.cumsum(initialVal);
+}
+    
 template <class T>
 Vector<T> & Vector<T>::diff() {
 	assert(vec.size() > 1);
