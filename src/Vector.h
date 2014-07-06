@@ -268,7 +268,7 @@ class Vector {
      *
      * \return Reference to "this".
      */
-    Vector<T> & exp();
+    virtual Vector<T> & exp();
     
     /**
      * \brief Sets each element of \ref vec to the natural log of the element.

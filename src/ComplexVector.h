@@ -197,6 +197,13 @@ class ComplexVector : public Vector< std::complex<T> > {
                                             Methods
     *****************************************************************************************/
     /**
+     * \brief Sets each element of \ref vec to e^(element).
+     *
+     * \return Reference to "this".
+     */
+    virtual Vector< std::complex<T> > & exp();
+    
+    /**
      * \brief Sets each element of \ref buf equal to its value to the power of "exponent".
      *
      * \param exponent Exponent to use.
@@ -455,7 +462,15 @@ inline ComplexVector<T> operator/(ComplexVector<T> lhs, const std::complex<T> & 
     lhs /= rhs;
     return lhs;
 }
-    
+ 
+template <class T>
+Vector< std::complex<T> > & ComplexVector<T>::exp() {
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] = std::exp(this->vec[i]);
+    }
+    return *this;
+}
+   
 template <class T>
 ComplexVector<T> & ComplexVector<T>::pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent) {
     for (unsigned i=0; i<this->size(); i++) {

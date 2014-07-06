@@ -364,7 +364,7 @@ TEST(ComplexVectorStatistics, Mean) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, ComplexEqual(std::complex<double>(0.767751, -0.661230333333333), buf.mean()));
+    EXPECT_EQ(true, ComplexEqual(std::complex<double>(0.767751, -0.661230333333333), mean(buf)));
 }
 
 TEST(ComplexVectorStatistics, Var) {
@@ -372,7 +372,7 @@ TEST(ComplexVectorStatistics, Var) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, ComplexEqual(std::complex<double>(7.335490751497001,0), buf.var()));
+    EXPECT_EQ(true, ComplexEqual(std::complex<double>(7.335490751497001,0), var(buf)));
 }
 
 TEST(ComplexVectorStatistics, StdDev) {
@@ -380,7 +380,7 @@ TEST(ComplexVectorStatistics, StdDev) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, ComplexEqual(std::complex<double>(2.708411111980048,0), buf.stdDev()));
+    EXPECT_EQ(true, ComplexEqual(std::complex<double>(2.708411111980048,0), stdDev(buf)));
 }
 
 TEST(ComplexVectorMethods, Rotate) {
@@ -433,7 +433,7 @@ TEST(ComplexVectorMethods, Pow) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.pow(3.0);
+    pow(buf, 3.0);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(inputData[i]*inputData[i]*inputData[i], buf[i]));
     }
@@ -457,7 +457,7 @@ TEST(ComplexVectorMethods, Abs) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.abs();
+    abs(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
@@ -505,7 +505,7 @@ TEST(ComplexVectorMethods, Exp) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.exp();
+    exp(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
@@ -517,7 +517,7 @@ TEST(ComplexVectorMethods, Log) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.log();
+    log(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
@@ -529,7 +529,7 @@ TEST(ComplexVectorMethods, Ln) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.ln();
+    ln(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
@@ -541,7 +541,7 @@ TEST(ComplexVectorMethods, Log10) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.log10();
+    log10(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
@@ -580,7 +580,7 @@ TEST(ComplexVectorMethods, Conj) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.conj();
+    conj(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
@@ -592,7 +592,7 @@ TEST(ComplexVectorMethods, MagSq) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.magSq();
+    magSq(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
@@ -763,7 +763,7 @@ TEST(ComplexVectorMethods, Angle) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.angle();
+    angle(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
     }
