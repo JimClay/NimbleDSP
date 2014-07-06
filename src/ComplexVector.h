@@ -552,6 +552,21 @@ ComplexVector<T> & ComplexVector<T>::saturate(const std::complex<T> & val) {
     return *this;
 }
 
+/**
+ * \brief Sets the upper and lower limit of the values in "vector".
+ *
+ * \param vector Data to limit.
+ * \param val Limiting value for the data in "vector".  Any values that
+ *      are greater than "val" are made equal to "val", and
+ *      any that are less than -val are made equal to -val.  This is done
+ *      independently on the real and imaginary elements of "vector".
+ * \return Reference to "vector".
+ */
+template <class T>
+ComplexVector<T> & saturate(ComplexVector<T> & vector, const std::complex<T> & val) {
+    return vector.saturate(val);
+}
+    
 template <class T>
 ComplexVector<T> & ComplexVector<T>::fft() {
     assert(domain == TIME_DOMAIN);

@@ -388,17 +388,17 @@ TEST(ComplexVectorMethods, Rotate) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.rotate(numElements);
+    rotate(buf, numElements);
     for (unsigned i=0; i<buf.vec.size(); i++) {
         EXPECT_EQ(inputData[i], buf[i]);
     }
     
-    buf.rotate(3);
+    rotate(buf, 3);
     for (unsigned i=0; i<buf.vec.size(); i++) {
         EXPECT_EQ(inputData[(3 + i) % numElements], buf[i]);
     }
     
-    buf.rotate(-1);
+    rotate(buf, -1);
     for (unsigned i=0; i<buf.vec.size(); i++) {
         EXPECT_EQ(inputData[(2 + i) % numElements], buf[i]);
     }
@@ -409,11 +409,11 @@ TEST(ComplexVectorMethods, Reverse) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.reverse();
+    reverse(buf);
     for (unsigned i=0; i<buf.vec.size(); i++) {
         EXPECT_EQ(inputData[numElements-i-1], buf[i]);
     }
-    buf.reverse();
+    reverse(buf);
     for (unsigned i=0; i<buf.vec.size(); i++) {
         EXPECT_EQ(inputData[i], buf[i]);
     }
@@ -424,8 +424,8 @@ TEST(ComplexVectorMethods, Find) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(-1, buf.find(std::complex<double>(1,1)));
-    EXPECT_EQ(3, buf.find(std::complex<double>(0.932867, -1.972880)));
+    EXPECT_EQ(-1, find(buf, std::complex<double>(1,1)));
+    EXPECT_EQ(3, find(buf, std::complex<double>(0.932867, -1.972880)));
 }
 
 TEST(ComplexVectorMethods, Pow) {
@@ -445,7 +445,7 @@ TEST(ComplexVectorMethods, Saturate) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    buf.saturate(std::complex<double>(1, 2));
+    saturate(buf, std::complex<double>(1, 2));
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }

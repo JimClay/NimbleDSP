@@ -392,7 +392,7 @@ TEST(RealVectorMethods, Reverse) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::RealVector<double> buf(inputData, numElements);
     
-    buf.reverse();
+    reverse(buf);
     for (unsigned i=0; i<buf.vec.size(); i++) {
         EXPECT_EQ(inputData[numElements-i-1], buf[i]);
     }
