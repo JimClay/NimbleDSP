@@ -39,7 +39,7 @@ TEST(RealFirFilter, ConvStream1) {
     NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -47,7 +47,7 @@ TEST(RealFirFilter, ConvStream1) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData2, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData2, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -55,7 +55,7 @@ TEST(RealFirFilter, ConvStream1) {
     }
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData3, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData3, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -76,7 +76,7 @@ TEST(RealFirFilter, ConvOneShot) {
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements + filter.size() - 1, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -84,7 +84,7 @@ TEST(RealFirFilter, ConvOneShot) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData2, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData2, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements + filter.size() - 1, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -104,7 +104,7 @@ TEST(RealFirFilter, ConvOneShotTrim) {
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
 
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -112,7 +112,7 @@ TEST(RealFirFilter, ConvOneShotTrim) {
     }
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData2, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData2, numElements);
     conv(buf, filter);
     EXPECT_EQ(numElements, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
@@ -277,10 +277,10 @@ TEST(RealFirFilter, DecimateOneShot) {
     double filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {1, 2, -5, -35, -65, -70, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
-    NimbleDSP::Vector<double> input = buf;
+    NimbleDSP::RealVector<double> input = buf;
     int rate = 2;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
     
@@ -401,7 +401,7 @@ TEST(RealFirFilter, InterpStream1) {
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -409,7 +409,7 @@ TEST(RealFirFilter, InterpStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData2, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData2, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -417,7 +417,7 @@ TEST(RealFirFilter, InterpStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData3, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData3, numElements);
     interp(buf, rate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -509,10 +509,10 @@ TEST(RealFirFilter, Resample1) {
     double expectedData[] = {1, 3, 5, -1, -3, -9, -11, -9, -23, -21, -15, -37, -31, -21, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
     std::vector<double> scratchBuf;
-	NimbleDSP::Vector<double> buf(inputData, numElements, &scratchBuf);
+	NimbleDSP::RealVector<double> buf(inputData, numElements, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
-    NimbleDSP::Vector<double> input = buf;
+    NimbleDSP::RealVector<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;
     filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
@@ -529,10 +529,10 @@ TEST(RealFirFilter, ResampleTrim1) {
     int filterTaps[] = {1, 2, 3, 4, 5};
     double expectedData[] = {3, 5, -1, -3, -9, -11, -9, -23, -21, -15, -37, -31, -21, -35};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
-    NimbleDSP::Vector<double> input = buf;
+    NimbleDSP::RealVector<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;
     filter.filtOperation = ONE_SHOT_TRIM_TAILS;
@@ -558,7 +558,7 @@ TEST(RealFirFilter, ResampleStream1) {
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -566,7 +566,7 @@ TEST(RealFirFilter, ResampleStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData2, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData2, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -574,7 +574,7 @@ TEST(RealFirFilter, ResampleStream1) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData3, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData3, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -597,7 +597,7 @@ TEST(RealFirFilter, ResampleStream2) {
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -605,7 +605,7 @@ TEST(RealFirFilter, ResampleStream2) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData2, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData2, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -613,7 +613,7 @@ TEST(RealFirFilter, ResampleStream2) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData3, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData3, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -761,7 +761,7 @@ TEST(RealFirFilter, ResampleComplexStream2) {
 
     int numResults = 0;
     numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<double> buf(inputData, numElements);
+	NimbleDSP::RealVector<double> buf(inputData, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
@@ -769,7 +769,7 @@ TEST(RealFirFilter, ResampleComplexStream2) {
     numResults += buf.size();
     
     numElements = sizeof(inputData2)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData2, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData2, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);
@@ -777,7 +777,7 @@ TEST(RealFirFilter, ResampleComplexStream2) {
     numResults += buf.size();
     
     numElements = sizeof(inputData3)/sizeof(inputData[0]);
-	buf = NimbleDSP::Vector<double>(inputData3, numElements);
+	buf = NimbleDSP::RealVector<double>(inputData3, numElements);
     resample(buf, interpRate, decimateRate, filter);
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i + numResults], buf[i]);

@@ -269,6 +269,128 @@ class RealVector : public Vector<T> {
      */
     RealVector<T> & reverse();
 
+    /**
+     * \brief Sets the length of \ref vec to "len".
+     *
+     * \param len The new length for \ref vec.  If len is longer than vec's current size, the
+     *      new elements will be set to "val".  If len is less than vec's current size the extra
+     *      elements will be cut off and the other elements will remain the same.
+     * \param val The value to set any new elements to.  Defaults to 0.
+     * \return Reference to "this".
+     */
+    RealVector<T> & resize(unsigned len, T val = (T) 0) {this->vec.resize(len, val); return *this;}
+    
+    /**
+     * \brief Lengthens \ref vec by "len" elements.
+     *
+     * \param len The number of elements to add to \ref vec.
+     * \param val The value to set the new elements to.  Defaults to 0.
+     * \return Reference to "this".
+     */
+    RealVector<T> & pad(unsigned len, T val = (T) 0) {this->vec.resize(this->size()+len, val); return *this;}
+    
+    /**
+     * \brief Inserts rate-1 zeros between samples.
+     *
+     * \param rate Indicates how many zeros should be inserted between samples.
+     * \param phase Indicates how many of the zeros should be before the samples (as opposed to
+     *      after).  Valid values are 0 to "rate"-1.  Defaults to 0.
+     * \return Reference to "this".
+     */
+    RealVector<T> & upsample(int rate, int phase = 0);
+    
+    /**
+     * \brief Removes rate-1 samples out of every rate samples.
+     *
+     * \param rate Indicates how many samples should be removed.
+     * \param phase Tells the method which sample should be the first to be kept.  Valid values
+     *      are 0 to "rate"-1.  Defaults to 0.
+     * \return Reference to "this".
+     */
+    RealVector<T> & downsample(int rate, int phase = 0);
+    
+    /**
+     * \brief Replaces \ref vec with the cumulative sum of the samples in \ref vec.
+     *
+     * \param initialVal Initializing value for the cumulative sum.  Defaults to zero.
+     * \return Reference to "this".
+     */
+	RealVector<T> & cumsum(T initialVal = 0);
+    
+    /**
+     * \brief Replaces \ref vec with the difference between successive samples in vec.
+     *
+     * The resulting \ref vec is one element shorter than it was previously.
+     * \return Reference to "this".
+     */
+	RealVector<T> & diff();
+    
+    /**
+     * \brief Replaces \ref vec with the difference between successive samples in vec.
+     *
+     * \param previousVal The last value in the sample stream before the current contents
+     *      of \ref vec.  previousVal allows the resulting vec to be the same size as the
+     *      previous vec.
+     * \return Reference to "this".
+     */
+    RealVector<T> & diff(T & previousVal);
+    
+    /**
+     * \brief Convolution method.
+     *
+     * \param data The vector that will be filtered.
+     * \param trimTails "False" tells the method to return the entire convolution, which is
+     *      the length of "data" plus the length of "this" (the filter) - 1.  "True" tells the
+     *      method to retain the size of "data" by trimming the tails at both ends of
+     *      the convolution.
+     * \return Reference to "data", which holds the result of the convolution.
+     */
+    virtual RealVector<T> & conv(RealVector<T> & data, bool trimTails = false);
+    
+    /**
+     * \brief Decimate method.
+     *
+     * This method is equivalent to filtering with the \ref conv method and downsampling
+     * with the \ref downsample method, but is much more efficient.
+     *
+     * \param data The vector that will be filtered.
+     * \param rate Indicates how much to downsample.
+     * \param trimTails "False" tells the method to return the entire convolution.  "True"
+     *      tells the method to retain the size of "data" by trimming the tails at both
+     *      ends of the convolution.
+     * \return Reference to "data", which holds the result of the decimation.
+     */
+    virtual RealVector<T> & decimate(RealVector<T> & data, int rate, bool trimTails = false);
+    
+    /**
+     * \brief Interpolation method.
+     *
+     * This method is equivalent to upsampling followed by filtering, but is much more efficient.
+     *
+     * \param data The vector that will be filtered.
+     * \param rate Indicates how much to upsample.
+     * \param trimTails "False" tells the method to return the entire convolution.  "True"
+     *      tells the method to retain the size of "data" by trimming the tails at both
+     *      ends of the convolution.
+     * \return Reference to "data", which holds the result of the interpolation.
+     */
+    virtual RealVector<T> & interp(RealVector<T> & data, int rate, bool trimTails = false);
+    
+    /**
+     * \brief Resample method.
+     *
+     * This method is equivalent to upsampling by "interpRate", filtering, and downsampling
+     *      by "decimateRate", but is much more efficient.
+     *
+     * \param data The vector that will be filtered.
+     * \param interpRate Indicates how much to upsample.
+     * \param decimateRate Indicates how much to downsample.
+     * \param trimTails "False" tells the method to return the entire convolution.  "True"
+     *      tells the method to retain the size of "data" by trimming the tails at both
+     *      ends of the convolution.
+     * \return Reference to "data", which holds the result of the resampling.
+     */
+    virtual RealVector<T> & resample(RealVector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
 };
 
 template <class T>
@@ -1037,6 +1159,626 @@ RealVector<T> & RealVector<T>::reverse() {
 template <class T>
 RealVector<T> & reverse(RealVector<T> & vector) {
     return vector.reverse();
+}
+
+/**
+ * \brief Sets the length of \ref vec to "len".
+ *
+ * \param vector Buffer to operate on.
+ * \param len The new length for \ref vec.  If len is longer than vec's current size, the
+ *      new elements will be set to "val".  If len is less than vec's current size the extra
+ *      elements will be cut off and the other elements will remain the same.
+ * \param val The value to set any new elements to.  Defaults to 0.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & resize(RealVector<T> & vector, int len, T val = 0) {
+    return vector.resize(len, val);
+}
+
+/**
+ * \brief Lengthens \ref vec by "len" elements.
+ *
+ * \param vector Buffer to operate on.
+ * \param len The number of elements to add to \ref vec.
+ * \param val The value to set the new elements to.  Defaults to 0.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & pad(RealVector<T> & vector, int len, T val = 0) {
+    return vector.pad(len, val);
+}
+    
+template <class T>
+RealVector<T> & RealVector<T>::upsample(int rate, int phase) {
+	assert(rate > 0);
+	assert(phase >= 0 && phase < rate);
+	if (rate == 1)
+		return *this;
+
+	int originalSize = this->vec.size();
+	this->vec.resize(originalSize*rate);
+	int from, to;
+	for (from = originalSize - 1, to = this->size() - (rate - phase); to > 0; from--, to -= rate) {
+		this->vec[to] = this->vec[from];
+		this->vec[from] = 0;
+	}
+	return *this;
+}
+
+/**
+ * \brief Inserts rate-1 zeros between samples.
+ *
+ * \param vector Buffer to operate on.
+ * \param rate Indicates how many zeros should be inserted between samples.
+ * \param phase Indicates how many of the zeros should be before the samples (as opposed to
+ *      after).  Valid values are 0 to "rate"-1.  Defaults to 0.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & upsample(RealVector<T> & vector, int rate, int phase = 0) {
+    return vector.upsample(rate, phase);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::downsample(int rate, int phase) {
+	assert(rate > 0);
+	assert(phase >= 0 && phase < rate);
+	if (rate == 1)
+		return *this;
+
+	int newSize = this->size() / rate;
+	int from, to;
+	for (from = phase, to = 0; to < newSize; from += rate, to++) {
+		this->vec[to] = this->vec[from];
+	}
+	this->vec.resize(newSize);
+	return *this;
+}
+
+/**
+ * \brief Removes rate-1 samples out of every rate samples.
+ *
+ * \param vector Buffer to operate on.
+ * \param rate Indicates how many samples should be removed.
+ * \param phase Tells the function which sample should be the first to be kept.  Valid values
+ *      are 0 to "rate"-1.  Defaults to 0.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & downsample(RealVector<T> & vector, int rate, int phase = 0) {
+    return vector.downsample(rate, phase);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::cumsum(T initialVal) {
+    T sum = initialVal;
+    for (unsigned i=0; i<this->size(); i++) {
+        sum += this->vec[i];
+        this->vec[i] = sum;
+    }
+    return *this;
+}
+
+/**
+ * \brief Replaces "vector" with the cumulative sum of the samples in "vector".
+ *
+ * \param vector Data to operate on.
+ * \param initialVal Initializing value for the cumulative sum.  Defaults to zero.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & cumsum(RealVector<T> & vector, T initialVal = 0) {
+    return vector.cumsum(initialVal);
+}
+    
+template <class T>
+RealVector<T> & RealVector<T>::diff() {
+	assert(this->size() > 1);
+	for (unsigned i=0; i<(this->size()-1); i++) {
+		this->vec[i] = this->vec[i + 1] - this->vec[i];
+	}
+    this->resize(this->size()-1);
+    return *this;
+}
+
+/**
+ * \brief Replaces \ref vec with the difference between successive samples in vec.
+ *
+ * The resulting \ref vec is one element shorter than it was previously.
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & diff(RealVector<T> & vector) {
+    return vector.diff();
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::diff(T & previousVal) {
+	assert(this->size() > 0);
+    T nextPreviousVal = this->vec[this->size()-1];
+	for (unsigned i=this->size()-1; i>0; i--) {
+		this->vec[i] = this->vec[i] - this->vec[i - 1];
+	}
+    this->vec[0] = this->vec[0] - previousVal;
+    previousVal = nextPreviousVal;
+    return *this;
+}
+
+/**
+ * \brief Replaces \ref vec with the difference between successive samples in vec.
+ *
+ * \param vector Buffer to operate on.
+ * \param previousVal The last value in the sample stream before the current contents
+ *      of \ref vec.  previousVal allows the resulting vec to be the same size as the
+ *      previous vec.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & diff(RealVector<T> & vector, T & previousVal) {
+    return vector.diff(previousVal);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::conv(RealVector<T> & data, bool trimTails) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    std::vector<T> scratch;
+    std::vector<T> *dataTmp;
+    
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
+    }
+    else {
+        dataTmp = data.scratchBuf;
+    }
+    *dataTmp = data.vec;
+    
+    if (trimTails) {
+        // Initial partial overlap
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0; resultIndex<((int)this->size()-1) - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(int)dataTmp->size() - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+    }
+    else {
+        data.resize(data.size() + this->size() - 1);
+        
+        // Initial partial overlap
+        for (resultIndex=0; resultIndex<(int)this->size()-1; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<(int)dataTmp->size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex - (this->size()-1), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+    }
+    return data;
+}
+
+/**
+ * \brief Convolution function.
+ *
+ * \param data Buffer to operate on.
+ * \param filter The filter that will convolve "data".
+ * \param trimTails "False" tells the function to return the entire convolution, which is
+ *      the length of "data" plus the length of "filter" - 1.  "True" tells the
+ *      function to retain the size of "data" by trimming the tails at both ends of
+ *      the convolution.
+ * \return Reference to "data", which holds the result of the convolution.
+ */
+template <class T>
+inline RealVector<T> & conv(RealVector<T> & data, RealVector<T> & filter, bool trimTails = false) {
+    return filter.conv(data, trimTails);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::decimate(RealVector<T> & data, int rate, bool trimTails) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    std::vector<T> scratch;
+    std::vector<T> *dataTmp;
+    
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
+    }
+    else {
+        dataTmp = data.scratchBuf;
+    }
+    *dataTmp = data.vec;
+    
+    if (trimTails) {
+        data.resize((data.size() + rate - 1) / rate);
+        
+        // Initial partial overlap
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0; resultIndex<(((int)this->size()-1) - initialTrim + rate - 1)/rate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<((int)dataTmp->size() - initialTrim + rate - 1)/rate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - ((this->size()-1) - initialTrim), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+    }
+    else {
+        data.resize(((data.size() + this->size() - 1) + (rate - 1)) / rate);
+        
+        // Initial partial overlap
+        for (resultIndex=0; resultIndex<((int)this->size()-1+rate-1)/rate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=resultIndex*rate; filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<((int)dataTmp->size()+rate-1)/rate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
+                 filterIndex>=0; dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=resultIndex*rate - (this->size()-1), filterIndex=this->size()-1;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex--) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+    }
+    return data;
+}
+
+/**
+ * \brief Decimate function.
+ *
+ * This function is equivalent to filtering with the \ref conv function and downsampling
+ * with the \ref downsample function, but much more efficient.
+ *
+ * \param data Buffer to operate on.
+ * \param rate Indicates how much to downsample.
+ * \param filter The filter that will convolve "data".
+ * \param trimTails "False" tells the function to return the entire convolution.  "True"
+ *      tells the function to retain the size of "data" by trimming the tails at both
+ *      ends of the convolution.
+ * \return Reference to "data", which holds the result of the decimation.
+ */
+template <class T>
+inline RealVector<T> & decimate(RealVector<T> & data, int rate, RealVector<T> & filter, bool trimTails = false) {
+    return filter.decimate(data, rate, trimTails);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::interp(RealVector<T> & data, int rate, bool trimTails) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    int dataStart, filterStart;
+    std::vector<T> scratch;
+    std::vector<T> *dataTmp;
+    
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
+    }
+    else {
+        dataTmp = data.scratchBuf;
+    }
+    *dataTmp = data.vec;
+    
+    if (trimTails) {
+        data.resize(data.size() * rate);
+
+        // Initial partial overlap
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1 - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=initialTrim + resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+       
+        // Middle full overlap
+        for (dataStart=0, filterStart=(int)this->size()-1; resultIndex<(int)dataTmp->size()*rate - initialTrim; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            ++filterStart;
+            if (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= rate;
+                ++dataStart;
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            ++filterStart;
+            if (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= rate;
+                ++dataStart;
+            }
+        }
+    }
+    else {
+        data.resize(data.size() * rate + this->size() - 1 - (rate - 1));
+        
+        // Initial partial overlap
+        for (resultIndex=0, dataStart=0; resultIndex<(int)this->size()-1; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=resultIndex; filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+        }
+        
+        // Middle full overlap
+        for (dataStart=0, filterStart=resultIndex; resultIndex<(int)dataTmp->size()*rate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 filterIndex>=0; dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            ++filterStart;
+            if (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= rate;
+                ++dataStart;
+            }
+        }
+
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=rate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            ++filterStart;
+            if (filterStart >= (int) this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= rate;
+                ++dataStart;
+            }
+        }
+    }
+    return data;
+}
+
+/**
+ * \brief Interpolation function.
+ *
+ * This function is equivalent to upsampling followed by filtering, but is much more efficient.
+ *
+ * \param data Buffer to operate on.
+ * \param rate Indicates how much to upsample.
+ * \param filter The filter that will convolve "data".
+ * \param trimTails "False" tells the function to return the entire convolution.  "True"
+ *      tells the function to retain the size of "data" by trimming the tails at both
+ *      ends of the convolution.
+ * \return Reference to "data", which holds the result of the interpolation.
+ */
+template <class T>
+inline RealVector<T> & interp(RealVector<T> & data, int rate, RealVector<T> & filter, bool trimTails = false) {
+    return filter.interp(data, rate, trimTails);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::resample(RealVector<T> & data, int interpRate, int decimateRate,  bool trimTails) {
+    int resultIndex;
+    int filterIndex;
+    int dataIndex;
+    int dataStart, filterStart;
+    std::vector<T> scratch;
+    std::vector<T> *dataTmp;
+    
+    if (data.scratchBuf == NULL) {
+        dataTmp = &scratch;
+    }
+    else {
+        dataTmp = data.scratchBuf;
+    }
+    *dataTmp = data.vec;
+    
+    if (trimTails) {
+        int interpLen = data.size() * interpRate;
+        int resampLen = (interpLen + decimateRate - 1) / decimateRate;
+        data.resize(resampLen);
+
+        // Initial partial overlap
+        int initialTrim = (this->size() - 1) / 2;
+        for (resultIndex=0, dataStart=0, filterStart=initialTrim;
+             resultIndex<((int)this->size()-1 - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<((int)dataTmp->size()*interpRate - initialTrim + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+        
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+    }
+    else {
+        int interpLen = data.size() * interpRate + this->size() - 1 - (interpRate - 1);
+        int resampLen = (interpLen + decimateRate - 1) / decimateRate;
+        data.resize(resampLen);
+        
+        // Initial partial overlap
+        for (resultIndex=0, dataStart=0, filterStart=0; resultIndex<((int)this->size()-1+decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=0, filterIndex=filterStart; filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+        
+        // Middle full overlap
+        for (; resultIndex<((int)dataTmp->size()*interpRate + decimateRate-1)/decimateRate; resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 filterIndex>=0; dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+        
+        // Final partial overlap
+        for (; resultIndex<(int)data.size(); resultIndex++) {
+            data[resultIndex] = 0;
+            for (dataIndex=dataStart, filterIndex=filterStart;
+                 dataIndex<(int)dataTmp->size(); dataIndex++, filterIndex-=interpRate) {
+                data[resultIndex] += (*dataTmp)[dataIndex] * this->vec[filterIndex];
+            }
+            filterStart += decimateRate;
+            while (filterStart >= (int)this->size()) {
+                // Filter no longer overlaps with this data sample, so the first overlap sample is the next one.  We thus
+                // increment the data index and decrement the filter index.
+                filterStart -= interpRate;
+                ++dataStart;
+            }
+        }
+    }
+    return data;
+}
+
+/**
+ * \brief Resample function.
+ *
+ * This function is equivalent to upsampling by "interpRate", filtering, and downsampling
+ *      by "decimateRate", but is much more efficient.
+ *
+ * \param data Buffer to operate on.
+ * \param interpRate Indicates how much to upsample.
+ * \param decimateRate Indicates how much to downsample.
+ * \param filter The filter that will convolve "data".
+ * \param trimTails "False" tells the function to return the entire convolution.  "True"
+ *      tells the function to retain the size of "data" by trimming the tails at both
+ *      ends of the convolution.
+ * \return Reference to "data", which holds the result of the resampling.
+ */
+template <class T>
+inline RealVector<T> & resample(RealVector<T> & data, int interpRate, int decimateRate,
+            RealVector<T> & filter, bool trimTails = false) {
+    return filter.resample(data, interpRate, decimateRate, trimTails);
 }
 
 };

@@ -150,7 +150,7 @@ class RealFirFilter : public RealVector<T> {
      *      \ref filtOperation is set.
      * \return Reference to "data", which holds the result of the convolution.
      */
-    virtual Vector<T> & conv(Vector<T> & data, bool trimTails = false);
+    virtual RealVector<T> & conv(RealVector<T> & data, bool trimTails = false);
     
     /**
      * \brief Convolution method for complex data.
@@ -174,7 +174,7 @@ class RealFirFilter : public RealVector<T> {
      *      \ref filtOperation is set.
      * \return Reference to "data", which holds the result of the decimation.
      */
-    virtual Vector<T> & decimate(Vector<T> & data, int rate, bool trimTails = false);
+    virtual RealVector<T> & decimate(RealVector<T> & data, int rate, bool trimTails = false);
     
     /**
      * \brief Decimate method for complex data.
@@ -201,7 +201,7 @@ class RealFirFilter : public RealVector<T> {
      *      \ref filtOperation is set.
      * \return Reference to "data", which holds the result of the interpolation.
      */
-    virtual Vector<T> & interp(Vector<T> & data, int rate, bool trimTails = false);
+    virtual RealVector<T> & interp(RealVector<T> & data, int rate, bool trimTails = false);
     
     /**
      * \brief Interpolation method for complex data.
@@ -229,7 +229,7 @@ class RealFirFilter : public RealVector<T> {
      *      \ref filtOperation is set.
      * \return Reference to "data", which holds the result of the resampling.
      */
-    virtual Vector<T> & resample(Vector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
+    virtual RealVector<T> & resample(RealVector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
     
     /**
      * \brief Resample method for complex data.
@@ -249,7 +249,7 @@ class RealFirFilter : public RealVector<T> {
 
 
 template <class T>
-Vector<T> & RealFirFilter<T>::conv(Vector<T> & data, bool trimTails) {
+RealVector<T> & RealFirFilter<T>::conv(RealVector<T> & data, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -457,7 +457,7 @@ ComplexVector<T> & RealFirFilter<T>::convComplex(ComplexVector<T> & data, bool t
 }
 
 template <class T>
-Vector<T> & RealFirFilter<T>::decimate(Vector<T> & data, int rate, bool trimTails) {
+RealVector<T> & RealFirFilter<T>::decimate(RealVector<T> & data, int rate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -677,7 +677,7 @@ ComplexVector<T> & RealFirFilter<T>::decimateComplex(ComplexVector<T> & data, in
 }
 
 template <class T>
-Vector<T> & RealFirFilter<T>::interp(Vector<T> & data, int rate, bool trimTails) {
+RealVector<T> & RealFirFilter<T>::interp(RealVector<T> & data, int rate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
@@ -995,7 +995,7 @@ ComplexVector<T> & RealFirFilter<T>::interpComplex(ComplexVector<T> & data, int 
 }
 
 template <class T>
-Vector<T> & RealFirFilter<T>::resample(Vector<T> & data, int interpRate, int decimateRate, bool trimTails) {
+RealVector<T> & RealFirFilter<T>::resample(RealVector<T> & data, int interpRate, int decimateRate, bool trimTails) {
     int resultIndex;
     int filterIndex;
     int dataIndex;
