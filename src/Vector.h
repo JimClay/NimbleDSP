@@ -230,24 +230,6 @@ class Vector {
     const unsigned size() const {return vec.size();};
     
     /**
-     * \brief Circular rotation.
-     *
-     * \param numToShift Number of positions to shift in the circular rotation.  numToShift
-     *      can be positive or negative.  If you visualize the 0 index value at the left and
-     *      the end of the array at the right, positive numToShift values shift the array to
-     *      the left, and negative values shift it to the right.
-     * \return Reference to "this".
-     */
-    Vector<T> & rotate(int numToShift);
-    
-    /**
-     * \brief Reverses the order of the elements in \ref vec.
-     *
-     * \return Reference to "this".
-     */
-    Vector<T> & reverse();
-    
-    /**
      * \brief Finds the first instance of "val" in \ref vec.
      *
      * \param val The value to look for in \ref vec.
@@ -255,41 +237,6 @@ class Vector {
      *      it returns -1.
      */
     const int find(const T val) const;
-    
-    /**
-     * \brief Changes the elements of \ref vec to their absolute value.
-     *
-     * \return Reference to "this".
-     */
-    Vector<T> & abs();
-    
-    /**
-     * \brief Sets each element of \ref vec to e^(element).
-     *
-     * \return Reference to "this".
-     */
-    virtual Vector<T> & exp();
-    
-    /**
-     * \brief Sets each element of \ref vec to the natural log of the element.
-     *
-     * \return Reference to "this".
-     */
-    Vector<T> & log();
-    
-    /**
-     * \brief Sets each element of \ref vec to the natural log of the element.
-     *
-     * \return Reference to "this".
-     */
-    Vector<T> & ln() {return log();}
-    
-    /**
-     * \brief Sets each element of \ref vec to the base 10 log of the element.
-     *
-     * \return Reference to "this".
-     */
-    Vector<T> & log10();
     
     /**
      * \brief Sets the length of \ref vec to "len".
@@ -598,53 +545,6 @@ template <class T>
 inline bool operator!=(const Vector<T>& lhs, const Vector<T>& rhs) {return !(lhs == rhs);}
 
 template <class T>
-Vector<T> & Vector<T>::rotate(int numToShift) {
-    while (numToShift < 0)
-        numToShift += size();
-    
-    while (numToShift >= (int) size())
-        numToShift -= size();
-    
-    if (numToShift == 0)
-        return *this;
-
-    std::rotate(vec.begin(), vec.begin()+numToShift, vec.end());
-    return *this;
-}
-
-/**
- * \brief Circular rotation.
- *
- * \param vector Buffer to rotate.
- * \param numToShift Number of positions to shift in the circular rotation.  numToShift
- *      can be positive or negative.  If you visualize the 0 index value at the left and
- *      the end of the array at the right, positive numToShift values shift the array to
- *      the left, and negative values shift it to the right.
- * \return Reference to "vector".
- */
-template <class T>
-Vector<T> & rotate(Vector<T> & vector, int numToShift) {
-    return vector.rotate(numToShift);
-}
-
-template <class T>
-Vector<T> & Vector<T>::reverse() {
-    std::reverse(vec.begin(), vec.end());
-    return *this;
-}
-
-/**
- * \brief Reverses the order of the elements in \ref vec.
- *
- * \param vector Buffer to operate on.
- * \return Reference to "vector".
- */
-template <class T>
-Vector<T> & reverse(Vector<T> & vector) {
-    return vector.reverse();
-}
-
-template <class T>
 const int Vector<T>::find(const T val) const {
     for (unsigned i=0; i<size(); i++) {
         if (vec[i] == val) {
@@ -665,93 +565,6 @@ const int Vector<T>::find(const T val) const {
 template <class T>
 const int find(Vector<T> & vector, const T val) {
     return vector.find(val);
-}
-
-template <class T>
-Vector<T> & Vector<T>::abs() {
-    for (unsigned i=0; i<size(); i++) {
-        vec[i] = (T) std::abs(vec[i]);
-    }
-    return *this;
-}
-
-/**
- * \brief Changes the elements of \ref vec to their absolute value.
- *
- * \param vector Buffer to operate on.
- * \return Reference to "vector".
- */
-template <class T>
-Vector<T> & abs(Vector<T> & vector) {
-    return vector.abs();
-}
-
-template <class T>
-Vector<T> & Vector<T>::exp() {
-    for (unsigned i=0; i<size(); i++) {
-        vec[i] = (T) std::exp(vec[i]);
-    }
-    return *this;
-}
-
-/**
- * \brief Sets each element of \ref vec to e^(element).
- *
- * \param vector Buffer to operate on.
- * \return Reference to "vector".
- */
-template <class T>
-Vector<T> & exp(Vector<T> & vector) {
-    return vector.exp();
-}
-
-template <class T>
-Vector<T> & Vector<T>::log() {
-    for (unsigned i=0; i<size(); i++) {
-		vec[i] = (T) std::log(vec[i]);
-    }
-    return *this;
-}
-
-/**
- * \brief Sets each element of \ref vec to the natural log of the element.
- *
- * \param vector Buffer to operate on.
- * \return Reference to "vector".
- */
-template <class T>
-Vector<T> & log(Vector<T> & vector) {
-    return vector.log();
-}
-
-/**
- * \brief Sets each element of \ref vec to the natural log of the element.
- *
- * \param vector Buffer to operate on.
- * \return Reference to "vector".
- */
-template <class T>
-Vector<T> & ln(Vector<T> & vector) {
-    return vector.log();
-}
-
-template <class T>
-Vector<T> & Vector<T>::log10() {
-    for (unsigned i=0; i<size(); i++) {
-		vec[i] = (T) std::log10(vec[i]);
-    }
-    return *this;
-}
-
-/**
- * \brief Sets each element of \ref vec to the base 10 log of the element.
- *
- * \param vector Buffer to operate on.
- * \return Reference to "vector".
- */
-template <class T>
-Vector<T> & log10(Vector<T> & vector) {
-    return vector.log10();
 }
 
 /**

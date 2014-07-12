@@ -523,18 +523,6 @@ TEST(ComplexVectorMethods, Log) {
     }
 }
 
-TEST(ComplexVectorMethods, Ln) {
-    std::complex<double> inputData[] = {std::complex<double>(1, 0), std::complex<double>(11.3, 2.1), std::complex<double>(0, 8), std::complex<double>(.0001, .0001)};
-    std::complex<double>  expectedData[] = {std::complex<double>(0, 0), std::complex<double>(2.441779605764140, 0.183744530739123), std::complex<double>(2.079441541679836, 1.570796326794897), std::complex<double>(-8.863766781696210, 0.785398163397448)};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
-    
-    ln(buf);
-    for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
-    }
-}
-
 TEST(ComplexVectorMethods, Log10) {
     std::complex<double> inputData[] = {std::complex<double>(1, 0), std::complex<double>(11.3, 2.1), std::complex<double>(0, 8), std::complex<double>(.0001, .0001)};
     std::complex<double>  expectedData[] = {std::complex<double>(0, 0), std::complex<double>(1.060451408807264, 0.079799235779903), std::complex<double>(0.903089986991944, 0.682188176920921), std::complex<double>(-3.849485002168009, 0.341094088460460)};
@@ -778,6 +766,13 @@ TEST(ComplexVectorMethods, IndividualAngle) {
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, ComplexEqual(expectedData[i], std::complex<double>(NimbleDSP::angle(buf[i]))));
     }
+}
+
+TEST(BogusTest, BogusTest) {
+    NimbleDSP::ComplexVector<double> buf(50);
+    NimbleDSP::ComplexVector<double> buf2(10);
+ 
+    buf2 = (reverse(rotate(saturate(fft(buf), std::complex<double>(1,1)), 1)));
 }
 
 

@@ -882,7 +882,7 @@ TEST(RealFixedPtVectorMethods, Abs) {
     int inputData[] = {1, -10, 8, 3, 6, -2, -9, 1};
     int expectedData[] = {1, 10, 8, 3, 6, 2, 9, 1};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::Vector<int> buf(inputData, numElements);
+	NimbleDSP::RealFixedPtVector<int> buf(inputData, numElements);
     
     abs(buf);
     for (unsigned i=0; i<numElements; i++) {
@@ -945,18 +945,6 @@ TEST(RealFixedPtVectorMethods, Log) {
 	NimbleDSP::RealFixedPtVector<int> buf(inputData, numElements);
     
     log(buf);
-    for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
-    }
-}
-
-TEST(RealFixedPtVectorMethods, Ln) {
-    int inputData[] = {1, 10001, 8, 203, 7, 2, 9, 1};
-    int expectedData[] = {0, 9, 2, 5, 1, 0, 2, 0};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::RealFixedPtVector<int> buf(inputData, numElements);
-    
-    ln(buf);
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }

@@ -345,7 +345,7 @@ TEST(VectorOperators, Equality) {
     EXPECT_EQ(true, buf1 == buf1);
     EXPECT_EQ(false, buf1 != buf1);
 }
-
+/*
 TEST(VectorMethods, Rotate) {
     double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 9};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
@@ -381,7 +381,7 @@ TEST(VectorMethods, Reverse) {
         EXPECT_EQ(inputData[i], buf[i]);
     }
 }
-
+*/
 TEST(VectorMethods, Find) {
     double inputData[] = {2, 4, 6, 8.37, 3, 5, 7, 3};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
@@ -390,7 +390,7 @@ TEST(VectorMethods, Find) {
     EXPECT_EQ(-1, find(buf, 9.0));
     EXPECT_EQ(4, find(buf, 3.0));
 }
-
+/*
 TEST(VectorMethods, Abs) {
     double inputData[] = {1, -10, 8, 0, 6.92, -2, -9, 1};
     double expectedData[] = {1, 10, 8, 0, 6.92, 2, 9, 1};
@@ -401,7 +401,7 @@ TEST(VectorMethods, Abs) {
     for (unsigned i=0; i<numElements; i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
-}
+}*/
 
 TEST(VectorMethods, Resize) {
     double inputData[] = {1, -10, 8, 3, 6.92, -2, -9, 1};
@@ -438,7 +438,7 @@ TEST(VectorMethods, Pad) {
         EXPECT_EQ(0, buf[i]);
     }
 }
-
+/*
 TEST(VectorMethods, Exp) {
     double inputData[] = {1, -10, 8, 0, 6.92, -2, -9, 1};
     double expectedData[] = {2.71828183, 0.00004540, 2980.95798704, 1.00000000, 1012.31999453, 0.13533528, 0.00012341, 2.71828183};
@@ -486,7 +486,7 @@ TEST(VectorMethods, Log10) {
         EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
     }
 }
-
+*/
 TEST(VectorMethods, Upsample) {
 	double inputData[] = { 1, 10001, 8, -5, 6, 2, 9, 1 };
 	double expectedData[] = { 1, 0, 0, 10001, 0, 0, 8, 0, 0, -5, 0, 0, 6, 0, 0, 2, 0, 0, 9, 0, 0, 1, 0, 0 };

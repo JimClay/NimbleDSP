@@ -201,7 +201,7 @@ class ComplexVector : public Vector< std::complex<T> > {
      *
      * \return Reference to "this".
      */
-    virtual Vector< std::complex<T> > & exp();
+    //virtual Vector< std::complex<T> > & exp();
     
     /**
      * \brief Sets each element of \ref buf equal to its value to the power of "exponent".
@@ -272,6 +272,53 @@ class ComplexVector : public Vector< std::complex<T> > {
      * \return Reference to "this".
      */
     ComplexVector<T> & ifft();
+    
+    /**
+     * \brief Changes the elements of \ref vec to their absolute value.
+     *
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & abs();
+    
+    /**
+     * \brief Sets each element of \ref vec to e^(element).
+     *
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & exp();
+    
+    /**
+     * \brief Sets each element of \ref vec to the natural log of the element.
+     *
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & log();
+    
+    /**
+     * \brief Sets each element of \ref vec to the base 10 log of the element.
+     *
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & log10();
+    
+    /**
+     * \brief Circular rotation.
+     *
+     * \param numToShift Number of positions to shift in the circular rotation.  numToShift
+     *      can be positive or negative.  If you visualize the 0 index value at the left and
+     *      the end of the array at the right, positive numToShift values shift the array to
+     *      the left, and negative values shift it to the right.
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & rotate(int numToShift);
+    
+    /**
+     * \brief Reverses the order of the elements in \ref vec.
+     *
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & reverse();
+    
 };
 
 
@@ -462,7 +509,7 @@ inline ComplexVector<T> operator/(ComplexVector<T> lhs, const std::complex<T> & 
     lhs /= rhs;
     return lhs;
 }
- 
+ /*
 template <class T>
 Vector< std::complex<T> > & ComplexVector<T>::exp() {
     for (unsigned i=0; i<this->size(); i++) {
@@ -470,7 +517,7 @@ Vector< std::complex<T> > & ComplexVector<T>::exp() {
     }
     return *this;
 }
-   
+   */
 template <class T>
 ComplexVector<T> & ComplexVector<T>::pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent) {
     for (unsigned i=0; i<this->size(); i++) {
@@ -688,6 +735,129 @@ inline ComplexVector<T> & angle(ComplexVector<T> & buffer) {
 template <class T>
 inline T angle(std::complex<T> &val) {
     return std::arg(val);
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::abs() {
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] = (T) std::abs(this->vec[i]);
+    }
+    return *this;
+}
+
+/**
+ * \brief Changes the elements of \ref vec to their absolute value.
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+ComplexVector<T> & abs(ComplexVector<T> & vector) {
+    return vector.abs();
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::exp() {
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] = (std::complex<T>) std::exp(this->vec[i]);
+    }
+    return *this;
+}
+
+/**
+ * \brief Sets each element of \ref vec to e^(element).
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+ComplexVector<T> & exp(ComplexVector<T> & vector) {
+    return vector.exp();
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::log() {
+    for (unsigned i=0; i<this->size(); i++) {
+		this->vec[i] = (std::complex<T>) std::log(this->vec[i]);
+    }
+    return *this;
+}
+
+/**
+ * \brief Sets each element of \ref vec to the natural log of the element.
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+ComplexVector<T> & log(ComplexVector<T> & vector) {
+    return vector.log();
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::log10() {
+    for (unsigned i=0; i<this->size(); i++) {
+		this->vec[i] = (std::complex<T>) std::log10(this->vec[i]);
+    }
+    return *this;
+}
+
+/**
+ * \brief Sets each element of \ref vec to the base 10 log of the element.
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+ComplexVector<T> & log10(ComplexVector<T> & vector) {
+    return vector.log10();
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::rotate(int numToShift) {
+    while (numToShift < 0)
+        numToShift += this->size();
+    
+    while (numToShift >= (int) this->size())
+        numToShift -= this->size();
+    
+    if (numToShift == 0)
+        return *this;
+
+    std::rotate(this->vec.begin(), this->vec.begin()+numToShift, this->vec.end());
+    return *this;
+}
+
+/**
+ * \brief Circular rotation.
+ *
+ * \param vector Buffer to rotate.
+ * \param numToShift Number of positions to shift in the circular rotation.  numToShift
+ *      can be positive or negative.  If you visualize the 0 index value at the left and
+ *      the end of the array at the right, positive numToShift values shift the array to
+ *      the left, and negative values shift it to the right.
+ * \return Reference to "vector".
+ */
+template <class T>
+ComplexVector<T> & rotate(ComplexVector<T> & vector, int numToShift) {
+    return vector.rotate(numToShift);
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::reverse() {
+    std::reverse(this->vec.begin(), this->vec.end());
+    return *this;
+}
+
+/**
+ * \brief Reverses the order of the elements in \ref vec.
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+ComplexVector<T> & reverse(ComplexVector<T> & vector) {
+    return vector.reverse();
 }
 
 };

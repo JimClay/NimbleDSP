@@ -222,6 +222,53 @@ class RealVector : public Vector<T> {
      * \return Reference to "data", which holds the result of the resampling.
      */
     virtual ComplexVector<T> & resampleComplex(ComplexVector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
+    
+    /**
+     * \brief Changes the elements of \ref vec to their absolute value.
+     *
+     * \return Reference to "this".
+     */
+    RealVector<T> & abs();
+    
+    /**
+     * \brief Sets each element of \ref vec to e^(element).
+     *
+     * \return Reference to "this".
+     */
+    RealVector<T> & exp();
+    
+    /**
+     * \brief Sets each element of \ref vec to the natural log of the element.
+     *
+     * \return Reference to "this".
+     */
+    RealVector<T> & log();
+    
+    /**
+     * \brief Sets each element of \ref vec to the base 10 log of the element.
+     *
+     * \return Reference to "this".
+     */
+    RealVector<T> & log10();
+
+    /**
+     * \brief Circular rotation.
+     *
+     * \param numToShift Number of positions to shift in the circular rotation.  numToShift
+     *      can be positive or negative.  If you visualize the 0 index value at the left and
+     *      the end of the array at the right, positive numToShift values shift the array to
+     *      the left, and negative values shift it to the right.
+     * \return Reference to "this".
+     */
+    RealVector<T> & rotate(int numToShift);
+    
+    /**
+     * \brief Reverses the order of the elements in \ref vec.
+     *
+     * \return Reference to "this".
+     */
+    RealVector<T> & reverse();
+
 };
 
 template <class T>
@@ -867,6 +914,129 @@ template <class T>
 inline ComplexVector<T> & resample(ComplexVector<T> & data, int interpRate, int decimateRate,
             RealVector<T> & filter, bool trimTails = false) {
     return filter.resampleComplex(data, interpRate, decimateRate, trimTails);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::abs() {
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] = (T) std::abs(this->vec[i]);
+    }
+    return *this;
+}
+
+/**
+ * \brief Changes the elements of \ref vec to their absolute value.
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & abs(RealVector<T> & vector) {
+    return vector.abs();
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::exp() {
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] = (T) std::exp(this->vec[i]);
+    }
+    return *this;
+}
+
+/**
+ * \brief Sets each element of \ref vec to e^(element).
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & exp(RealVector<T> & vector) {
+    return vector.exp();
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::log() {
+    for (unsigned i=0; i<this->size(); i++) {
+		this->vec[i] = (T) std::log(this->vec[i]);
+    }
+    return *this;
+}
+
+/**
+ * \brief Sets each element of \ref vec to the natural log of the element.
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & log(RealVector<T> & vector) {
+    return vector.log();
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::log10() {
+    for (unsigned i=0; i<this->size(); i++) {
+		this->vec[i] = (T) std::log10(this->vec[i]);
+    }
+    return *this;
+}
+
+/**
+ * \brief Sets each element of \ref vec to the base 10 log of the element.
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & log10(RealVector<T> & vector) {
+    return vector.log10();
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::rotate(int numToShift) {
+    while (numToShift < 0)
+        numToShift += this->size();
+    
+    while (numToShift >= (int) this->size())
+        numToShift -= this->size();
+    
+    if (numToShift == 0)
+        return *this;
+
+    std::rotate(this->vec.begin(), this->vec.begin()+numToShift, this->vec.end());
+    return *this;
+}
+
+/**
+ * \brief Circular rotation.
+ *
+ * \param vector Buffer to rotate.
+ * \param numToShift Number of positions to shift in the circular rotation.  numToShift
+ *      can be positive or negative.  If you visualize the 0 index value at the left and
+ *      the end of the array at the right, positive numToShift values shift the array to
+ *      the left, and negative values shift it to the right.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & rotate(RealVector<T> & vector, int numToShift) {
+    return vector.rotate(numToShift);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::reverse() {
+    std::reverse(this->vec.begin(), this->vec.end());
+    return *this;
+}
+
+/**
+ * \brief Reverses the order of the elements in \ref vec.
+ *
+ * \param vector Buffer to operate on.
+ * \return Reference to "vector".
+ */
+template <class T>
+RealVector<T> & reverse(RealVector<T> & vector) {
+    return vector.reverse();
 }
 
 };

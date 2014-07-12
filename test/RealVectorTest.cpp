@@ -533,18 +533,6 @@ TEST(RealVectorMethods, Log) {
     }
 }
 
-TEST(RealVectorMethods, Ln) {
-    double inputData[] = {1, 10001.3, 8, .0001, 6.92, 2, 9, 1};
-    double expectedData[] = {0, 9.21047036, 2.07944154, -9.21034037, 1.93441577, 0.69314718, 2.19722458, 0};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::RealVector<double> buf(inputData, numElements);
-    
-    ln(buf);
-    for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
-    }
-}
-
 TEST(RealVectorMethods, Log10) {
     double inputData[] = {1, 10001.3, 8, .0001, 6.92, 2, 9, 1};
     double expectedData[] = {0, 4.00005645, 0.90308999, -4.00000000, 0.84010609, 0.30103000, 0.95424251, 0};
