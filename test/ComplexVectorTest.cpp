@@ -772,7 +772,7 @@ TEST(BogusTest, BogusTest) {
     NimbleDSP::ComplexVector<double> buf(50);
     NimbleDSP::ComplexVector<double> buf2(10);
  
-    buf2 = (reverse(rotate(saturate(fft(buf), std::complex<double>(1,1)), 1)));
+    buf2 = conv(reverse(rotate(saturate(fft(buf), std::complex<double>(1,1)), 1)), buf) * std::complex<double>(0,1);
 }
 
 

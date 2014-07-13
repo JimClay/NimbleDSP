@@ -105,6 +105,55 @@ class RealVector : public Vector<T> {
      */
     RealVector<T>& operator=(const Vector<T>& rhs) {this->vec = rhs.vec; return *this;}
     
+    /**
+     * \brief Unary minus (negation) operator.
+     */
+    RealVector<T> & operator-();
+    
+    /**
+     * \brief Add Buffer/Assignment operator.
+     */
+    template <class U>
+    RealVector<T> & operator+=(const Vector<U> &rhs);
+    
+    /**
+     * \brief Add Scalar/Assignment operator.
+     */
+    RealVector<T> & operator+=(const T &rhs);
+    
+    /**
+     * \brief Subtract Buffer/Assignment operator.
+     */
+    template <class U>
+    RealVector<T> & operator-=(const Vector<U> &rhs);
+    
+    /**
+     * \brief Subtract Scalar/Assignment operator.
+     */
+    RealVector<T> & operator-=(const T &rhs);
+    
+    /**
+     * \brief Multiply Buffer/Assignment operator.
+     */
+    template <class U>
+    RealVector<T> & operator*=(const Vector<U> &rhs);
+    
+    /**
+     * \brief Multiply Scalar/Assignment operator.
+     */
+    RealVector<T> & operator*=(const T &rhs);
+
+    /**
+     * \brief Divide Buffer/Assignment operator.
+     */
+    template <class U>
+    RealVector<T> & operator/=(const Vector<U> &rhs);
+    
+    /**
+     * \brief Divide Scalar/Assignment operator.
+     */
+    RealVector<T> & operator/=(const T &rhs);
+    
     /*****************************************************************************************
                                              Methods
     *****************************************************************************************/
@@ -1196,7 +1245,7 @@ RealVector<T> & RealVector<T>::upsample(int rate, int phase) {
 	if (rate == 1)
 		return *this;
 
-	int originalSize = this->vec.size();
+	int originalSize = this->size();
 	this->vec.resize(originalSize*rate);
 	int from, to;
 	for (from = originalSize - 1, to = this->size() - (rate - phase); to > 0; from--, to -= rate) {
@@ -1779,6 +1828,151 @@ template <class T>
 inline RealVector<T> & resample(RealVector<T> & data, int interpRate, int decimateRate,
             RealVector<T> & filter, bool trimTails = false) {
     return filter.resample(data, interpRate, decimateRate, trimTails);
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::operator-()
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] = -this->vec[i];
+    }
+    return *this;
+}
+
+template <class T>
+template <class U>
+RealVector<T> & RealVector<T>::operator+=(const Vector<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] += rhs.vec[i];
+    }
+    return *this;
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::operator+=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] += rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline RealVector<T> operator+(RealVector<T> lhs, const Vector<U>& rhs)
+{
+    lhs += rhs;
+    return lhs;
+}
+
+template <class T>
+inline RealVector<T> operator+(RealVector<T> lhs, const T& rhs)
+{
+    lhs += rhs;
+    return lhs;
+}
+
+template <class T>
+template <class U>
+RealVector<T> & RealVector<T>::operator-=(const Vector<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] -= rhs.vec[i];
+    }
+    return *this;
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::operator-=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] -= rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline RealVector<T> operator-(RealVector<T> lhs, const Vector<U>& rhs)
+{
+    lhs -= rhs;
+    return lhs;
+}
+
+template <class T>
+inline RealVector<T> operator-(RealVector<T> lhs, const T& rhs)
+{
+    lhs -= rhs;
+    return lhs;
+}
+
+template <class T>
+template <class U>
+RealVector<T> & RealVector<T>::operator*=(const Vector<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] *= rhs.vec[i];
+    }
+    return *this;
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::operator*=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] *= rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline RealVector<T> operator*(RealVector<T> lhs, const Vector<U>& rhs)
+{
+    lhs *= rhs;
+    return lhs;
+}
+
+template <class T>
+inline RealVector<T> operator*(RealVector<T> lhs, const T& rhs)
+{
+    lhs *= rhs;
+    return lhs;
+}
+
+template <class T>
+template <class U>
+RealVector<T> & RealVector<T>::operator/=(const Vector<U> &rhs)
+{
+    assert(this->size() == rhs.size());
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] /= rhs.vec[i];
+    }
+    return *this;
+}
+
+template <class T>
+RealVector<T> & RealVector<T>::operator/=(const T &rhs)
+{
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] /= rhs;
+    }
+    return *this;
+}
+
+template <class T, class U>
+inline RealVector<T> operator/(RealVector<T> lhs, const Vector<U>& rhs)
+{
+    lhs /= rhs;
+    return lhs;
+}
+
+template <class T>
+inline RealVector<T> operator/(RealVector<T> lhs, const T& rhs)
+{
+    lhs /= rhs;
+    return lhs;
 }
 
 };
