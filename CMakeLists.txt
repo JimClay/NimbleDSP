@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project (NimbleDSP)
 
 #set(CMAKE_SUPPRESS_REGENERATION TRUE) # For doing test coverage
+SET(CMAKE_CXX_FLAGS "-std=c++0x")
 
 file (GLOB SOURCE_HEADERS "src/*.h")
 
