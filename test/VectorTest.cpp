@@ -85,12 +85,12 @@ TEST(VectorOperators, Equality) {
 	NimbleDSP::Vector<double> buf2(inputData2, numElements);
 	NimbleDSP::Vector<double> buf3(inputData3, numElements3);
     
-    EXPECT_EQ(false, buf1 == buf2);
-    EXPECT_EQ(true, buf1 != buf2);
-    EXPECT_EQ(false, buf3 == buf2);
-    EXPECT_EQ(true, buf3 != buf2);
-    EXPECT_EQ(true, buf1 == buf1);
-    EXPECT_EQ(false, buf1 != buf1);
+    EXPECT_FALSE(buf1 == buf2);
+    EXPECT_TRUE(buf1 != buf2);
+    EXPECT_FALSE(buf3 == buf2);
+    EXPECT_TRUE(buf3 != buf2);
+    EXPECT_TRUE(buf1 == buf1);
+    EXPECT_FALSE(buf1 != buf1);
 }
 
 TEST(VectorMethods, Find) {

@@ -324,12 +324,12 @@ TEST(RealVectorOperators, Equality) {
 	NimbleDSP::RealVector<double> buf2(inputData2, numElements);
 	NimbleDSP::RealVector<double> buf3(inputData3, numElements3);
     
-    EXPECT_EQ(false, buf1 == buf2);
-    EXPECT_EQ(true, buf1 != buf2);
-    EXPECT_EQ(false, buf3 == buf2);
-    EXPECT_EQ(true, buf3 != buf2);
-    EXPECT_EQ(true, buf1 == buf1);
-    EXPECT_EQ(false, buf1 != buf1);
+    EXPECT_FALSE(buf1 == buf2);
+    EXPECT_TRUE(buf1 != buf2);
+    EXPECT_FALSE(buf3 == buf2);
+    EXPECT_TRUE(buf3 != buf2);
+    EXPECT_TRUE(buf1 == buf1);
+    EXPECT_FALSE(buf1 != buf1);
 }
 
 TEST(RealVectorStatistics, Mean) {
@@ -337,7 +337,7 @@ TEST(RealVectorStatistics, Mean) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::RealVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(450.015, mean(buf)));
+    EXPECT_TRUE(FloatsEqual(450.015, mean(buf)));
 }
 
 TEST(RealVectorStatistics, Var) {
@@ -345,7 +345,7 @@ TEST(RealVectorStatistics, Var) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::RealVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(60008.57322857144, var(buf)));
+    EXPECT_TRUE(FloatsEqual(60008.57322857144, var(buf)));
 }
 
 TEST(RealVectorStatistics, StdDev) {
@@ -353,7 +353,7 @@ TEST(RealVectorStatistics, StdDev) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::RealVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(244.9664736827704, stdDev(buf)));
+    EXPECT_TRUE(FloatsEqual(244.9664736827704, stdDev(buf)));
 }
 
 TEST(RealVectorStatistics, Median) {
@@ -517,7 +517,7 @@ TEST(RealVectorMethods, Exp) {
     
     exp(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -529,7 +529,7 @@ TEST(RealVectorMethods, Log) {
     
     log(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -541,7 +541,7 @@ TEST(RealVectorMethods, Log10) {
     
     log10(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 

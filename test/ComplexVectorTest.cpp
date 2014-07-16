@@ -75,7 +75,7 @@ TEST(ComplexVectorOperators, PlusEqualsBuf) {
     
     buf1 += buf2;
     for (unsigned i=0; i<buf1.vec.size(); i++) {
-        EXPECT_EQ(true, ComplexEqual(inputData[i]*2.0, buf1.vec[i]));
+        EXPECT_TRUE(ComplexEqual(inputData[i]*2.0, buf1.vec[i]));
         EXPECT_EQ(inputData[i], buf2.vec[i]);
     }
 }
@@ -351,12 +351,12 @@ TEST(ComplexVectorOperators, Equality) {
 	NimbleDSP::ComplexVector<double> buf2(inputData2, numElements);
 	NimbleDSP::ComplexVector<double> buf3(inputData3, numElements3);
     
-    EXPECT_EQ(false, buf1 == buf2);
-    EXPECT_EQ(true, buf1 != buf2);
-    EXPECT_EQ(false, buf3 == buf2);
-    EXPECT_EQ(true, buf3 != buf2);
-    EXPECT_EQ(true, buf1 == buf1);
-    EXPECT_EQ(false, buf1 != buf1);
+    EXPECT_FALSE(buf1 == buf2);
+    EXPECT_TRUE(buf1 != buf2);
+    EXPECT_FALSE(buf3 == buf2);
+    EXPECT_TRUE(buf3 != buf2);
+    EXPECT_TRUE(buf1 == buf1);
+    EXPECT_FALSE(buf1 != buf1);
 }
 
 TEST(ComplexVectorStatistics, Mean) {
@@ -364,7 +364,7 @@ TEST(ComplexVectorStatistics, Mean) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, ComplexEqual(std::complex<double>(0.767751, -0.661230333333333), mean(buf)));
+    EXPECT_TRUE(ComplexEqual(std::complex<double>(0.767751, -0.661230333333333), mean(buf)));
 }
 
 TEST(ComplexVectorStatistics, Var) {
@@ -372,7 +372,7 @@ TEST(ComplexVectorStatistics, Var) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, ComplexEqual(std::complex<double>(7.335490751497001,0), var(buf)));
+    EXPECT_TRUE(ComplexEqual(std::complex<double>(7.335490751497001,0), var(buf)));
 }
 
 TEST(ComplexVectorStatistics, StdDev) {
@@ -380,7 +380,7 @@ TEST(ComplexVectorStatistics, StdDev) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
-    EXPECT_EQ(true, ComplexEqual(std::complex<double>(2.708411111980048,0), stdDev(buf)));
+    EXPECT_TRUE(ComplexEqual(std::complex<double>(2.708411111980048,0), stdDev(buf)));
 }
 
 TEST(ComplexVectorMethods, Rotate) {
@@ -435,7 +435,7 @@ TEST(ComplexVectorMethods, Pow) {
     
     pow(buf, 3.0);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(inputData[i]*inputData[i]*inputData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(inputData[i]*inputData[i]*inputData[i], buf[i]));
     }
 }
 
@@ -459,7 +459,7 @@ TEST(ComplexVectorMethods, Abs) {
     
     abs(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -471,16 +471,16 @@ TEST(ComplexVectorMethods, Resize) {
     buf.resize(11);
     EXPECT_EQ(11, buf.size());
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(inputData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(inputData[i], buf[i]));
     }
     for (unsigned i=numElements; i<buf.size(); i++) {
-        EXPECT_EQ(true, ComplexEqual(0, buf[i]));
+        EXPECT_TRUE(ComplexEqual(0, buf[i]));
     }
     
     buf.resize(0);
     EXPECT_EQ(0, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(true, ComplexEqual(inputData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(inputData[i], buf[i]));
     }
 }
 
@@ -507,7 +507,7 @@ TEST(ComplexVectorMethods, Exp) {
     
     exp(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -519,7 +519,7 @@ TEST(ComplexVectorMethods, Log) {
     
     log(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -531,7 +531,7 @@ TEST(ComplexVectorMethods, Log10) {
     
     log10(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -544,7 +544,7 @@ TEST(ComplexVectorMethods, FFT) {
     fft(buf);
     EXPECT_EQ(NimbleDSP::FREQUENCY_DOMAIN, buf.domain);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -557,7 +557,7 @@ TEST(ComplexVectorMethods, IFFT) {
     ifft(buf);
     EXPECT_EQ(NimbleDSP::TIME_DOMAIN, buf.domain);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
         //EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
@@ -570,7 +570,7 @@ TEST(ComplexVectorMethods, Conj) {
     
     conj(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -582,7 +582,7 @@ TEST(ComplexVectorMethods, MagSq) {
     
     magSq(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -753,7 +753,7 @@ TEST(ComplexVectorMethods, Angle) {
     
     angle(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -764,7 +764,7 @@ TEST(ComplexVectorMethods, IndividualAngle) {
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, ComplexEqual(expectedData[i], std::complex<double>(NimbleDSP::angle(buf[i]))));
+        EXPECT_TRUE(ComplexEqual(expectedData[i], std::complex<double>(NimbleDSP::angle(buf[i]))));
     }
 }
 

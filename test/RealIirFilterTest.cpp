@@ -85,7 +85,7 @@ TEST(RealIirFilter, Filter1) {
     filter(buf, filt);
     EXPECT_EQ(input.size(), buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -103,7 +103,7 @@ TEST(RealIirFilter, Filter2) {
     filter(buf, filt);
     EXPECT_EQ(input.size(), buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -121,7 +121,7 @@ TEST(RealIirFilter, Filter3) {
     filter(buf, filt);
     EXPECT_EQ(input.size(), buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -139,7 +139,7 @@ TEST(RealIirFilter, Filter4) {
     filter(buf, filt);
     EXPECT_EQ(input.size(), buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 

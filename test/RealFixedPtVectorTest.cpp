@@ -728,12 +728,12 @@ TEST(RealFixedPtVectorOperators, Equality) {
 	NimbleDSP::RealFixedPtVector<int> buf2(inputData2, numElements);
 	NimbleDSP::RealFixedPtVector<int> buf3(inputData3, numElements3);
     
-    EXPECT_EQ(false, buf1 == buf2);
-    EXPECT_EQ(true, buf1 != buf2);
-    EXPECT_EQ(false, buf3 == buf2);
-    EXPECT_EQ(true, buf3 != buf2);
-    EXPECT_EQ(true, buf1 == buf1);
-    EXPECT_EQ(false, buf1 != buf1);
+    EXPECT_FALSE(buf1 == buf2);
+    EXPECT_TRUE(buf1 != buf2);
+    EXPECT_FALSE(buf3 == buf2);
+    EXPECT_TRUE(buf3 != buf2);
+    EXPECT_TRUE(buf1 == buf1);
+    EXPECT_FALSE(buf1 != buf1);
 }
 
 TEST(RealFixedPtVectorStatistics, Mean) {
@@ -741,7 +741,7 @@ TEST(RealFixedPtVectorStatistics, Mean) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::RealFixedPtVector<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(4.5, mean(buf)));
+    EXPECT_TRUE(FloatsEqual(4.5, mean(buf)));
 }
 
 TEST(RealFixedPtVectorStatistics, Var) {
@@ -749,7 +749,7 @@ TEST(RealFixedPtVectorStatistics, Var) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::RealFixedPtVector<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(60000.0, var(buf)));
+    EXPECT_TRUE(FloatsEqual(60000.0, var(buf)));
 }
 
 TEST(RealFixedPtVectorStatistics, StdDev) {
@@ -757,7 +757,7 @@ TEST(RealFixedPtVectorStatistics, StdDev) {
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::RealFixedPtVector<int> buf(inputData, numElements);
     
-    EXPECT_EQ(true, FloatsEqual(244.9489742783178, stdDev(buf)));
+    EXPECT_TRUE(FloatsEqual(244.9489742783178, stdDev(buf)));
 }
 
 TEST(RealFixedPtVectorStatistics, Median) {
@@ -934,7 +934,7 @@ TEST(RealFixedPtVectorMethods, Exp) {
     
     exp(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -946,7 +946,7 @@ TEST(RealFixedPtVectorMethods, Log) {
     
     log(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
 
@@ -958,6 +958,6 @@ TEST(RealFixedPtVectorMethods, Log10) {
     
     log10(buf);
     for (unsigned i=0; i<numElements; i++) {
-        EXPECT_EQ(true, FloatsEqual(expectedData[i], buf[i]));
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
     }
 }
