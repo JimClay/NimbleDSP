@@ -6,8 +6,8 @@ NimbleDSP is a C++ digital signal processing (DSP) library that aims to be fast,
 
 ## Features
 * Vector classes for real, complex, floating point, and fixed point data types.
-* Filter classes (coming)
-* Matlab-style syntax (e.g. "spectrum_dB = log10(abs(fft(data))) * 20;")
+* Filter classes
+* Matlab-style syntax (e.g. "spectrum_dB = log10(abs(fft(data)));")
 * Efficient multi-rate filter functions (decimate, interp, and resample)
 * FFT and inverse FFT
 * 100% template classes and functions
@@ -18,12 +18,12 @@ NimbleDSP is a C++ digital signal processing (DSP) library that aims to be fast,
 ## Installation
 None required!  Well, mostly none.  All of the source code is header files so all you have to do is "include" it in your code and make sure that their directory is in your include path.  The library's header files are all in the "src" directory.
 
-You will also need a header file from KissFFT.  Download it from [here](https://sourceforge.net/projects/kissfft/) and unzip the package wherever you wish (though if you wish to build and run the unit tests you should put it at the same level as NimbleDSP- see the Unit Tests section) and include its top-level directory in your include path.
+You will also need a header file from KissFFT.  I have forked KissFFT to fix a bug that causes the KissFFT template code to fail to compile with non-gcc compilers.  Download it by executing "git clone https://github.com/JimClay/KissFFT-Fork.git kiss_fft130".  You can put the KissFFT code where you want (though if you wish to build and run the unit tests you should put it at the same level as NimbleDSP- see the Unit Tests section) as long as you put its top-level directory in your include path.
 
 ### Unit Tests
 That being said, you may want to get the unit tests up and running.  If so, do the following steps:
 
-* Download the latest copy of KissFFT and unzip it at the same level as NimbleDSP (i.e. not inside the NimbleDSP directory).
+* Download my fork of Mark Borderding's excellent KissFFT by executing "git clone https://github.com/JimClay/KissFFT-Fork.git kiss_fft130" at the same level as NimbleDSP (i.e. not inside the NimbleDSP directory).
 * Download googletest by executing the following at the same level as NimbleDSP and KissFFT: "svn checkout http://googletest.googlecode.com/svn/trunk/ googletest-read-only".  If you don't have a Subversion client installed and really don't want to install one you can probably download the source as a zip file [here](https://code.google.com/p/googletest/downloads/list), unzip it and rename the directory to "googletest-read-only", but I haven't tried it.
 * Linux platform
     * cd to NimbleDSP/build
