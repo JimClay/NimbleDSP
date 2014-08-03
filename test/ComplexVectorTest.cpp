@@ -832,7 +832,8 @@ TEST(ComplexVectorMethods, ComplexFilterEvenTrim) {
     std::complex<double> filterTaps[] = {std::complex<double>(1, 3), std::complex<double>(2, 4), std::complex<double>(3, 5), std::complex<double>(4, 6), std::complex<double>(5, 7), std::complex<double>(6, 8)};
     std::complex<double> expectedData[] = {std::complex<double>(-32, 18), std::complex<double>(-58, 26), std::complex<double>(-95, 35), std::complex<double>(-145, 45), std::complex<double>(-199, 33), std::complex<double>(-253, 21), std::complex<double>(-307, 9), std::complex<double>(-320, 10), std::complex<double>(-310, 10)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
+    std::vector< std::complex<double> > scratchBuf;
+	NimbleDSP::ComplexVector<double> buf(inputData, numElements, NimbleDSP::TIME_DOMAIN, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     NimbleDSP::ComplexVector<double> filter(filterTaps, numElements);
     NimbleDSP::ComplexVector<double> input = buf;
@@ -865,13 +866,14 @@ TEST(ComplexVectorFilter, ComplexDecimateEvenOdd) {
 TEST(ComplexVectorFilter, ComplexDecimateEvenOddTrim) {
     std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
     std::complex<double> filterTaps[] = {std::complex<double>(1, 3), std::complex<double>(2, 4), std::complex<double>(3, 5), std::complex<double>(4, 6), std::complex<double>(5, 7)};
-    std::complex<double> expectedData[] = {std::complex<double>(-32, 18), std::complex<double>(-135, 25), std::complex<double>(-255, -5)};
+    std::complex<double> expectedData[] = {std::complex<double>(-32, 18), std::complex<double>(-95, 35), std::complex<double>(-175, 15), std::complex<double>(-255, -5), std::complex<double>(-230, 0)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
+    std::vector< std::complex<double> > scratchBuf;
+	NimbleDSP::ComplexVector<double> buf(inputData, numElements, NimbleDSP::TIME_DOMAIN, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     NimbleDSP::ComplexVector<double> filter(filterTaps, numElements);
     NimbleDSP::ComplexVector<double> input = buf;
-    int rate = 3;
+    int rate = 2;
     
     decimate(buf, rate, filter, true);
     EXPECT_EQ((input.size() + (rate - 1))/rate, buf.size());
@@ -901,13 +903,14 @@ TEST(ComplexVectorFilter, ComplexInterpEvenOdd) {
 TEST(ComplexVectorFilter, ComplexInterpEvenOddTrim) {
     std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
     std::complex<double> filterTaps[] = {std::complex<double>(1, 3), std::complex<double>(2, 4), std::complex<double>(3, 5), std::complex<double>(4, 6), std::complex<double>(5, 7)};
-    std::complex<double> expectedData[] = {std::complex<double>(-7, 11), std::complex<double>(-17, 17), std::complex<double>(-21, 23), std::complex<double>(-15, 9), std::complex<double>(-31, 13), std::complex<double>(-39, 19), std::complex<double>(-23, 7), std::complex<double>(-45, 9), std::complex<double>(-57, 15), std::complex<double>(-31, 5), std::complex<double>(-59, 5), std::complex<double>(-75, 11), std::complex<double>(-39, 3), std::complex<double>(-73, 1), std::complex<double>(-93, 7), std::complex<double>(-47, 1), std::complex<double>(-87, -3), std::complex<double>(-111, 3), std::complex<double>(-55, -1), std::complex<double>(-101, -7), std::complex<double>(-129, -1), std::complex<double>(-63, -3), std::complex<double>(-115, -11), std::complex<double>(-147, -5), std::complex<double>(-71, -5), std::complex<double>(-88, -2), std::complex<double>(-105, 1)};
+    std::complex<double> expectedData[] = {std::complex<double>(-16, 14), std::complex<double>(-20, 20), std::complex<double>(-37, 27), std::complex<double>(-36, 16), std::complex<double>(-61, 21), std::complex<double>(-52, 12), std::complex<double>(-85, 15), std::complex<double>(-68, 8), std::complex<double>(-109, 9), std::complex<double>(-84, 4), std::complex<double>(-133, 3), std::complex<double>(-100, 0), std::complex<double>(-157, -3), std::complex<double>(-116, -4), std::complex<double>(-181, -9), std::complex<double>(-132, -8), std::complex<double>(-164, -2), std::complex<double>(-88, -2)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
+    std::vector< std::complex<double> > scratchBuf;
+	NimbleDSP::ComplexVector<double> buf(inputData, numElements, NimbleDSP::TIME_DOMAIN, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     NimbleDSP::ComplexVector<double> filter(filterTaps, numElements);
     NimbleDSP::ComplexVector<double> input = buf;
-    int rate = 3;
+    int rate = 2;
     
     interp(buf, rate, filter, true);
     EXPECT_EQ(input.size()*rate, buf.size());
@@ -940,12 +943,52 @@ TEST(ComplexVectorFilter, ComplexResampleTrim1) {
     std::complex<double> filterTaps[] = {std::complex<double>(1, 3), std::complex<double>(2, 4), std::complex<double>(3, 5), std::complex<double>(4, 6), std::complex<double>(5, 7)};
     std::complex<double> expectedData[] = {std::complex<double>(-7, 11), std::complex<double>(-21, 23), std::complex<double>(-31, 13), std::complex<double>(-23, 7), std::complex<double>(-57, 15), std::complex<double>(-59, 5), std::complex<double>(-39, 3), std::complex<double>(-93, 7), std::complex<double>(-87, -3), std::complex<double>(-55, -1), std::complex<double>(-129, -1), std::complex<double>(-115, -11), std::complex<double>(-71, -5), std::complex<double>(-105, 1)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
+    std::vector< std::complex<double> > scratchBuf;
+	NimbleDSP::ComplexVector<double> buf(inputData, numElements, NimbleDSP::TIME_DOMAIN, &scratchBuf);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
     NimbleDSP::ComplexVector<double> filter(filterTaps, numElements);
     NimbleDSP::ComplexVector<double> input = buf;
     int interpRate = 3;
     int decimateRate = 2;
+    
+    resample(buf, interpRate, decimateRate, filter, true);
+    EXPECT_EQ((input.size()*interpRate + decimateRate-1)/decimateRate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(ComplexVectorFilter, ComplexResample2) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    std::complex<double> filterTaps[] = {std::complex<double>(1, 3), std::complex<double>(2, 4), std::complex<double>(3, 5), std::complex<double>(4, 6), std::complex<double>(5, 7)};
+    std::complex<double> expectedData[] = {std::complex<double>(-5, 5), std::complex<double>(-12, 6), std::complex<double>(-23, 7), std::complex<double>(-38, 8), std::complex<double>(-57, 9), std::complex<double>(0, 0), std::complex<double>(-33, -9), std::complex<double>(-54, -8), std::complex<double>(0, 0)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    NimbleDSP::ComplexVector<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexVector<double> input = buf;
+    int interpRate = 6;
+    int decimateRate = 7;
+    
+    resample(buf, interpRate, decimateRate, filter);
+    EXPECT_EQ((input.size()*interpRate + filter.size()-1 - (interpRate-1) + decimateRate-1)/decimateRate, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
+TEST(ComplexVectorFilter, ComplexResampleTrim2) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    std::complex<double> filterTaps[] = {std::complex<double>(1, 3), std::complex<double>(2, 4), std::complex<double>(3, 5), std::complex<double>(4, 6), std::complex<double>(5, 7)};
+    std::complex<double> expectedData[] = {std::complex<double>(-7, 11), std::complex<double>(-18, 12), std::complex<double>(-33, 13), std::complex<double>(0, 0), std::complex<double>(-25, -5), std::complex<double>(-42, -4), std::complex<double>(-63, -3), std::complex<double>(-88, -2)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+    std::vector< std::complex<double> > scratchBuf;
+	NimbleDSP::ComplexVector<double> buf(inputData, numElements, NimbleDSP::TIME_DOMAIN, &scratchBuf);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    NimbleDSP::ComplexVector<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexVector<double> input = buf;
+    int interpRate = 6;
+    int decimateRate = 7;
     
     resample(buf, interpRate, decimateRate, filter, true);
     EXPECT_EQ((input.size()*interpRate + decimateRate-1)/decimateRate, buf.size());
