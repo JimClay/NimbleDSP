@@ -586,74 +586,6 @@ TEST(ComplexVectorMethods, MagSq) {
     }
 }
 
-TEST(ComplexVectorMethods, FilterOdd) {
-    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
-    double filterTaps[] = {1, 2, 3, 4, 5};
-    std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(2, 7), std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-20, 65), std::complex<double>(-35, 80), std::complex<double>(-50, 95), std::complex<double>(-65, 110), std::complex<double>(-72, 114), std::complex<double>(-70, 106), std::complex<double>(-58, 85), std::complex<double>(-35, 50)};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
-    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    NimbleDSP::RealVector<double> filter(filterTaps, numElements);
-    NimbleDSP::ComplexVector<double> input = buf;
-    
-    conv(buf, filter);
-    EXPECT_EQ(input.size() + filter.size() - 1, buf.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(expectedData[i], buf[i]);
-    }
-}
-
-TEST(ComplexVectorMethods, FilterEven) {
-    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
-    double filterTaps[] = {1, 2, 3, 4, 5, 6};
-    std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(2, 7), std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-14, 77), std::complex<double>(-35, 98), std::complex<double>(-56, 119), std::complex<double>(-77, 140), std::complex<double>(-90, 150), std::complex<double>(-94, 148), std::complex<double>(-88, 133), std::complex<double>(-71, 104), std::complex<double>(-42, 60)};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
-    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    NimbleDSP::RealVector<double> filter(filterTaps, numElements);
-    NimbleDSP::ComplexVector<double> input = buf;
-    
-    conv(buf, filter);
-    EXPECT_EQ(input.size() + filter.size() - 1, buf.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(expectedData[i], buf[i]);
-    }
-}
-
-TEST(ComplexVectorMethods, FilterOddTrim) {
-    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
-    double filterTaps[] = {1, 2, 3, 4, 5};
-    std::complex<double> expectedData[] = {std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-20, 65), std::complex<double>(-35, 80), std::complex<double>(-50, 95), std::complex<double>(-65, 110), std::complex<double>(-72, 114), std::complex<double>(-70, 106)};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
-    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    NimbleDSP::RealVector<double> filter(filterTaps, numElements);
-    NimbleDSP::ComplexVector<double> input = buf;
-    
-    conv(buf, filter, true);
-    EXPECT_EQ(input.size(), buf.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(expectedData[i], buf[i]);
-    }
-}
-
-TEST(ComplexVectorMethods, FilterEvenTrim) {
-    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
-    double filterTaps[] = {1, 2, 3, 4, 5, 6};
-    std::complex<double> expectedData[] = {std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-14, 77), std::complex<double>(-35, 98), std::complex<double>(-56, 119), std::complex<double>(-77, 140), std::complex<double>(-90, 150), std::complex<double>(-94, 148)};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
-    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    NimbleDSP::RealVector<double> filter(filterTaps, numElements);
-    NimbleDSP::ComplexVector<double> input = buf;
-    
-    conv(buf, filter, true);
-    EXPECT_EQ(input.size(), buf.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(expectedData[i], buf[i]);
-    }
-}
-
 TEST(ComplexVectorMethods, Sum) {
     std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
@@ -685,61 +617,6 @@ TEST(ComplexVectorMethods, RunningDiff) {
     diff(buf, previousVal);
     EXPECT_EQ(numElements, buf.size());
     EXPECT_EQ(std::complex<double>(-7, 10), previousVal);
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(expectedData[i], buf[i]);
-    }
-}
-
-TEST(ComplexVectorFilter, DecimateEvenOdd) {
-    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
-    double filterTaps[] = {1, 2, 3, 4, 5};
-    std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(0, 30), std::complex<double>(-35, 80), std::complex<double>(-72, 114), std::complex<double>(-35, 50)};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
-    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    NimbleDSP::RealVector<double> filter(filterTaps, numElements);
-    NimbleDSP::ComplexVector<double> input = buf;
-    int rate = 3;
-    
-    decimate(buf, rate, filter);
-    EXPECT_EQ((input.size() + filter.size() - 1 + (rate - 1))/rate, buf.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(expectedData[i], buf[i]);
-    }
-}
-
-TEST(ComplexVectorFilter, InterpEvenOdd) {
-    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
-    double filterTaps[] = {1, 2, 3, 4, 5};
-    std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(2, 4), std::complex<double>(3, 6), std::complex<double>(4, 11), std::complex<double>(5, 16), std::complex<double>(0, 9), std::complex<double>(-1, 16), std::complex<double>(-2, 23), std::complex<double>(-3, 12), std::complex<double>(-6, 21), std::complex<double>(-9, 30), std::complex<double>(-6, 15), std::complex<double>(-11, 26), std::complex<double>(-16, 37), std::complex<double>(-9, 18), std::complex<double>(-16, 31), std::complex<double>(-23, 44), std::complex<double>(-12, 21), std::complex<double>(-21, 36), std::complex<double>(-30, 51), std::complex<double>(-15, 24), std::complex<double>(-26, 41), std::complex<double>(-37, 58), std::complex<double>(-18, 27), std::complex<double>(-31, 46), std::complex<double>(-44, 65), std::complex<double>(-21, 30), std::complex<double>(-28, 40), std::complex<double>(-35, 50), std::complex<double>(0, 0), std::complex<double>(0, 0)};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
-    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    NimbleDSP::RealVector<double> filter(filterTaps, numElements);
-    NimbleDSP::ComplexVector<double> input = buf;
-    int rate = 3;
-    
-    interp(buf, rate, filter);
-    EXPECT_EQ(input.size()*rate + filter.size() - rate, buf.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_EQ(expectedData[i], buf[i]);
-    }
-}
-
-TEST(ComplexVectorFilter, Resample1) {
-    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
-    double filterTaps[] = {1, 2, 3, 4, 5};
-    std::complex<double> expectedData[] = {std::complex<double>(1, 2), std::complex<double>(3, 6), std::complex<double>(5, 16), std::complex<double>(-1, 16), std::complex<double>(-3, 12), std::complex<double>(-9, 30), std::complex<double>(-11, 26), std::complex<double>(-9, 18), std::complex<double>(-23, 44), std::complex<double>(-21, 36), std::complex<double>(-15, 24), std::complex<double>(-37, 58), std::complex<double>(-31, 46), std::complex<double>(-21, 30), std::complex<double>(-35, 50), std::complex<double>(0, 0)};
-    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
-	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
-    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
-    NimbleDSP::RealVector<double> filter(filterTaps, numElements);
-    NimbleDSP::ComplexVector<double> input = buf;
-    int interpRate = 3;
-    int decimateRate = 2;
-    
-    resample(buf, interpRate, decimateRate, filter);
-    EXPECT_EQ((input.size()*interpRate + filter.size()-1 - (interpRate-1) + decimateRate-1)/decimateRate, buf.size());
     for (unsigned i=0; i<buf.size(); i++) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
