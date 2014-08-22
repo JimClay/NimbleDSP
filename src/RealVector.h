@@ -440,6 +440,17 @@ class RealVector : public Vector<T> {
      * \return Reference to "data", which holds the result of the resampling.
      */
     virtual RealVector<T> & resample(RealVector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
+    
+    /**
+     * \brief Generates a complex tone.
+     *
+     * \param freq The tone frequency.
+     * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
+     * \param numSamples The number of samples to generate.  "0" indicates to generate
+     *      this->size() samples.  Defaults to 0.
+     * \return Reference to "this".
+     */
+    RealVector<T> & tone(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0);
 };
 
 template <class T>
@@ -1974,6 +1985,38 @@ inline RealVector<T> operator/(RealVector<T> lhs, const T& rhs)
     lhs /= rhs;
     return lhs;
 }
+
+template <class T>
+RealVector<T> & RealVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numSamples) {
+    assert(sampleFreq > 0.0);
+    
+    if (numSamples && numSamples != this->size()) {
+        this->resize(numSamples);
+    }
+    
+    T phaseInc = (freq / sampleFreq) * 2 * M_PI;
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] = std::sin(phase);
+        phase += phaseInc;
+    }
+    return *this;
+}
+
+/**
+ * \brief Generates a complex tone.
+ *
+ * \param vec The vector to put the tone in.
+ * \param freq The tone frequency.
+ * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
+ * \param numSamples The number of samples to generate.  "0" indicates to generate
+ *      this->size() samples.  Defaults to 0.
+ * \return Reference to "this".
+ */
+template <class T>
+RealVector<T> & tone(RealVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
+    return vec.tone(freq, sampleFreq, phase, numSamples);
+}
+
 
 };
 

@@ -854,3 +854,28 @@ TEST(RealVectorMethods, ComplexResample1) {
         EXPECT_EQ(expectedData[i], buf[i]);
     }
 }
+
+TEST(RealVectorDataGen, Tone0) {
+    double expectedData[] = {0.84147098, -0.41304825, -0.96083378, 0.13538625, 0.99995773, 0.15358181, -0.95557562, -0.42972431, 0.83139377, 0.66998070, -0.63778257, -0.85428728, 0.39091040, 0.96725267, -0.11139347, -0.99944319, -0.17742589, 0.94817061, 0.45142849, -0.81771668, -0.68773247, 0.61897557, 0.86660420};
+    unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	NimbleDSP::RealVector<double> buf(numElements);
+    
+    tone(buf, -10007.3, 44100.0, 1.0);
+    EXPECT_EQ(numElements, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
+    }
+}
+
+TEST(RealVectorDataGen, Tone) {
+    double expectedData[] = {0.47942554, 0.54298501, 0.60357344, 0.66085930, 0.71452915, 0.76428932, 0.80986754, 0.85101442, 0.88750482, 0.91913907, 0.94574408, 0.96717428, 0.98331241, 0.99407016, 0.99938867, 0.99923884, 0.99362149, 0.98256736, 0.96613693, 0.94442010, 0.91753570, 0.88563084, 0.84888009, 0.80748452, 0.76167066, 0.71168918};
+    unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	NimbleDSP::RealVector<double> buf;
+    
+    tone(buf, 519.3, 44100.0, 0.5, 26);
+    EXPECT_EQ(numElements, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_TRUE(FloatsEqual(expectedData[i], buf[i]));
+    }
+}
+
