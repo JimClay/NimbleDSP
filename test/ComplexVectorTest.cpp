@@ -899,31 +899,5 @@ TEST(ComplexVectorDataGen, Tone) {
     }
 }
 
-TEST(ComplexVectorDataGen, Sin) {
-    std::complex<double> expectedData[] = {std::complex<double>(0.84147098, 0.00000000), std::complex<double>(-0.41304825, 0.00000000), std::complex<double>(-0.96083378, 0.00000000), std::complex<double>(0.13538625, 0.00000000), std::complex<double>(0.99995773, 0.00000000), std::complex<double>(0.15358181, 0.00000000), std::complex<double>(-0.95557562, 0.00000000), std::complex<double>(-0.42972431, 0.00000000), std::complex<double>(0.83139377, 0.00000000), std::complex<double>(0.66998070, 0.00000000), std::complex<double>(-0.63778257, 0.00000000), std::complex<double>(-0.85428728, 0.00000000), std::complex<double>(0.39091040, 0.00000000), std::complex<double>(0.96725267, 0.00000000), std::complex<double>(-0.11139347, 0.00000000), std::complex<double>(-0.99944319, 0.00000000), std::complex<double>(-0.17742589, 0.00000000), std::complex<double>(0.94817061, 0.00000000), std::complex<double>(0.45142849, 0.00000000), std::complex<double>(-0.81771668, 0.00000000), std::complex<double>(-0.68773247, 0.00000000), std::complex<double>(0.61897557, 0.00000000), std::complex<double>(0.86660420, 0.00000000)};
-    unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
-	NimbleDSP::ComplexVector<double> buf(numElements);
-    
-    sin(buf, -10007.3, 44100.0, 1.0);
-    EXPECT_EQ(numElements, buf.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
-    }
-}
-
-TEST(ComplexVectorDataGen, Cos) {
-    std::complex<double> expectedData[] = {std::complex<double>(0.87758256, 0.00000000), std::complex<double>(0.83974239, 0.00000000), std::complex<double>(0.79730741, 0.00000000), std::complex<double>(0.75050982, 0.00000000), std::complex<double>(0.69960567, 0.00000000), std::complex<double>(0.64487350, 0.00000000), std::complex<double>(0.58661279, 0.00000000), std::complex<double>(0.52514232, 0.00000000), std::complex<double>(0.46079843, 0.00000000), std::complex<double>(0.39393320, 0.00000000), std::complex<double>(0.32491249, 0.00000000), std::complex<double>(0.25411397, 0.00000000), std::complex<double>(0.18192501, 0.00000000), std::complex<double>(0.10874061, 0.00000000), std::complex<double>(0.03496122, 0.00000000), std::complex<double>(-0.03900946, 0.00000000), std::complex<double>(-0.11276670, 0.00000000), std::complex<double>(-0.18590692, 0.00000000), std::complex<double>(-0.25802991, 0.00000000), std::complex<double>(-0.32874104, 0.00000000), std::complex<double>(-0.39765341, 0.00000000), std::complex<double>(-0.46438994, 0.00000000), std::complex<double>(-0.52858547, 0.00000000), std::complex<double>(-0.58988875, 0.00000000), std::complex<double>(-0.64796435, 0.00000000), std::complex<double>(-0.70249449, 0.00000000)};
-    unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
-	NimbleDSP::ComplexVector<double> buf;
-    
-    cos(buf, 519.3, 44100.0, 0.5, 26);
-    EXPECT_EQ(numElements, buf.size());
-    for (unsigned i=0; i<buf.size(); i++) {
-        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
-    }
-}
-
-
-
 
 

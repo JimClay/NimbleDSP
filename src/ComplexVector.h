@@ -453,28 +453,6 @@ class ComplexVector : public Vector< std::complex<T> > {
      */
     ComplexVector<T> & tone(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0);
     
-    /**
-     * \brief Generates a real sinusoid.
-     *
-     * \param freq The sinusoid frequency.
-     * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
-     * \param numSamples The number of samples to generate.  "0" indicates to generate
-     *      this->size() samples.  Defaults to 0.
-     * \return Reference to "this".
-     */
-    ComplexVector<T> & sin(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0);
-    
-    /**
-     * \brief Generates a real sinusoid.
-     *
-     * \param freq The sinusoid frequency.
-     * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
-     * \param numSamples The number of samples to generate.  "0" indicates to generate
-     *      this->size() samples.  Defaults to 0.
-     * \return Reference to "this".
-     */
-    ComplexVector<T> & cos(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
-                this->sin(freq, sampleFreq, phase + M_PI / 2, numSamples); }
 };
 
 
@@ -1666,53 +1644,6 @@ ComplexVector<T> & ComplexVector<T>::tone(T freq, T sampleFreq, T phase, unsigne
 template <class T>
 ComplexVector<T> & tone(ComplexVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
     return vec.tone(freq, sampleFreq, phase, numSamples);
-}
-
-template <class T>
-ComplexVector<T> & ComplexVector<T>::sin(T freq, T sampleFreq, T phase, unsigned numSamples) {
-    assert(sampleFreq > 0.0);
-    
-    if (numSamples && numSamples != this->size()) {
-        this->resize(numSamples);
-    }
-    
-    T phaseInc = (freq / sampleFreq) * 2 * M_PI;
-    for (unsigned i=0; i<this->size(); i++) {
-        this->vec[i].real(std::sin(phase));
-        this->vec[i].imag(0);
-        phase += phaseInc;
-    }
-    return *this;
-}
-
-/**
- * \brief Generates a real sinusoid.
- *
- * \param vec The vector to put the sinusoid in.
- * \param freq The sinusoid frequency.
- * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
- * \param numSamples The number of samples to generate.  "0" indicates to generate
- *      this->size() samples.  Defaults to 0.
- * \return Reference to "this".
- */
-template <class T>
-ComplexVector<T> & sin(ComplexVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
-    return vec.sin(freq, sampleFreq, phase, numSamples);
-}
-
-/**
- * \brief Generates a real sinusoid.
- *
- * \param vec The vector to put the sinusoid in.
- * \param freq The sinusoid frequency.
- * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
- * \param numSamples The number of samples to generate.  "0" indicates to generate
- *      this->size() samples.  Defaults to 0.
- * \return Reference to "this".
- */
-template <class T>
-ComplexVector<T> & cos(ComplexVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
-    return vec.cos(freq, sampleFreq, phase, numSamples);
 }
 
 
