@@ -51,12 +51,9 @@ void Remez(void);
 void Ouch(int Count);
 
 
-//#include "Main.h"  // defines FirCoeff[]
 #include <math.h>
-//#include <new.h>   // defines new
-//#include <vcl.h>   // defines ShowMessage() used in InitParksMcClellan() and Ouch()
-#define BIG 4096   // Used to define array sizes.
-#define SMALL 256
+//#define BIG 4096   // Used to define array sizes.
+//#define SMALL 256
 #define M_2PI  6.28318530717958647692
 
 int NFCNS, NGRID;
@@ -64,56 +61,9 @@ double DEV;
 std::vector<int> IEXT;
 //std::vector<double> AD, ALPHA, X, Y, H, EDGE, FX, WTX, DES, GRID, WT;
 std::vector<double> AD, ALPHA, X, Y, H, DES, GRID, WT;
+ std::vector<double> A, P, Q;
 double *FX, *WTX;
-bool InitDone = false;
-
-void InitParksMcClellan(void)
-{
- InitDone = true;
-
- // Using nothrow prevents an exception from being thrown. new will instead return NULL.
- // To free memory, use delete, not free. e.g. delete[] IEXT;
- // These array sizes are much larger than actually needed. See PARKS.FOR
- /*
- IEXT  = new int[SMALL];
- if(IEXT == NULL)InitDone = false;
-
- AD  = new double[SMALL];
- if(AD == NULL)InitDone = false;
-
- ALPHA    = new double[SMALL];
- if(ALPHA == NULL)InitDone = false;
-
- X  = new double[SMALL];
- if(X == NULL)InitDone = false;
-
- Y  = new double[SMALL];
- if(Y == NULL)InitDone = false;
-
- H  = new double[SMALL];
- if(H == NULL)InitDone = false;
-
- EDGE  = new double[SMALL];
- if(EDGE == NULL)InitDone = false;
-
- FX    = new double[SMALL];
- if(FX == NULL)InitDone = false;
-
- WTX  = new double[SMALL];
- if(WTX == NULL)InitDone = false;
-
- DES    = new double[BIG];
- if(DES == NULL)InitDone = false;
-
- GRID  = new double[BIG];
- if(GRID == NULL)InitDone = false;
-
- WT  = new double[BIG];
- if(WT == NULL)InitDone = false;
-
- if(!InitDone)printf("Memory not Allocated in InitParksMcClellan\n");
-*/
-}
+int smallArraySize = 0;
 
 
 /* Input Values
@@ -129,57 +79,29 @@ void InitParksMcClellan(void)
 
 void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *fx, double *wtx, int LGRID)
 {
- //int J, L, JTYPE, NBANDS, NFILT, LGRID, NEG, NODD, LBAND;
  int J, L, NEG, NODD, LBAND;
  int NM1, NZ;
  double DELF, FUP, TEMP, CHANGE, XT;
  
  FX = fx;
  WTX = wtx;
-
- // This example input will generate a 48 tap band pass filter.
- /*
- JTYPE = 1;   // 1 = MULTIPLE PASSBAND/STOPBAND FILTER 2 = DIFFERENTIATOR 3 = HILBERT TRANSFORM FILTER
- NBANDS = 3;  // Number of Bands
- NFILT = 48;  // Num Taps;
- LGRID = 16;  // Grid Density
- EDGE[1] = 0.0;
- EDGE[2] = 0.1;
- EDGE[3] = 0.2;
- EDGE[4] = 0.35;
- EDGE[5] = 0.425;
- EDGE[6] = 0.5;
- FX[1]   = 0.0;
- FX[2]   = 1.0;
- FX[3]   = 0.0;
- WTX[1] = 10.0;
- WTX[2] = 1.0;
- WTX[3] = 10.0;*/
-
-
-  // This example input will generate a 32 tap low pass filter.
- //JTYPE = 1;   // 1 = MULTIPLE PASSBAND/STOPBAND FILTER 2 = DIFFERENTIATOR 3 = HILBERT TRANSFORM FILTER
- //NBANDS = 2;  // Number of Bands
- //NFILT = 63;  // Num Taps;
- //LGRID = 16;  // Grid Density
  
- 
-    int smallArraySize = (NFILT + 5) / 2;
-    int bigArraySize = smallArraySize * 16;
+ smallArraySize = (NFILT + 5) / 2;
+ int bigArraySize = smallArraySize * 16;
     
-    IEXT.resize(smallArraySize);
-    AD.resize(smallArraySize);
-    ALPHA.resize(smallArraySize);
-    X.resize(smallArraySize);
-    Y.resize(smallArraySize);
-    H.resize(smallArraySize);
-    //EDGE.resize(smallArraySize);
-    //FX.resize(smallArraySize);
-    //WTX.resize(smallArraySize);
-    DES.resize(bigArraySize);
-    GRID.resize(bigArraySize);
-    WT.resize(bigArraySize);
+ IEXT.resize(smallArraySize);
+ AD.resize(smallArraySize);
+ ALPHA.resize(smallArraySize);
+ X.resize(smallArraySize);
+ Y.resize(smallArraySize);
+ H.resize(smallArraySize);
+ DES.resize(bigArraySize);
+ GRID.resize(bigArraySize);
+ WT.resize(bigArraySize);
  
+ A.resize(smallArraySize);
+ P.resize(smallArraySize);
+ Q.resize(smallArraySize);
  
  EDGE[1] = 0.0;
  EDGE[2] = 0.2;
@@ -188,7 +110,6 @@ void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double 
  FX[1]   = 1.0;
  FX[2]   = 0.0;
  WTX[1] = 1.0;
- //WTX[2] = 10.0;
  WTX[2] = 1.0;
 
 
@@ -380,7 +301,6 @@ void Remez(void)
 {
  int J, ITRMAX, NZ, NZZ, JET, K, L, NU, JCHNGE, K1, KNZ, KLOW, NUT, KUP;
  int NUT1, LUCK, KN, NM1, KKK, JM1, JP1, NITER;
- double A[SMALL], P[SMALL], Q[SMALL];
  double DNUM, DDEN, DTEMP, FT, XT, XT1, XE;
  double FSH, GTEMP, CN, DELF, AA, BB;  // SciPy declares CN as an int, which is probably inconsequential the way CN is used.
  double DEVL, COMP, YNZ, Y1, ERR;
