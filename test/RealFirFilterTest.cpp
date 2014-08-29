@@ -809,8 +809,8 @@ TEST(RealFirFilter, ParksMcClellan) {
     double fx[] = {1.0, 0};
     double wtx[] = {1.0, 1.0};
     
-    //ParksMcClellan2(FirCoeff, 63, 1, 2, edge, fx, wtx);
-    ParksMcClellan2(FirCoeff);
+    ParksMcClellan2(FirCoeff, 63, 1, 2, edge, fx, wtx);
+    //ParksMcClellan2(FirCoeff);
     for (int i=0; i<63; i++) {
         printf("%.8f,", FirCoeff[i]);
     }

@@ -41,9 +41,10 @@ which is part of Embarcadero's C++ Builder vcl.
 #define ParksMcClellan2H
 
 void InitParksMcClellan(void);
-void ParksMcClellan2(void);
-double  EFF(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int LBAND, int JTYPE);
-double WATE(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int LBAND, int JTYPE);
+//void ParksMcClellan2(void);
+void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *FX, double *WTX, int LGRID = 16);
+double  EFF(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE);
+double WATE(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE);
 double D(int K, int N, int M);
 double GEE(int K, int N);
 void Remez(void);
@@ -61,7 +62,9 @@ void Ouch(int Count);
 int NFCNS, NGRID;
 double DEV;
 std::vector<int> IEXT;
-std::vector<double> AD, ALPHA, X, Y, H, EDGE, FX, WTX, DES, GRID, WT;
+//std::vector<double> AD, ALPHA, X, Y, H, EDGE, FX, WTX, DES, GRID, WT;
+std::vector<double> AD, ALPHA, X, Y, H, DES, GRID, WT;
+double *FX, *WTX;
 bool InitDone = false;
 
 void InitParksMcClellan(void)
@@ -124,11 +127,15 @@ void InitParksMcClellan(void)
 */
 //---------------------------------------------------------------------------
 
-void ParksMcClellan2(double *FirCoeff)
+void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *fx, double *wtx, int LGRID)
 {
- int J, L, JTYPE, NBANDS, NFILT, LGRID, NEG, NODD, LBAND;
+ //int J, L, JTYPE, NBANDS, NFILT, LGRID, NEG, NODD, LBAND;
+ int J, L, NEG, NODD, LBAND;
  int NM1, NZ;
  double DELF, FUP, TEMP, CHANGE, XT;
+ 
+ FX = fx;
+ WTX = wtx;
 
  // This example input will generate a 48 tap band pass filter.
  /*
@@ -151,10 +158,10 @@ void ParksMcClellan2(double *FirCoeff)
 
 
   // This example input will generate a 32 tap low pass filter.
- JTYPE = 1;   // 1 = MULTIPLE PASSBAND/STOPBAND FILTER 2 = DIFFERENTIATOR 3 = HILBERT TRANSFORM FILTER
- NBANDS = 2;  // Number of Bands
- NFILT = 63;  // Num Taps;
- LGRID = 16;  // Grid Density
+ //JTYPE = 1;   // 1 = MULTIPLE PASSBAND/STOPBAND FILTER 2 = DIFFERENTIATOR 3 = HILBERT TRANSFORM FILTER
+ //NBANDS = 2;  // Number of Bands
+ //NFILT = 63;  // Num Taps;
+ //LGRID = 16;  // Grid Density
  
  
     int smallArraySize = (NFILT + 5) / 2;
@@ -166,9 +173,9 @@ void ParksMcClellan2(double *FirCoeff)
     X.resize(smallArraySize);
     Y.resize(smallArraySize);
     H.resize(smallArraySize);
-    EDGE.resize(smallArraySize);
-    FX.resize(smallArraySize);
-    WTX.resize(smallArraySize);
+    //EDGE.resize(smallArraySize);
+    //FX.resize(smallArraySize);
+    //WTX.resize(smallArraySize);
     DES.resize(bigArraySize);
     GRID.resize(bigArraySize);
     WT.resize(bigArraySize);
@@ -341,7 +348,7 @@ VALUE OF NORMALIZED FREQUENCY NEEDED FOR EVALUATION.
 */
 
 
-double EFF(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int LBAND, int JTYPE)
+double EFF(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE)
 {
  if(JTYPE == 2)  return( FX[LBAND] * FREQ );
  else return( FX[LBAND] );
@@ -351,7 +358,7 @@ double EFF(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int L
 //FUNCTION TO CALCULATE THE WEIGHT FUNCTION AS A FUNCTION OF FREQUENCY.  SIMILAR TO THE FUNCTION
 //EFF, THIS FUNCTION CAN BE REPLACED BY A USER-WRITTEN ROUTINE TO CALCULATE ANY DESIRED WEIGHTING FUNCTION.
 
-double WATE(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int LBAND, int JTYPE)
+double WATE(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE)
 {
  if(JTYPE == 1 || JTYPE == 3) return(WTX[LBAND]); // JTYPE=1 Bandpass JTYPE=3 for Hilberts
  if(FX[LBAND] < 0.0001) return(WTX[LBAND]);       // JTYPE=2 for Differentiators
