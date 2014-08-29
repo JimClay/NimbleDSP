@@ -40,30 +40,21 @@ which is part of Embarcadero's C++ Builder vcl.
 #ifndef ParksMcClellan2H
 #define ParksMcClellan2H
 
-void InitParksMcClellan(void);
-//void ParksMcClellan2(void);
-void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *FX, double *WTX, int LGRID = 16);
-double  EFF(double FREQ, int LBAND, int JTYPE);
-double WATE(double FREQ, int LBAND, int JTYPE);
-double D(int K, int N, int M);
-double GEE(int K, int N);
-void Remez(void);
-void Ouch(int Count);
-
-
+#include <vector>
 #include <math.h>
-//#define BIG 4096   // Used to define array sizes.
-//#define SMALL 256
 #define M_2PI  6.28318530717958647692
 
 int NFCNS, NGRID;
 double DEV;
-std::vector<int> IEXT;
-//std::vector<double> AD, ALPHA, X, Y, H, EDGE, FX, WTX, DES, GRID, WT;
-std::vector<double> AD, ALPHA, X, Y, H, DES, GRID, WT;
- std::vector<double> A, P, Q;
 double *FX, *WTX;
-int smallArraySize = 0;
+
+
+void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *FX, double *WTX, int LGRID = 16);
+double  EFF(double FREQ, int LBAND, int JTYPE);
+double WATE(double FREQ, int LBAND, int JTYPE);
+double D(std::vector<double> &X, int K, int N, int M);
+double GEE(std::vector<double> &X, std::vector<double> &GRID, std::vector<double> &AD, std::vector<double> &Y, int K, int N);
+void Remez(std::vector<int> &IEXT, std::vector<double> &AD, std::vector<double> &ALPHA, std::vector<double> &X, std::vector<double> &Y, std::vector<double> &H, std::vector<double> &DES, std::vector<double> &GRID, std::vector<double> &WT, std::vector<double> &A, std::vector<double> &P, std::vector<double> &Q);
 
 
 /* Input Values
@@ -86,23 +77,14 @@ void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double 
  FX = fx;
  WTX = wtx;
  
- smallArraySize = (NFILT + 5) / 2;
+ int smallArraySize = (NFILT + 5) / 2;
  int bigArraySize = smallArraySize * 16;
     
- IEXT.resize(smallArraySize);
- AD.resize(smallArraySize);
- ALPHA.resize(smallArraySize);
- X.resize(smallArraySize);
- Y.resize(smallArraySize);
- H.resize(smallArraySize);
- DES.resize(bigArraySize);
- GRID.resize(bigArraySize);
- WT.resize(bigArraySize);
- 
- A.resize(smallArraySize);
- P.resize(smallArraySize);
- Q.resize(smallArraySize);
- 
+ std::vector<int> IEXT(smallArraySize);
+ std::vector<double> AD(smallArraySize), ALPHA(smallArraySize), X(smallArraySize), Y(smallArraySize), H(smallArraySize);
+ std::vector<double> DES(bigArraySize), GRID(bigArraySize), WT(bigArraySize);
+ std::vector<double> A(smallArraySize), P(smallArraySize), Q(smallArraySize);
+
  EDGE[1] = 0.0;
  EDGE[2] = 0.2;
  EDGE[3] = 0.25;
@@ -111,8 +93,6 @@ void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double 
  FX[2]   = 0.0;
  WTX[1] = 1.0;
  WTX[2] = 1.0;
-
-
     
 
  if(JTYPE == 1) NEG = 0;   // Lowpass, Bandpass, Highpass, and Notch
@@ -197,7 +177,7 @@ L200: TEMP = (double)(NGRID-1)/(double)NFCNS;
 	  NZ = NFCNS+1;
 
 	  // CALL THE REMEZ EXCHANGE ALGORITHM TO DO THE APPROXIMATION PROBLEM
-	  Remez();
+	  Remez(IEXT, AD, ALPHA, X, Y, H, DES, GRID, WT, A, P, Q);
 
 	  // CALCULATE THE IMPULSE RESPONSE.
 	  if(NEG > 0)goto L320;  // NEG = 1 for Hilberts and Differentiators
@@ -297,7 +277,7 @@ THE EXTREMAL FREQUENCIES (POINTS OF MAXIMUM ERROR) AND THEN CALCULATES THE COEFF
 THE BEST APPROXIMATION.
 */
 
-void Remez(void)
+void Remez(std::vector<int> &IEXT, std::vector<double> &AD, std::vector<double> &ALPHA, std::vector<double> &X, std::vector<double> &Y, std::vector<double> &H, std::vector<double> &DES, std::vector<double> &GRID, std::vector<double> &WT, std::vector<double> &A, std::vector<double> &P, std::vector<double> &Q)
 {
  int J, ITRMAX, NZ, NZZ, JET, K, L, NU, JCHNGE, K1, KNZ, KLOW, NUT, KUP;
  int NUT1, LUCK, KN, NM1, KKK, JM1, JP1, NITER;
@@ -323,7 +303,7 @@ L100: IEXT[NZZ] = NGRID + 1;
 	  JET = (NFCNS-1)/15 + 1;
 	  for(J=1; J<=NZ; J++)
 	   {
-		AD[J] = D(J,NZ,JET);
+		AD[J] = D(X,J,NZ,JET);
 	   }
 
 	  DNUM = 0.0;
@@ -354,7 +334,7 @@ L100: IEXT[NZZ] = NGRID + 1;
 	   }
 	  if(DEV <= DEVL)
 	   {
-		Ouch(NITER);
+		printf("Failed to converge\n");
 		goto L400;
 	   }
 	  DEVL = DEV;
@@ -375,14 +355,14 @@ L200: if(J == NZZ) YNZ = COMP;
 	  if(J == 2) Y1 = COMP;
 	  COMP = DEV;
 	  if(L >= KUP) goto L220;
-	  ERR = GEE(L,NZ);
+	  ERR = GEE(X,GRID,AD,Y,L,NZ);
 	  ERR = (ERR - DES[L]) * WT[L];
 	  DTEMP = (double)NUT * ERR - COMP;
 	  if(DTEMP <= 0.0) goto L220;
 	  COMP = (double)NUT * ERR;
 L210: L = L + 1;
 	  if(L >= KUP) goto L215;
-	  ERR = GEE(L,NZ);
+	  ERR = GEE(X,GRID,AD,Y,L,NZ);
 	  ERR = (ERR - DES[L]) * WT[L];
 	  DTEMP = (double)NUT * ERR - COMP;
 	  if(DTEMP <= 0.0) goto L215;
@@ -396,7 +376,7 @@ L215: IEXT[J] = L-1;
 L220: L = L - 1;
 L225: L = L - 1;
 	  if(L <= KLOW) goto L250;
-	  ERR = GEE(L,NZ);
+	  ERR = GEE(X,GRID,AD,Y,L,NZ);
 	  ERR = (ERR - DES[L]) * WT[L];
 	  DTEMP = (double)NUT * ERR - COMP;
 	  if(DTEMP > 0.0) goto L230;
@@ -405,7 +385,7 @@ L225: L = L - 1;
 L230: COMP = (double)NUT * ERR;
 L235: L = L - 1;
 	  if(L <= KLOW) goto L240;
-	  ERR = GEE(L,NZ);
+	  ERR = GEE(X,GRID,AD,Y,L,NZ);
 	  ERR = (ERR - DES[L]) * WT[L];
 	  DTEMP = (double)NUT * ERR - COMP;
 	  if(DTEMP <= 0.0) goto L240;
@@ -420,7 +400,7 @@ L250: L = IEXT[J] + 1;
 	  if(JCHNGE > 0) goto L215;
 L255: L = L + 1;
 	  if(L >= KUP) goto L260;
-	  ERR = GEE(L,NZ);
+	  ERR = GEE(X,GRID,AD,Y,L,NZ);
 	  ERR = ( ERR - DES[L] ) * WT[L];
 	  DTEMP = (double)NUT * ERR - COMP;
 	  if(DTEMP <= 0.0) goto L255;
@@ -441,7 +421,7 @@ L300: if(J > NZZ) goto L320;
 	  LUCK = 1;
 L310: L = L + 1;
 	  if(L >= KUP) goto L315;
-	  ERR = GEE(L,NZ);
+	  ERR = GEE(X,GRID,AD,Y,L,NZ);
 	  ERR = (ERR - DES[L]) * WT[L];
 	  DTEMP = (double)NUT * ERR - COMP;
 	  if(DTEMP <= 0.0) goto L310;
@@ -459,7 +439,7 @@ L325: L = NGRID + 1;
 	  COMP = Y1 * 1.00001;
 L330: L = L-1;
 	  if(L <= KLOW) goto L340;
-	  ERR = GEE(L,NZ);
+	  ERR = GEE(X,GRID,AD,Y,L,NZ);
 	  ERR = (ERR - DES[L]) * WT[L];
 	  DTEMP = (double)NUT * ERR - COMP;
 	  if(DTEMP <= 0.0) goto L330;
@@ -523,7 +503,7 @@ L415:   A[J] = Y[L];
 		goto L425;
 L420:   if((XT-XE) < FSH) goto L415;
 		GRID[1] = FT;
-		A[J] = GEE(1,NZ);
+		A[J] = GEE(X,GRID,AD,Y,1,NZ);
 L425:   if(L > 1) L = L-1;
 	   }
 	  GRID[1] = GTEMP;
@@ -592,7 +572,7 @@ L545: if(NFCNS <= 3)
 
 //-----------------------------------------------------------------------
 // FUNCTION TO CALCULATE THE LAGRANGE INTERPOLATION COEFFICIENTS FOR USE IN THE FUNCTION GEE.
-double D(int K, int N, int M)
+double D(std::vector<double> &X, int K, int N, int M)
 {
  int J, L;
  double Dee, Q;
@@ -609,7 +589,7 @@ double D(int K, int N, int M)
 //-----------------------------------------------------------------------
 // FUNCTION TO EVALUATE THE FREQUENCY RESPONSE USING THE LAGRANGE INTERPOLATION FORMULA
 // IN THE BARYCENTRIC FORM
-double GEE(int K, int N)
+double GEE(std::vector<double> &X, std::vector<double> &GRID, std::vector<double> &AD, std::vector<double> &Y, int K, int N)
 {
  int j;
  double P,C,D,XF;
