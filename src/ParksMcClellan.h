@@ -42,8 +42,8 @@ which is part of Embarcadero's C++ Builder vcl.
 
 void InitParksMcClellan(void);
 void ParksMcClellan2(void);
-double  EFF(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE);
-double WATE(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE);
+double  EFF(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int LBAND, int JTYPE);
+double WATE(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int LBAND, int JTYPE);
 double D(int K, int N, int M);
 double GEE(int K, int N);
 void Remez(void);
@@ -58,8 +58,10 @@ void Ouch(int Count);
 #define SMALL 256
 #define M_2PI  6.28318530717958647692
 
-int NFCNS, NGRID, *IEXT;
-double DEV, *AD, *ALPHA, *X, *Y, *H, *EDGE, *FX, *WTX, *DES, *GRID, *WT;
+int NFCNS, NGRID;
+std::vector<int> IEXT(SMALL);
+double DEV;
+std::vector<double> AD(SMALL), ALPHA(SMALL), X(SMALL), Y(SMALL), H(SMALL), EDGE(SMALL), FX(SMALL), WTX(SMALL), DES(BIG), GRID(BIG), WT(BIG);
 bool InitDone = false;
 
 void InitParksMcClellan(void)
@@ -69,6 +71,7 @@ void InitParksMcClellan(void)
  // Using nothrow prevents an exception from being thrown. new will instead return NULL.
  // To free memory, use delete, not free. e.g. delete[] IEXT;
  // These array sizes are much larger than actually needed. See PARKS.FOR
+ /*
  IEXT  = new int[SMALL];
  if(IEXT == NULL)InitDone = false;
 
@@ -106,7 +109,7 @@ void InitParksMcClellan(void)
  if(WT == NULL)InitDone = false;
 
  if(!InitDone)printf("Memory not Allocated in InitParksMcClellan\n");
-
+*/
 }
 
 
@@ -324,7 +327,7 @@ VALUE OF NORMALIZED FREQUENCY NEEDED FOR EVALUATION.
 */
 
 
-double EFF(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE)
+double EFF(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int LBAND, int JTYPE)
 {
  if(JTYPE == 2)  return( FX[LBAND] * FREQ );
  else return( FX[LBAND] );
@@ -334,7 +337,7 @@ double EFF(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE)
 //FUNCTION TO CALCULATE THE WEIGHT FUNCTION AS A FUNCTION OF FREQUENCY.  SIMILAR TO THE FUNCTION
 //EFF, THIS FUNCTION CAN BE REPLACED BY A USER-WRITTEN ROUTINE TO CALCULATE ANY DESIRED WEIGHTING FUNCTION.
 
-double WATE(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE)
+double WATE(double FREQ, std::vector<double> &FX, std::vector<double> &WTX, int LBAND, int JTYPE)
 {
  if(JTYPE == 1 || JTYPE == 3) return(WTX[LBAND]); // JTYPE=1 Bandpass JTYPE=3 for Hilberts
  if(FX[LBAND] < 0.0001) return(WTX[LBAND]);       // JTYPE=2 for Differentiators
