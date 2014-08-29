@@ -39,7 +39,7 @@ THE SOFTWARE.
 namespace NimbleDSP {
     
 enum FilterOperationType {STREAMING, ONE_SHOT_RETURN_ALL_RESULTS, ONE_SHOT_TRIM_TAILS};
-
+typedef enum ParksMcClellanFilterType {PASSBAND_FILTER = 1, DIFFERENTIATOR_FILTER, HILBERT_FILTER} ParksMcClellanFilterType;
 
 /**
  * \brief Class for real FIR filters.
@@ -89,7 +89,8 @@ class RealFirFilter : public RealVector<T> {
      *      returns.
      */
     RealFirFilter<T>(unsigned size = DEFAULT_BUF_LEN, FilterOperationType operation = STREAMING, std::vector<T> *scratch = NULL) : RealVector<T>(size, scratch)
-            {savedData.resize((size - 1) * sizeof(std::complex<T>)); numSavedSamples = size - 1; phase = 0; filtOperation = operation;}
+            {if (size > 0) {savedData.resize((size - 1) * sizeof(std::complex<T>)); numSavedSamples = size - 1;}
+             else {savedData.resize(0); numSavedSamples = 0;} phase = 0; filtOperation = operation;}
     
     /**
      * \brief Vector constructor.
@@ -246,6 +247,42 @@ class RealFirFilter : public RealVector<T> {
      * \return Reference to "data", which holds the result of the resampling.
      */
     virtual ComplexVector<T> & resampleComplex(ComplexVector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
+    
+    /**
+     * \brief Parks-McClellan algorithm for generating equiripple FIR filter coefficients.
+     *
+     * Application of the remez algorithm to producing equiripple FIR filter coefficients.  It has issues with
+     * convergence.  It can generally converge up to 128 taps- more than that and it gets iffy.
+     *
+     * The PM algorithm implementation is a somewhat modified version of Iowa Hills Software's port of the
+     * PM algorithm from the original Fortran to C.  Much appreciation to them for their work.
+     *
+     * \param filterOrder Indicates that the number of taps should be filterOrder + 1.
+     * \param numBands The number of pass and stop bands.  Maximum of 10 bands.
+     * \param freqPoints Pairs of points specify the boundaries of the bands, thus the length of this array
+     *          must be 2 * numBands.  The frequencies in between the bands are the transition bands.  "0"
+     *          corresponds to 0 Hz, and "1" corresponds to the Nyquist frequency.  Example: "0.0 0.3 .5 1.0"
+     *          specifies two bands, one from 0 Hz to .3 * Nyquist and the other from 0.5 Nyquist to Nyquist.
+     *          .3 * Nyquist to .5 * Nyquist is the transition band.
+     * \param desiredBandResponse Indicates what the desired amplitude response is in the corresponding band.
+     *          For differentiator filters this parameter specifies the band slope.
+     *          This array must have "numBands" elements.
+     * \param weight Indicates how much weight should be given the performance of the filter in that band.  If
+     *          all of the elements are "1" then they will have equal weight which will produce a true
+     *          equiripple filter (same amount of ripple in the pass and stop bands).  If the stop bands are
+     *          assigned more weight than the passbands then the attenuation in the stop bands will be increased
+     *          at the expense of more ripple in the pass bands.  For differentiator filters the weight
+     *          function is inversely proportional to frequency.
+     * \param filterType Indicates the type of filter to create.  PASSBAND_FILTER is for a "standard" filter
+     *          that has pass and stop bands.  DIFFERENTIATOR_FILTER is for differentiators, and HILBERT_FILTER
+     *          is for Hilbert filters.  Defaults to PASSBAND_FILTER.
+     * \param lGrid Grid density.  Defaults to 16.  This value should generally not be set lower than 16.
+     *          Setting it higher than 16 can produce a filter with a better fit to the desired response at
+     *          the cost of increased computations.
+     * \return Boolean that indicates whether the filter converged or not.
+     */
+    bool firpm(int filterOrder, int numBands, double *freqPoints, double *desiredBandResponse, double *weight,
+                ParksMcClellanFilterType filterType = PASSBAND_FILTER, int lGrid = 16);
 };
 
 
@@ -1355,6 +1392,27 @@ ComplexVector<T> & RealFirFilter<T>::resampleComplex(ComplexVector<T> & data, in
         break;
     }
     return data;
+}
+
+
+template <class T>
+bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, double *desiredBandResponse,
+                            double *weight, ParksMcClellanFilterType filterType, int lGrid) {
+    this->resize(filterOrder + 1);
+    std::vector<double> temp(filterOrder + 1);
+    
+    // Need to renormalize the frequency points because for us the Nyquist frequency is 1.0, but for the
+    // Iowa Hills code it is 0.5.
+    for (int i=0; i<numBands*2; i++) {
+        freqPoints[i] /= 2;
+    }
+    
+    ParksMcClellan2(&(temp[0]), filterOrder + 1, filterType, numBands, freqPoints,
+                    desiredBandResponse, weight, lGrid);
+    for (int i=0; i<= filterOrder; i++) {
+        (*this)[i] = (T) temp[i];
+    }
+    return true;
 }
 
 };
