@@ -59,9 +59,9 @@ void Ouch(int Count);
 #define M_2PI  6.28318530717958647692
 
 int NFCNS, NGRID;
-std::vector<int> IEXT(SMALL);
 double DEV;
-std::vector<double> AD(SMALL), ALPHA(SMALL), X(SMALL), Y(SMALL), H(SMALL), EDGE(SMALL), FX(SMALL), WTX(SMALL), DES(BIG), GRID(BIG), WT(BIG);
+std::vector<int> IEXT;
+std::vector<double> AD, ALPHA, X, Y, H, EDGE, FX, WTX, DES, GRID, WT;
 bool InitDone = false;
 
 void InitParksMcClellan(void)
@@ -126,12 +126,6 @@ void InitParksMcClellan(void)
 
 void ParksMcClellan2(double *FirCoeff)
 {
- if(!InitDone)
-  {
-   InitParksMcClellan();
-   if(!InitDone)return;
-  }
-
  int J, L, JTYPE, NBANDS, NFILT, LGRID, NEG, NODD, LBAND;
  int NM1, NZ;
  double DELF, FUP, TEMP, CHANGE, XT;
@@ -161,6 +155,25 @@ void ParksMcClellan2(double *FirCoeff)
  NBANDS = 2;  // Number of Bands
  NFILT = 63;  // Num Taps;
  LGRID = 16;  // Grid Density
+ 
+ 
+    int smallArraySize = (NFILT + 5) / 2;
+    int bigArraySize = smallArraySize * 16;
+    
+    IEXT.resize(smallArraySize);
+    AD.resize(smallArraySize);
+    ALPHA.resize(smallArraySize);
+    X.resize(smallArraySize);
+    Y.resize(smallArraySize);
+    H.resize(smallArraySize);
+    EDGE.resize(smallArraySize);
+    FX.resize(smallArraySize);
+    WTX.resize(smallArraySize);
+    DES.resize(bigArraySize);
+    GRID.resize(bigArraySize);
+    WT.resize(bigArraySize);
+ 
+ 
  EDGE[1] = 0.0;
  EDGE[2] = 0.2;
  EDGE[3] = 0.25;
@@ -172,6 +185,7 @@ void ParksMcClellan2(double *FirCoeff)
  WTX[2] = 1.0;
 
 
+    
 
  if(JTYPE == 1) NEG = 0;   // Lowpass, Bandpass, Highpass, and Notch
  else NEG = 1;             // Hilberts and Differentiators
