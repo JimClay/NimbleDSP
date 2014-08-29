@@ -25,6 +25,7 @@ THE SOFTWARE.
 
 using namespace NimbleDSP;
 
+extern bool FloatsEqual(double float1, double float2);
 
 TEST(RealFirFilter, ConvStream1) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
@@ -784,4 +785,29 @@ TEST(RealFirFilter, ResampleComplexStream2) {
     }
     numResults += buf.size();
     EXPECT_LE(18*interpRate / decimateRate, numResults);
+}
+
+TEST(RealFirFilter, ParksMcClellan) {
+    double expectedData[] = {-0.00210428,0.00000193,0.00464658,-0.00000074,-0.00942194,0.00000287,0.01720493,-0.00000204,-0.02977845,0.00000517,0.05152179,-0.00000414,-0.09841638,0.00000478,0.31567876,0.49999567,0.31567876,0.00000478,-0.09841638,-0.00000414,0.05152179,0.00000517,-0.02977845,-0.00000204,0.01720493,0.00000287,-0.00942194,-0.00000074,0.00464658,0.00000193,-0.00210428};
+    
+    //unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+    //NimbleDSP::RealFirFilter<double> filter;
+
+/*
+    NewParksMcClellan(31, 0.4, 0, 0.1, LPF);
+    
+    double filtTaps[31];
+    for (int i=0; i<31; i++) {
+        filtTaps[i] = FirCoeff[i];
+        //EXPECT_TRUE(FloatsEqual(expectedData[i], filtTaps[i]));
+        printf("%.8f,", filtTaps[i]);
+    }
+    printf("\n");
+    */
+    double FirCoeff[63];
+    ParksMcClellan2(FirCoeff);
+    for (int i=0; i<63; i++) {
+        printf("%.8f,", FirCoeff[i]);
+    }
+    printf("\n");
 }

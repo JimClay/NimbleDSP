@@ -33,6 +33,7 @@ THE SOFTWARE.
 #include <complex>
 #include <math.h>
 #include "RealVector.h"
+#include "ParksMcClellan.h"
 
 
 namespace NimbleDSP {
