@@ -43,8 +43,8 @@ which is part of Embarcadero's C++ Builder vcl.
 void InitParksMcClellan(void);
 //void ParksMcClellan2(void);
 void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *FX, double *WTX, int LGRID = 16);
-double  EFF(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE);
-double WATE(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE);
+double  EFF(double FREQ, int LBAND, int JTYPE);
+double WATE(double FREQ, int LBAND, int JTYPE);
 double D(int K, int N, int M);
 double GEE(int K, int N);
 void Remez(void);
@@ -137,15 +137,15 @@ L145: TEMP = GRID[J];
 
 // CALCULATE THE DESIRED MAGNITUDE RESPONSE AND THE WEIGHT FUNCTION ON THE GRID
 
-	  DES[J] = EFF(TEMP,FX,WTX,LBAND,JTYPE);
-	  WT[J] = WATE(TEMP,FX,WTX,LBAND,JTYPE);
+	  DES[J] = EFF(TEMP,LBAND,JTYPE);
+	  WT[J] = WATE(TEMP,LBAND,JTYPE);
 	  J=J+1;
 	  GRID[J] = TEMP + DELF;
 	  if(GRID[J] > FUP) goto L150;
 	  goto L145;
 L150: GRID[J-1] = FUP;
-	  DES[J-1] = EFF(FUP,FX,WTX,LBAND,JTYPE);
-	  WT[J-1] = WATE(FUP,FX,WTX,LBAND,JTYPE);
+	  DES[J-1] = EFF(FUP,LBAND,JTYPE);
+	  WT[J-1] = WATE(FUP,LBAND,JTYPE);
 	  LBAND = LBAND + 1;
 	  L = L + 2;
 	  if(LBAND > NBANDS) goto L160;
@@ -269,7 +269,7 @@ VALUE OF NORMALIZED FREQUENCY NEEDED FOR EVALUATION.
 */
 
 
-double EFF(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE)
+double EFF(double FREQ, int LBAND, int JTYPE)
 {
  if(JTYPE == 2)  return( FX[LBAND] * FREQ );
  else return( FX[LBAND] );
@@ -279,7 +279,7 @@ double EFF(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE)
 //FUNCTION TO CALCULATE THE WEIGHT FUNCTION AS A FUNCTION OF FREQUENCY.  SIMILAR TO THE FUNCTION
 //EFF, THIS FUNCTION CAN BE REPLACED BY A USER-WRITTEN ROUTINE TO CALCULATE ANY DESIRED WEIGHTING FUNCTION.
 
-double WATE(double FREQ, double *FX, double *WTX, int LBAND, int JTYPE)
+double WATE(double FREQ, int LBAND, int JTYPE)
 {
  if(JTYPE == 1 || JTYPE == 3) return(WTX[LBAND]); // JTYPE=1 Bandpass JTYPE=3 for Hilberts
  if(FX[LBAND] < 0.0001) return(WTX[LBAND]);       // JTYPE=2 for Differentiators
