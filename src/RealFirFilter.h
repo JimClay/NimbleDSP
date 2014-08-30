@@ -281,8 +281,8 @@ class RealFirFilter : public RealVector<T> {
      *          the cost of increased computations.
      * \return Boolean that indicates whether the filter converged or not.
      */
-    bool firpm(int filterOrder, int numBands, double *freqPoints, double *desiredBandResponse, double *weight,
-                ParksMcClellanFilterType filterType = PASSBAND_FILTER, int lGrid = 16);
+    bool firpm(int filterOrder, int numBands, double *freqPoints, double *desiredBandResponse,
+                double *weight, int lGrid = 16);
 };
 
 
@@ -1397,7 +1397,7 @@ ComplexVector<T> & RealFirFilter<T>::resampleComplex(ComplexVector<T> & data, in
 
 template <class T>
 bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, double *desiredBandResponse,
-                            double *weight, ParksMcClellanFilterType filterType, int lGrid) {
+                            double *weight, int lGrid) {
     bool converged;
     
     this->resize(filterOrder + 1);
@@ -1409,7 +1409,7 @@ bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, 
         freqPoints[i] /= 2;
     }
     
-    converged = ParksMcClellan2(&(temp[0]), filterOrder + 1, filterType, numBands, freqPoints,
+    converged = ParksMcClellan2(&(temp[0]), filterOrder + 1, PASSBAND_FILTER, numBands, freqPoints,
                     desiredBandResponse, weight, lGrid);
     for (int i=0; i<= filterOrder; i++) {
         (*this)[i] = (T) temp[i];
