@@ -47,9 +47,10 @@ which is part of Embarcadero's C++ Builder vcl.
 int NFCNS, NGRID;
 double DEV;
 double *FX, *WTX;
+bool converged;
 
 
-void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *FX, double *WTX, int LGRID = 16);
+bool ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *FX, double *WTX, int LGRID = 16);
 double  EFF(double FREQ, int LBAND, int JTYPE);
 double WATE(double FREQ, int LBAND, int JTYPE);
 double D(std::vector<double> &X, int K, int N, int M);
@@ -68,11 +69,13 @@ void Remez(std::vector<int> &IEXT, std::vector<double> &AD, std::vector<double> 
 */
 //---------------------------------------------------------------------------
 
-void ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *fx, double *wtx, int LGRID)
+bool ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *fx, double *wtx, int LGRID)
 {
  int J, L, NEG, NODD, LBAND;
  int NM1, NZ;
  double DELF, FUP, TEMP, CHANGE, XT;
+ 
+ converged = true;
  
  FX = fx;
  WTX = wtx;
@@ -238,7 +241,7 @@ L350: // Output section. Code for the Hilberts and Differentiators was omitted.
 	   {
 		FirCoeff[NFCNS+J-1] = H[NFCNS-J];
 	   }
-
+    return converged;
 }
 
 /*
@@ -335,6 +338,7 @@ L100: IEXT[NZZ] = NGRID + 1;
 	  if(DEV <= DEVL)
 	   {
 		printf("Failed to converge\n");
+        converged = false;
 		goto L400;
 	   }
 	  DEVL = DEV;
@@ -620,25 +624,5 @@ Using code similar to this helps this algorithm converge.
   }
 */
 
-//-----------------------------------------------------------------------
-/*
-WRITES AN ERROR MESSAGE WHEN THE ALGORITHM FAILS TO CONVERGE. THERE SEEM TO BE TWO CONDITIONS
-UNDER WHICH THE ALGORITHM FAILS TO CONVERGE: (1) THE INITIAL GUESS FOR THE EXTREMAL FREQUENCIES
-IS SO POOR THAT THE EXCHANGE ITERATION CANNOT GET STARTED, OR (2) NEAR THE TERMINATION OF A
-CORRECT DESIGN, THE DEVIATION DECREASES DUE TO ROUNDING ERRORS AND THE PROGRAM STOPS. IN THIS LATTER
-CASE THE FILTER DESIGN IS PROBABLY ACCEPTABLE, BUT SHOULD BE CHECKED BY COMPUTING A FREQUENCY RESPONSE.
-*/
-
-void Ouch(int Count)
-{/*
-  UnicodeString US;
-  US =  "Failure to Coverge. \n";
-  US += "The probable cause is rounding errors. \n";
-  US += "Number of iterations = " + UnicodeString(Count) + "\n";
-  US += "If the number of iterations exceeds 3, \n";
-  US += "the design may be correct, but should be verified.";
-  ShowMessage(US);*/
-  printf("Failed to converge\n");
-}
 
 #endif

@@ -797,7 +797,7 @@ TEST(RealFirFilter, ParksMcClellan) {
     double fx[] = {1.0, 0};
     double wtx[] = {1.0, 1.0};
     
-    filter.firpm(130, 2, edge, fx, wtx);
+    EXPECT_TRUE(filter.firpm(130, 2, edge, fx, wtx));
     EXPECT_EQ(numElements, filter.size());
     for (int i=0; i<131; i++) {
         EXPECT_TRUE(FloatsEqual(expectedData[i], filter[i]));

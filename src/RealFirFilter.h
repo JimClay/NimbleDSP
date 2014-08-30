@@ -1398,6 +1398,8 @@ ComplexVector<T> & RealFirFilter<T>::resampleComplex(ComplexVector<T> & data, in
 template <class T>
 bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, double *desiredBandResponse,
                             double *weight, ParksMcClellanFilterType filterType, int lGrid) {
+    bool converged;
+    
     this->resize(filterOrder + 1);
     std::vector<double> temp(filterOrder + 1);
     
@@ -1407,12 +1409,12 @@ bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, 
         freqPoints[i] /= 2;
     }
     
-    ParksMcClellan2(&(temp[0]), filterOrder + 1, filterType, numBands, freqPoints,
+    converged = ParksMcClellan2(&(temp[0]), filterOrder + 1, filterType, numBands, freqPoints,
                     desiredBandResponse, weight, lGrid);
     for (int i=0; i<= filterOrder; i++) {
         (*this)[i] = (T) temp[i];
     }
-    return true;
+    return converged;
 }
 
 };
