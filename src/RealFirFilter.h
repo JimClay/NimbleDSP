@@ -265,17 +265,12 @@ class RealFirFilter : public RealVector<T> {
      *          specifies two bands, one from 0 Hz to .3 * Nyquist and the other from 0.5 Nyquist to Nyquist.
      *          .3 * Nyquist to .5 * Nyquist is the transition band.
      * \param desiredBandResponse Indicates what the desired amplitude response is in the corresponding band.
-     *          For differentiator filters this parameter specifies the band slope.
      *          This array must have "numBands" elements.
      * \param weight Indicates how much weight should be given the performance of the filter in that band.  If
      *          all of the elements are "1" then they will have equal weight which will produce a true
      *          equiripple filter (same amount of ripple in the pass and stop bands).  If the stop bands are
      *          assigned more weight than the passbands then the attenuation in the stop bands will be increased
-     *          at the expense of more ripple in the pass bands.  For differentiator filters the weight
-     *          function is inversely proportional to frequency.
-     * \param filterType Indicates the type of filter to create.  PASSBAND_FILTER is for a "standard" filter
-     *          that has pass and stop bands.  DIFFERENTIATOR_FILTER is for differentiators, and HILBERT_FILTER
-     *          is for Hilbert filters.  Defaults to PASSBAND_FILTER.
+     *          at the expense of more ripple in the pass bands.
      * \param lGrid Grid density.  Defaults to 16.  This value should generally not be set lower than 16.
      *          Setting it higher than 16 can produce a filter with a better fit to the desired response at
      *          the cost of increased computations.
