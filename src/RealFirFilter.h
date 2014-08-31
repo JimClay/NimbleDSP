@@ -62,6 +62,11 @@ class RealFirFilter : public RealVector<T> {
      */
     int phase;
     
+    /**
+     * \brief Applies a Hamming window on the current contents of "this".
+     */
+    void hamming(void);
+    
  public:
     /**
      * \brief Determines how the filter should filter.
@@ -278,6 +283,19 @@ class RealFirFilter : public RealVector<T> {
      */
     bool firpm(int filterOrder, int numBands, double *freqPoints, double *desiredBandResponse,
                 double *weight, int lGrid = 16);
+    
+    /**
+     * \brief Generates a filter that can delay signals by an arbitrary sub-sample time.
+     *
+     * \param numTaps Number of taps to use in the filter.  If the only purpose of the filter is to delay
+     *          the signal then the number of taps is not crucial.  If it is doing actual stop-band filtering
+     *          too then the number of taps is important.
+     * \param bandwidth The approximate bandwidth of the filter, normalized to the range 0.0 to 1.0, where
+     *          1.0 is the Nyquist frequency.  The bandwidth must be greater than 0 and less than 1.
+     * \param delay Amount of sample time to delay.  For example, a delay value of 0.1 would indicate to delay
+     *          by one tenth of a sample.  "delay" can be positive or negative.
+     */
+    void fractionalDelayFilter(int numTaps, double bandwidth, double delay);
 };
 
 
@@ -1395,23 +1413,6 @@ bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, 
                             double *weight, int lGrid) {
     bool converged;
     
-    printf("order = %d, numBands = %d, lGrid = %d\n", filterOrder, numBands, lGrid);
-    printf("freqPoints = %f", freqPoints[0]);
-    for (int i=1; i<numBands * 2; i++) {
-        printf(", %f", freqPoints[i]);
-    }
-    printf("\n");
-    printf("band response = %f", desiredBandResponse[0]);
-    for (int i=1; i<numBands; i++) {
-        printf(", %f", desiredBandResponse[i]);
-    }
-    printf("\n");
-    printf("weight = %f", weight[0]);
-    for (int i=1; i<numBands; i++) {
-        printf(", %f", weight[i]);
-    }
-    printf("\n");
-    
     this->resize(filterOrder + 1);
     std::vector<double> temp(filterOrder + 1);
     
@@ -1430,6 +1431,53 @@ bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, 
     }
     return converged;
 }
+
+
+template <class T>
+void RealFirFilter<T>::fractionalDelayFilter(int numTaps, double bandwidth, double delay) {
+    assert(bandwidth > 0 && bandwidth < 1.0);
+    assert(numTaps > 0);
+    
+    int index;
+    double tapTime;
+    double timeIncrement = bandwidth * M_PI;
+    
+    if (numTaps % 2) {
+        tapTime = (numTaps / 2 + delay) * -timeIncrement;
+    }
+    else {
+        tapTime = (numTaps / 2 - 0.5 + delay) * -timeIncrement;
+    }
+    
+    this->resize(numTaps);
+    
+    // Create the delayed sinc filter
+    for (index = 0; index < numTaps; index++, tapTime += timeIncrement) {
+        if (tapTime != 0.0) {
+            (*this)[index] = (T) (sin(tapTime) / tapTime);
+        }
+        else {
+            (*this)[index] = (T) 1.0;
+        }
+    }
+    
+    // Window the filter
+    hamming();
+}
+
+template <class T>
+void RealFirFilter<T>::hamming() {
+    T phase = -M_PI;
+    T phaseIncrement = 2 * M_PI / (this->size() - 1);
+    T alpha = 0.54;
+    T beta = 0.46;
+    
+    for (unsigned index=0; index<this->size(); index++, phase += phaseIncrement) {
+        double hammingVal = alpha + beta * cos(phase);
+        (*this)[index] *= hammingVal;
+    }
+}
+
 
 };
 

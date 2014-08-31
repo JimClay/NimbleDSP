@@ -838,3 +838,16 @@ TEST(RealFirFilter, ParksMcClellanBandPass2) {
         EXPECT_TRUE(FloatsEqual(expectedData[i], filter[i]));
     }
 }
+
+TEST(RealFirFilter, FractionalDelay) {
+    double expectedData[] = {-0.00116094,0.00486943,-0.00748928,-0.00026934,0.02406753,-0.04510960,0.02197806,0.07024028,-0.19289691,0.22224736,0.98196301,0.49981301,-0.17929342,-0.00203095,0.06591779,-0.04789988,0.00909337,0.01074650,-0.00972201,0.00302875,0.00119630};
+    
+    unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+    NimbleDSP::RealFirFilter<double> filter;
+
+    filter.fractionalDelayFilter(numElements, 0.7, 0.15);
+    EXPECT_EQ(numElements, filter.size());
+    for (int i=0; i<numElements; i++) {
+        EXPECT_TRUE(FloatsEqual(expectedData[i], filter[i]));
+    }
+}
