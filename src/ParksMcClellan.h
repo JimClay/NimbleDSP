@@ -80,23 +80,13 @@ bool ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double 
  FX = fx;
  WTX = wtx;
  
- int smallArraySize = (NFILT + 5) / 2;
+ int smallArraySize = (NFILT + 7) / 2;
  int bigArraySize = smallArraySize * 16;
     
  std::vector<int> IEXT(smallArraySize);
  std::vector<double> AD(smallArraySize), ALPHA(smallArraySize), X(smallArraySize), Y(smallArraySize), H(smallArraySize);
  std::vector<double> DES(bigArraySize), GRID(bigArraySize), WT(bigArraySize);
  std::vector<double> A(smallArraySize), P(smallArraySize), Q(smallArraySize);
-
- EDGE[1] = 0.0;
- EDGE[2] = 0.2;
- EDGE[3] = 0.25;
- EDGE[4] = 0.5;
- FX[1]   = 1.0;
- FX[2]   = 0.0;
- WTX[1] = 1.0;
- WTX[2] = 1.0;
-    
 
  if(JTYPE == 1) NEG = 0;   // Lowpass, Bandpass, Highpass, and Notch
  else NEG = 1;             // Hilberts and Differentiators

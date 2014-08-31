@@ -1400,6 +1400,23 @@ bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, 
                             double *weight, int lGrid) {
     bool converged;
     
+    printf("order = %d, numBands = %d, lGrid = %d\n", filterOrder, numBands, lGrid);
+    printf("freqPoints = %f", freqPoints[0]);
+    for (int i=1; i<numBands * 2; i++) {
+        printf(", %f", freqPoints[i]);
+    }
+    printf("\n");
+    printf("band response = %f", desiredBandResponse[0]);
+    for (int i=1; i<numBands; i++) {
+        printf(", %f", desiredBandResponse[i]);
+    }
+    printf("\n");
+    printf("weight = %f", weight[0]);
+    for (int i=1; i<numBands; i++) {
+        printf(", %f", weight[i]);
+    }
+    printf("\n");
+    
     this->resize(filterOrder + 1);
     std::vector<double> temp(filterOrder + 1);
     
@@ -1409,8 +1426,10 @@ bool RealFirFilter<T>::firpm(int filterOrder, int numBands, double *freqPoints, 
         freqPoints[i] /= 2;
     }
     
-    converged = ParksMcClellan2(&(temp[0]), filterOrder + 1, PASSBAND_FILTER, numBands, freqPoints,
-                    desiredBandResponse, weight, lGrid);
+    // Move the pointers back 1 (i.e. subtract one) because the ParksMcClellan code was ported from Fortran,
+    // which apparently uses 1-based arrays, not 0-based arrays.
+    converged = ParksMcClellan2(&(temp[0]), filterOrder + 1, PASSBAND_FILTER, numBands, freqPoints-1,
+                    desiredBandResponse-1, weight-1, lGrid);
     for (int i=0; i<= filterOrder; i++) {
         (*this)[i] = (T) temp[i];
     }
