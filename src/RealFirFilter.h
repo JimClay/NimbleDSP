@@ -1471,10 +1471,12 @@ void RealFirFilter<T>::hamming() {
     T phaseIncrement = 2 * M_PI / (this->size() - 1);
     T alpha = 0.54;
     T beta = 0.46;
+    unsigned start, end;
     
-    for (unsigned index=0; index<this->size(); index++, phase += phaseIncrement) {
+    for (start=0, end=this->size()-1; start < end; start++, end--, phase += phaseIncrement) {
         double hammingVal = alpha + beta * cos(phase);
-        (*this)[index] *= hammingVal;
+        (*this)[start] *= hammingVal;
+        (*this)[end] *= hammingVal;
     }
 }
 
