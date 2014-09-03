@@ -451,7 +451,7 @@ class ComplexVector : public Vector< std::complex<T> > {
      *      this->size() samples.  Defaults to 0.
      * \return Reference to "this".
      */
-    ComplexVector<T> & tone(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0);
+    T tone(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0);
     
 };
 
@@ -1615,7 +1615,7 @@ inline ComplexVector<T> & resample(ComplexVector<T> & data, int interpRate, int 
 }
 
 template <class T>
-ComplexVector<T> & ComplexVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numSamples) {
+T ComplexVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numSamples) {
     assert(sampleFreq > 0.0);
     
     if (numSamples && numSamples != this->size()) {
@@ -1628,7 +1628,7 @@ ComplexVector<T> & ComplexVector<T>::tone(T freq, T sampleFreq, T phase, unsigne
         this->vec[i].imag(std::sin(phase));
         phase += phaseInc;
     }
-    return *this;
+    return phase;
 }
 
 /**
@@ -1642,7 +1642,7 @@ ComplexVector<T> & ComplexVector<T>::tone(T freq, T sampleFreq, T phase, unsigne
  * \return Reference to "this".
  */
 template <class T>
-ComplexVector<T> & tone(ComplexVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
+T tone(ComplexVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
     return vec.tone(freq, sampleFreq, phase, numSamples);
 }
 

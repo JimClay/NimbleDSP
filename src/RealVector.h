@@ -448,9 +448,9 @@ class RealVector : public Vector<T> {
      * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
      * \param numSamples The number of samples to generate.  "0" indicates to generate
      *      this->size() samples.  Defaults to 0.
-     * \return Reference to "this".
+     * \return The next phase if the tone were to continue.
      */
-    RealVector<T> & tone(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0);
+    T tone(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0);
 };
 
 template <class T>
@@ -1987,7 +1987,7 @@ inline RealVector<T> operator/(RealVector<T> lhs, const T& rhs)
 }
 
 template <class T>
-RealVector<T> & RealVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numSamples) {
+T RealVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numSamples) {
     assert(sampleFreq > 0.0);
     
     if (numSamples && numSamples != this->size()) {
@@ -1999,7 +1999,7 @@ RealVector<T> & RealVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numS
         this->vec[i] = std::sin(phase);
         phase += phaseInc;
     }
-    return *this;
+    return phase;
 }
 
 /**
@@ -2013,7 +2013,7 @@ RealVector<T> & RealVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numS
  * \return Reference to "this".
  */
 template <class T>
-RealVector<T> & tone(RealVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
+T tone(RealVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
     return vec.tone(freq, sampleFreq, phase, numSamples);
 }
 
