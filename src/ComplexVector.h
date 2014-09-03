@@ -447,6 +447,7 @@ class ComplexVector : public Vector< std::complex<T> > {
      *
      * \param freq The tone frequency.
      * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
+     * \param phase The tone's starting phase, in radians.  Defaults to 0.
      * \param numSamples The number of samples to generate.  "0" indicates to generate
      *      this->size() samples.  Defaults to 0.
      * \return Reference to "this".
@@ -1637,6 +1638,7 @@ T ComplexVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numSamples) {
  * \param vec The vector to put the tone in.
  * \param freq The tone frequency.
  * \param sampleFreq The sample frequency.  Defaults to 1 Hz.
+ * \param phase The tone's starting phase, in radians.  Defaults to 0.
  * \param numSamples The number of samples to generate.  "0" indicates to generate
  *      this->size() samples.  Defaults to 0.
  * \return Reference to "this".
