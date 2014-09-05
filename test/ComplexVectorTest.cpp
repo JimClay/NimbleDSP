@@ -899,5 +899,18 @@ TEST(ComplexVectorDataGen, Tone) {
     }
 }
 
+TEST(ComplexVectorMethods, Modulate) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 5), std::complex<double>(0, 6), std::complex<double>(-1, 7), std::complex<double>(-2, 8), std::complex<double>(-3, 9), std::complex<double>(-4, 10), std::complex<double>(-5, 11), std::complex<double>(-6, 12), std::complex<double>(-7, 13)};
+    std::complex<double> expectedData[] = {std::complex<double>(-3.83012702, 3.36602540), std::complex<double>(-0.71042381, -5.95779305), std::complex<double>(6.43285636, 2.93570417), std::complex<double>(-6.64041840, 4.88925796), std::complex<double>(-1.44563222, -9.37604114), std::complex<double>(10.25466640, 3.29269146), std::complex<double>(-8.33941497, 8.74380684), std::complex<double>(-4.81564976, -12.52236069), std::complex<double>(14.73061860, 1.00442804)};
+    unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
+	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
+    
+    modulate(buf, 283.0, 900.0, M_PI/3);
+    EXPECT_EQ(numElements, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_TRUE(ComplexEqual(expectedData[i], buf[i]));
+    }
+}
+
 
 

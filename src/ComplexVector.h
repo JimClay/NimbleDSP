@@ -454,6 +454,15 @@ class ComplexVector : public Vector< std::complex<T> > {
      */
     T tone(T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0);
     
+    /**
+     * \brief Modulates the data with a complex sinusoid.
+     *
+     * \param freq The modulating tone frequency.
+     * \param sampleFreq The sample frequency of the data.  Defaults to 1 Hz.
+     * \param phase The modulating tone's starting phase, in radians.  Defaults to 0.
+     * \return The next phase if the tone were to continue.
+     */
+    T modulate(T freq, T sampleFreq = 1.0, T phase = 0.0);
 };
 
 
@@ -1646,6 +1655,31 @@ T ComplexVector<T>::tone(T freq, T sampleFreq, T phase, unsigned numSamples) {
 template <class T>
 T tone(ComplexVector<T> & vec, T freq, T sampleFreq = 1.0, T phase = 0.0, unsigned numSamples = 0) {
     return vec.tone(freq, sampleFreq, phase, numSamples);
+}
+
+template <class T>
+T ComplexVector<T>::modulate(T freq, T sampleFreq, T phase) {
+    assert(sampleFreq > 0.0);
+    
+    T phaseInc = (freq / sampleFreq) * 2 * M_PI;
+    for (unsigned i=0; i<this->size(); i++) {
+        this->vec[i] *= std::complex<T>(std::cos(phase), std::sin(phase));
+        phase += phaseInc;
+    }
+    return phase;
+}
+
+/**
+ * \brief Modulates the data with a complex sinusoid.
+ *
+ * \param freq The modulating tone frequency.
+ * \param sampleFreq The sample frequency of the data.  Defaults to 1 Hz.
+ * \param phase The modulating tone's starting phase, in radians.  Defaults to 0.
+ * \return The next phase if the tone were to continue.
+ */
+ template <class T>
+T modulate(ComplexVector<T> &data, T freq, T sampleFreq, T phase) {
+    return data.modulate(freq, sampleFreq, phase);
 }
 
 

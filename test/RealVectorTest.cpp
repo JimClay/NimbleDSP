@@ -879,7 +879,7 @@ TEST(RealVectorDataGen, Tone) {
     }
 }
 
-TEST(RealVectorDataGen, Modulate) {
+TEST(RealVectorMethods, Modulate) {
     double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
     double expectedData[] = {0.86602540,0.00000000,0.95931397,-1.27484798,-1.37129378,3.99025620,-1.64433323,-4.43073204,6.37478563};
     unsigned numElements = sizeof(expectedData)/sizeof(expectedData[0]);
