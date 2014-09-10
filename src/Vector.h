@@ -98,6 +98,7 @@ class Vector {
     template <class U> friend class Vector;
     template <class U> friend class RealVector;
     template <class U> friend class RealFirFilter;
+    template <class U> friend class ComplexFirFilter;
     
     /*****************************************************************************************
                                         Constructors
