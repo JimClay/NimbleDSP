@@ -40,7 +40,7 @@ namespace NimbleDSP {
 enum FilterOperationType {STREAMING, ONE_SHOT_RETURN_ALL_RESULTS, ONE_SHOT_TRIM_TAILS};
 
 /**
- * \brief Class for real FIR filters.
+ * \brief Class for complex FIR filters.
  */
 template <class T>
 class ComplexFirFilter : public ComplexVector<T> {
