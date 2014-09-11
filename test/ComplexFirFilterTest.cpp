@@ -48,8 +48,8 @@ TEST(ComplexFirFilter, ConvComplexOneShot) {
 
 TEST(ComplexFirFilter, ConvComplexOneShotTrim) {
     std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
-    std::complex<double> filterTaps[] = {1, 2, 3, 4, 5};
-    std::complex<double> expectedData[] = {std::complex<double>(2, 16), std::complex<double>(0, 30), std::complex<double>(-5, 50), std::complex<double>(-20, 65), std::complex<double>(-35, 80), std::complex<double>(-50, 95), std::complex<double>(-65, 110), std::complex<double>(-72, 114), std::complex<double>(-70, 106)};
+    std::complex<double> filterTaps[] = {1, 2, std::complex<double>(3, 1), 4, 5};
+    std::complex<double> expectedData[] = {std::complex<double>(0.00000000, 17.00000000), std::complex<double>(-3.00000000, 30.00000000), std::complex<double>(-9.00000000, 49.00000000), std::complex<double>(-25.00000000, 63.00000000), std::complex<double>(-41.00000000, 77.00000000), std::complex<double>(-57.00000000, 91.00000000), std::complex<double>(-73.00000000, 105.00000000), std::complex<double>(-81.00000000, 108.00000000), std::complex<double>(-80.00000000, 99.00000000)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
