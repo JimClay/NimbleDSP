@@ -72,10 +72,10 @@ TEST(ComplexIirFilter, ConstructorArray) {
 }
 
 TEST(ComplexIirFilter, Filter1) {
-    std::complex<double> den[] = {1, .1};
-    std::complex<double> num[] = {1, .001};
+    std::complex<double> den[] = {std::complex<double>(1, 0), std::complex<double>(.1, .05)};
+    std::complex<double> num[] = {std::complex<double>(1, 0), std::complex<double>(.001, .001)};
     std::complex<double> inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
-    std::complex<double> expectedData[] = {1.00000000, -0.09900000, -0.99010000, -1.90199000, -2.81180100, -3.72181990, -4.63181801, -5.54181820, -6.45181818};
+    std::complex<double> expectedData[] = {std::complex<double>(1.00000000, 0.00000000), std::complex<double>(-0.09900000, -0.04900000), std::complex<double>(-0.99255000, 0.00985000), std::complex<double>(-1.90125250, 0.04764250), std::complex<double>(-2.80949262, 0.08829838), std::complex<double>(-3.71763582, 0.12864479), std::complex<double>(-4.62580418, 0.16901731), std::complex<double>(-5.53396872, 0.20938848), std::complex<double>(-6.44213370, 0.24975959)};
     unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
 	NimbleDSP::ComplexVector<double> buf(inputData, numElements);
     NimbleDSP::ComplexVector<double> input = buf;
