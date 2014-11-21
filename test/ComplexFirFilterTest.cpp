@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 
 #include "ComplexFirFilter.h"
+#include "RealFirFilter.h"
 #include "gtest/gtest.h"
 
 using namespace NimbleDSP;

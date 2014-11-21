@@ -39,6 +39,7 @@ THE SOFTWARE.
 #include <complex>
 #include "kiss_fft.h"
 #include "kiss_fftr.h"
+#include "NimbleDspCommon.h"
 
 
 namespace NimbleDSP {

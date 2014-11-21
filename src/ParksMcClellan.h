@@ -44,18 +44,18 @@ which is part of Embarcadero's C++ Builder vcl.
 #include <math.h>
 #define M_2PI  6.28318530717958647692
 
-int NFCNS, NGRID;
-double DEV;
-double *FX, *WTX;
-bool converged;
+static int NFCNS, NGRID;
+static double DEV;
+static double *FX, *WTX;
+static bool converged;
 
 
-bool ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *FX, double *WTX, int LGRID = 16);
-double  EFF(double FREQ, int LBAND, int JTYPE);
-double WATE(double FREQ, int LBAND, int JTYPE);
-double D(std::vector<double> &X, int K, int N, int M);
-double GEE(std::vector<double> &X, std::vector<double> &GRID, std::vector<double> &AD, std::vector<double> &Y, int K, int N);
-void Remez(std::vector<int> &IEXT, std::vector<double> &AD, std::vector<double> &ALPHA, std::vector<double> &X, std::vector<double> &Y, std::vector<double> &H, std::vector<double> &DES, std::vector<double> &GRID, std::vector<double> &WT, std::vector<double> &A, std::vector<double> &P, std::vector<double> &Q);
+static bool ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *FX, double *WTX, int LGRID = 16);
+static double  EFF(double FREQ, int LBAND, int JTYPE);
+static double WATE(double FREQ, int LBAND, int JTYPE);
+static double D(std::vector<double> &X, int K, int N, int M);
+static double GEE(std::vector<double> &X, std::vector<double> &GRID, std::vector<double> &AD, std::vector<double> &Y, int K, int N);
+static void Remez(std::vector<int> &IEXT, std::vector<double> &AD, std::vector<double> &ALPHA, std::vector<double> &X, std::vector<double> &Y, std::vector<double> &H, std::vector<double> &DES, std::vector<double> &GRID, std::vector<double> &WT, std::vector<double> &A, std::vector<double> &P, std::vector<double> &Q);
 
 
 /* Input Values

@@ -37,9 +37,6 @@ THE SOFTWARE.
 
 
 namespace NimbleDSP {
-    
-enum FilterOperationType {STREAMING, ONE_SHOT_RETURN_ALL_RESULTS, ONE_SHOT_TRIM_TAILS};
-typedef enum ParksMcClellanFilterType {PASSBAND_FILTER = 1, DIFFERENTIATOR_FILTER, HILBERT_FILTER} ParksMcClellanFilterType;
 
 /**
  * \brief Class for real FIR filters.
