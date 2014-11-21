@@ -66,3 +66,8 @@ NimbleDSP is offered under the MIT license.  KissFFT is available under the BSD 
 
 ## Author
 Jim Clay
+
+<a href="https://scan.coverity.com/projects/3375">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/3375/badge.svg"/>
+</a>
