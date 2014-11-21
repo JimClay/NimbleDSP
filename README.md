@@ -23,7 +23,7 @@ You will also need a header file from KissFFT.  I have forked KissFFT to fix a b
 ### Unit Tests
 That being said, you may want to get the unit tests up and running.  If so, do the following steps:
 
-* Download my fork of Mark Borderding's excellent KissFFT by executing "git clone https://github.com/JimClay/KissFFT-Fork.git kiss_fft130" at the same level as NimbleDSP (i.e. not inside the NimbleDSP directory).
+* Download my fork of Mark Borgerding's excellent KissFFT by executing "git clone https://github.com/JimClay/KissFFT-Fork.git kiss_fft130" at the same level as NimbleDSP (i.e. not inside the NimbleDSP directory).
 * Download googletest by executing the following at the same level as NimbleDSP and KissFFT: "svn checkout http://googletest.googlecode.com/svn/trunk/ googletest-read-only".  If you don't have a Subversion client installed and really don't want to install one you can probably download the source as a zip file [here](https://code.google.com/p/googletest/downloads/list), unzip it and rename the directory to "googletest-read-only", but I haven't tried it.
 * Linux platform
     * cd to NimbleDSP/build
