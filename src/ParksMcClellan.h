@@ -276,7 +276,7 @@ void Remez(std::vector<int> &IEXT, std::vector<double> &AD, std::vector<double> 
  int NUT1, LUCK, KN, NM1, KKK, JM1, JP1, NITER;
  double DNUM, DDEN, DTEMP, FT, XT, XT1, XE;
  double FSH, GTEMP, CN, DELF, AA, BB;  // SciPy declares CN as an int, which is probably inconsequential the way CN is used.
- double DEVL, COMP, YNZ, Y1, ERR;
+ double DEVL, COMP, YNZ, Y1 = 0.0, ERR;
 
 
 	  ITRMAX = 40;      // MAXIMUM NUMBER OF ITERATIONS This was 25. It was changed by Parks in a later file.

@@ -1443,7 +1443,7 @@ void RealFirFilter<T>::fractionalDelayFilter(int numTaps, double bandwidth, doub
         tapTime = (numTaps / 2 + delay) * -timeIncrement;
     }
     else {
-        tapTime = (numTaps / 2 - 0.5 + delay) * -timeIncrement;
+        tapTime = (((int) numTaps / 2) - 0.5 + delay) * -timeIncrement;
     }
     
     this->resize(numTaps);
