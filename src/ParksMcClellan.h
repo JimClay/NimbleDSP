@@ -71,9 +71,9 @@ static void Remez(std::vector<int> &IEXT, std::vector<double> &AD, std::vector<d
 
 bool ParksMcClellan2(double *FirCoeff, int NFILT, int JTYPE, int NBANDS, double *EDGE, double *fx, double *wtx, int LGRID)
 {
- int J, L, NEG, NODD, LBAND;
- int NM1, NZ;
- double DELF, FUP, TEMP, CHANGE, XT;
+ int J=0, L=0, NEG=0, NODD=0, LBAND=0;
+ int NM1=0, NZ=0;
+ double DELF=0.0, FUP=0.0, TEMP=0.0, CHANGE=0.0, XT=0.0;
  
  converged = true;
  
@@ -272,11 +272,11 @@ THE BEST APPROXIMATION.
 
 void Remez(std::vector<int> &IEXT, std::vector<double> &AD, std::vector<double> &ALPHA, std::vector<double> &X, std::vector<double> &Y, std::vector<double> &H, std::vector<double> &DES, std::vector<double> &GRID, std::vector<double> &WT, std::vector<double> &A, std::vector<double> &P, std::vector<double> &Q)
 {
- int J, ITRMAX, NZ, NZZ, JET, K, L, NU, JCHNGE, K1, KNZ, KLOW, NUT, KUP;
- int NUT1, LUCK, KN, NM1, KKK, JM1, JP1, NITER;
- double DNUM, DDEN, DTEMP, FT, XT, XT1, XE;
- double FSH, GTEMP, CN, DELF, AA, BB;  // SciPy declares CN as an int, which is probably inconsequential the way CN is used.
- double DEVL, COMP, YNZ, Y1 = 0.0, ERR;
+ int J=0, ITRMAX=0, NZ=0, NZZ=0, JET=0, K=0, L=0, NU=0, JCHNGE=0, K1=0, KNZ=0, KLOW=0, NUT=0, KUP=0;
+ int NUT1=0, LUCK=0, KN=0, NM1=0, KKK=0, JM1=0, JP1=0, NITER=0;
+ double DNUM=0.0, DDEN=0.0, DTEMP=0.0, FT=0.0, XT=0.0, XT1=0.0, XE=0.0;
+ double FSH=0.0, GTEMP=0.0, CN=0.0, DELF=0.0, AA=0.0, BB=0.0;  // SciPy declares CN as an int, which is probably inconsequential the way CN is used.
+ double DEVL=0.0, COMP=0.0, YNZ=0.0, Y1 = 0.0, ERR=0.0;
 
 
 	  ITRMAX = 40;      // MAXIMUM NUMBER OF ITERATIONS This was 25. It was changed by Parks in a later file.
