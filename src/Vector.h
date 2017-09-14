@@ -66,12 +66,13 @@ const unsigned DEFAULT_BUF_LEN = 0;
 template <class T>
 class Vector {
 
- protected:
+ public:
     /** 
      * \brief Buffer to store intermediate calculations when needed.
      */
     std::vector<T> *scratchBuf;
-    
+
+ protected:
     /** 
      * \brief Initializes vec to a given size and fills it with zeros.
      */
@@ -98,6 +99,7 @@ class Vector {
     
     template <class U> friend class Vector;
     template <class U> friend class RealVector;
+    template <class U> friend class ComplexVector;
     template <class U> friend class RealFirFilter;
     template <class U> friend class ComplexFirFilter;
     
@@ -190,7 +192,7 @@ class Vector {
      * \brief Returns the sum of all the elements in \ref vec.
      */
 	T sum() const;
-    
+
 };
 
 
