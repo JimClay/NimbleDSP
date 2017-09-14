@@ -50,6 +50,8 @@ enum DomainType {TIME_DOMAIN, FREQUENCY_DOMAIN};
 template <class T>
 class ComplexVector : public Vector< std::complex<T> > {
  public:
+    template <class U> friend class ComplexFirFilter;
+
     /**
      * \brief Indicates whether the data in \ref buf is time domain data or frequency domain.
      */
@@ -210,6 +212,16 @@ class ComplexVector : public Vector< std::complex<T> > {
      * \return Reference to "this".
      */
     ComplexVector<T> & pow(const std::complex<SLICKDSP_FLOAT_TYPE> & exponent);
+
+    /**
+     * \brief Returns the element with the maximum real component in \ref buf.
+     *
+     * \param maxLoc If it isn't equal to NULL the index of the maximum element
+     *      will be returned via this pointer.  If more than one element is equal
+     *      to the maximum value the index of the first will be returned.
+     *      Defaults to NULL.
+     */
+    const T max(unsigned *maxLoc = NULL) const;
     
     /**
      * \brief Returns the mean (average) of the data in \ref buf.
@@ -236,6 +248,24 @@ class ComplexVector : public Vector< std::complex<T> > {
      * \return Reference to "this".
      */
     ComplexVector<T> & saturate(const std::complex<T> & val);
+
+    /**
+     * \brief Does a "ceil" operation on \ref buf.
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & ceil(void);
+
+    /**
+     * \brief Does a "ceil" operation on \ref buf.
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & floor(void);
+
+    /**
+     * \brief Does a "ceil" operation on \ref buf.
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & round(void);
     
     /**
      * \brief Conjugates the data in \ref buf.
@@ -329,6 +359,14 @@ class ComplexVector : public Vector< std::complex<T> > {
      * \return Reference to "this".
      */
     ComplexVector<T> & resize(unsigned len, T val = (T) 0) {this->vec.resize(len, val); return *this;}
+
+    /**
+     * \brief Reserves "len" elements for \ref vec without actually resizing it.
+     *
+     * \param len The number of elements to reserve for \ref vec.
+     * \return Reference to "this".
+     */
+    ComplexVector<T> & reserve(unsigned len) {this->vec.reserve(len); return *this;}
     
     /**
      * \brief Lengthens \ref vec by "len" elements.
@@ -338,6 +376,15 @@ class ComplexVector : public Vector< std::complex<T> > {
      * \return Reference to "this".
      */
     ComplexVector<T> & pad(unsigned len, T val = (T) 0) {this->vec.resize(this->size()+len, val); return *this;}
+
+    /**
+     * \brief Copies the elements in the range "lower" to "upper" (inclusive) to "destination"
+     *
+     * \param lower The index to start copying at.
+     * \param upper The last index to copy from.
+     * \destination The vector to copy the vector slice to.
+     */
+	void slice(unsigned lower, unsigned upper, ComplexVector<T> &destination);
     
     /**
      * \brief Inserts rate-1 zeros between samples.
@@ -690,6 +737,24 @@ const std::complex<SLICKDSP_FLOAT_TYPE> ComplexVector<T>::mean() const {
         sum += this->vec[i];
     }
     return sum / ((SLICKDSP_FLOAT_TYPE) this->size());
+}
+
+template <class T>
+const T ComplexVector<T>::max(unsigned *maxLoc) const {
+    assert(this->size() > 0);
+    T maxVal = this->vec[0].real();
+    unsigned maxIndex = 0;
+
+    for (unsigned i=1; i<this->size(); i++) {
+        if (maxVal < this->vec[i].real()) {
+            maxVal = this->vec[i].real();
+            maxIndex = i;
+        }
+    }
+    if (maxLoc != NULL) {
+        *maxLoc = maxIndex;
+    }
+    return maxVal;
 }
 
 /**
@@ -1677,11 +1742,48 @@ T ComplexVector<T>::modulate(T freq, T sampleFreq, T phase) {
  * \param phase The modulating tone's starting phase, in radians.  Defaults to 0.
  * \return The next phase if the tone were to continue.
  */
- template <class T>
+template <class T>
 T modulate(ComplexVector<T> &data, T freq, T sampleFreq, T phase) {
     return data.modulate(freq, sampleFreq, phase);
 }
 
+template <class T>
+void ComplexVector<T>::slice(unsigned lower, unsigned upper, ComplexVector<T> &destination) {
+	assert(lower <= upper);
+	assert(upper < this->size());
+
+	destination.resize(upper - lower + 1);
+	for (unsigned from=lower, to=0; from<=upper; from++, to++) {
+		destination[to] = this->vec[from];
+	}
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::ceil() {
+	for (int index=0; index<this->size(); index++) {
+		this->vec[index].real(std::ceil(this->vec[index].real()));
+		this->vec[index].imag(std::ceil(this->vec[index].imag()));
+	}
+	return *this;
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::floor() {
+	for (int index=0; index<this->size(); index++) {
+		this->vec[index].real(std::floor(this->vec[index].real()));
+		this->vec[index].imag(std::floor(this->vec[index].imag()));
+	}
+	return *this;
+}
+
+template <class T>
+ComplexVector<T> & ComplexVector<T>::round() {
+	for (int index=0; index<this->size(); index++) {
+		this->vec[index].real(std::round(this->vec[index].real()));
+		this->vec[index].imag(std::round(this->vec[index].imag()));
+	}
+	return *this;
+}
 
 };
 
