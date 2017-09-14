@@ -84,7 +84,7 @@ class ComplexFirFilter : public ComplexVector<T> {
      *      then one will be created in methods that require one and destroyed when the method
      *      returns.
      */
-    ComplexFirFilter<T>(unsigned size = DEFAULT_BUF_LEN, FilterOperationType operation = STREAMING, std::vector<T> *scratch = NULL) : ComplexVector<T>(size, scratch)
+    ComplexFirFilter<T>(unsigned size = DEFAULT_BUF_LEN, FilterOperationType operation = STREAMING, std::vector< std::complex<T> > *scratch = NULL) : ComplexVector<T>(size, scratch)
             {if (size > 0) {savedData.resize((size - 1) * sizeof(std::complex<T>)); numSavedSamples = size - 1;}
              else {savedData.resize(0); numSavedSamples = 0;} phase = 0; filtOperation = operation;}
     
@@ -191,6 +191,14 @@ class ComplexFirFilter : public ComplexVector<T> {
      * \return Reference to "data", which holds the result of the resampling.
      */
     virtual ComplexVector<T> & resample(ComplexVector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
+
+    /**
+         * \brief Correlation method.
+         *
+         * \param data The buffer that will be correlated.
+         * \return Reference to "data", which holds the result of the convolution.
+         */
+        virtual ComplexVector<T> & corr(ComplexVector<T> & data);
 };
 
 
@@ -748,6 +756,14 @@ ComplexVector<T> & ComplexFirFilter<T>::resample(ComplexVector<T> & data, int in
     return data;
 }
 
+template <class T>
+ComplexVector<T> & ComplexFirFilter<T>::corr(ComplexVector<T> & data) {
+	this->conj();
+	this->reverse();
+	this->conv(data);
+	this->reverse();
+	this->conj();
+}
 
 };
 
