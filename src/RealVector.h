@@ -214,7 +214,25 @@ class RealVector : public Vector<T> {
      * \return Reference to "this".
      */
     RealVector<T> & saturate(T val);
-    
+
+    /**
+     * \brief Does a "ceil" operation on \ref buf.
+     * \return Reference to "this".
+     */
+    RealVector<T> & ceil(void);
+
+    /**
+     * \brief Does a "ceil" operation on \ref buf.
+     * \return Reference to "this".
+     */
+    RealVector<T> & floor(void);
+
+    /**
+     * \brief Does a "ceil" operation on \ref buf.
+     * \return Reference to "this".
+     */
+    RealVector<T> & round(void);
+
     /**
      * \brief Convolution method for complex data.
      *
@@ -2053,6 +2071,30 @@ T RealVector<T>::modulate(T freq, T sampleFreq, T phase) {
 T modulate(RealVector<T> &data, T freq, T sampleFreq, T phase) {
     return data.modulate(freq, sampleFreq, phase);
 }
+
+ template <class T>
+ RealVector<T> & RealVector<T>::ceil() {
+ 	for (int index=0; index<this->size(); index++) {
+ 		this->vec[index] = std::ceil(this->vec[index]);
+ 	}
+ 	return *this;
+ }
+
+ template <class T>
+ RealVector<T> & RealVector<T>::floor() {
+ 	for (int index=0; index<this->size(); index++) {
+ 		this->vec[index] = std::floor(this->vec[index]);
+ 	}
+ 	return *this;
+ }
+
+ template <class T>
+ RealVector<T> & RealVector<T>::round() {
+ 	for (int index=0; index<this->size(); index++) {
+ 		this->vec[index] = std::round(this->vec[index]);
+ 	}
+ 	return *this;
+ }
 
 
 };
