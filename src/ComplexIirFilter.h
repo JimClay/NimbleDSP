@@ -91,7 +91,7 @@ class ComplexIirFilter {
      */
     template <typename U>
     ComplexIirFilter<T>(std::vector< std::complex<U> > & num, std::vector< std::complex<U> > & den) {
-            initArray(VECTOR_TO_ARRAY(num), num.size(), VECTOR_TO_ARRAY(den), den.size());}
+            initArray(VECTOR_TO_ARRAY(num), (unsigned) num.size(), VECTOR_TO_ARRAY(den), (unsigned) den.size());}
     
     /**
      * \brief Array constructor.
@@ -155,11 +155,11 @@ ComplexVector<U> & ComplexIirFilter<T>::filter(ComplexVector<U> & data) {
         newState0 = data[resultIndex];
         
         // Update the state
-        for (i=state.size()-1; i>=denominator.size(); i--) {
+        for (i=(unsigned) state.size()-1; i>=denominator.size(); i--) {
             state[i] = state[i - 1];
         }
         // Update the state and apply the feedback
-        for (i=denominator.size()-1; i>0; i--) {
+        for (i=(unsigned) denominator.size()-1; i>0; i--) {
             state[i] = state[i - 1];
             newState0 -= denominator[i] * state[i];
         }

@@ -90,8 +90,8 @@ class RealIirFilter {
      *      returns.
      */
     template <typename U>
-    RealIirFilter<T>(std::vector<U> & num, std::vector<U> & den) {initArray(VECTOR_TO_ARRAY(num), num.size(),
-            VECTOR_TO_ARRAY(den), den.size());}
+    RealIirFilter<T>(std::vector<U> & num, std::vector<U> & den) {initArray(VECTOR_TO_ARRAY(num), (unsigned) num.size(),
+            VECTOR_TO_ARRAY(den), (unsigned) den.size());}
     
     /**
      * \brief Array constructor.
@@ -155,11 +155,11 @@ Vector<U> & RealIirFilter<T>::filter(Vector<U> & data) {
         newState0 = data[resultIndex];
         
         // Update the state
-        for (i=state.size()-1; i>=denominator.size(); i--) {
+        for (i=(unsigned) state.size()-1; i>=denominator.size(); i--) {
             state[i] = state[i - 1];
         }
         // Update the state and apply the feedback
-        for (i=denominator.size()-1; i>0; i--) {
+        for (i=(unsigned) denominator.size()-1; i>0; i--) {
             state[i] = state[i - 1];
             newState0 -= denominator[i] * state[i];
         }

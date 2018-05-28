@@ -134,7 +134,7 @@ class Vector {
      *      returns.
      */
     template <typename U>
-    Vector<T>(std::vector<U> data, std::vector<T> *scratch = NULL) {initArray(VECTOR_TO_ARRAY(data), data.size()); scratchBuf = scratch;}
+    Vector<T>(std::vector<U> data, std::vector<T> *scratch = NULL) {initArray(VECTOR_TO_ARRAY(data), (unsigned) data.size()); scratchBuf = scratch;}
     
     /**
      * \brief Array constructor.
@@ -177,7 +177,7 @@ class Vector {
     /**
      * \brief Returns the size of \ref vec.
      */
-    const unsigned size() const {return vec.size();};
+    const unsigned size() const {return (const unsigned) vec.size();};
     
     /**
      * \brief Finds the first instance of "val" in \ref vec.

@@ -193,12 +193,12 @@ class ComplexFirFilter : public ComplexVector<T> {
     virtual ComplexVector<T> & resample(ComplexVector<T> & data, int interpRate, int decimateRate, bool trimTails = false);
 
     /**
-         * \brief Correlation method.
-         *
-         * \param data The buffer that will be correlated.
-         * \return Reference to "data", which holds the result of the convolution.
-         */
-        virtual ComplexVector<T> & corr(ComplexVector<T> & data);
+     * \brief Correlation method.
+     *
+     * \param data The buffer that will be correlated.
+     * \return Reference to "data", which holds the result of the convolution.
+     */
+    virtual ComplexVector<T> & corr(ComplexVector<T> & data);
 };
 
 
@@ -342,7 +342,7 @@ ComplexVector<T> & ComplexFirFilter<T>::decimate(ComplexVector<T> & data, int ra
             }
         }
         int nextResultDataPoint = resultIndex * rate;
-        numSavedSamples = dataTmp->size() - nextResultDataPoint;
+        numSavedSamples = ((int) dataTmp->size()) - nextResultDataPoint;
 
         for (int i=0; i<numSavedSamples; i++) {
             savedDataArray[i] = (*dataTmp)[i + nextResultDataPoint];
@@ -451,7 +451,7 @@ ComplexVector<T> & ComplexFirFilter<T>::interp(ComplexVector<T> & data, int rate
             (*dataTmp)[i + numSavedSamples] = data[i];
         }
         
-        data.resize(dataTmp->size() * rate);
+        data.resize((unsigned) dataTmp->size() * rate);
         bool keepGoing = true;
         for (resultIndex=0, dataStart=0, filterStart=phase; keepGoing; ++resultIndex) {
             data[resultIndex] = 0;
@@ -611,7 +611,7 @@ ComplexVector<T> & ComplexFirFilter<T>::resample(ComplexVector<T> & data, int in
             (*dataTmp)[i + numSavedSamples] = data[i];
         }
         
-        interpLen = dataTmp->size() * interpRate;
+        interpLen = (unsigned) dataTmp->size() * interpRate;
         resampLen = (interpLen + decimateRate - 1) / decimateRate;
         data.resize(resampLen);
         bool keepGoing = true;
@@ -763,6 +763,7 @@ ComplexVector<T> & ComplexFirFilter<T>::corr(ComplexVector<T> & data) {
 	this->conv(data);
 	this->reverse();
 	this->conj();
+    return data;
 }
 
 };

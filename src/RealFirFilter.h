@@ -540,7 +540,7 @@ RealVector<T> & RealFirFilter<T>::decimate(RealVector<T> & data, int rate, bool 
             }
         }
         int nextResultDataPoint = resultIndex * rate;
-        numSavedSamples = dataTmp->size() - nextResultDataPoint;
+        numSavedSamples = (unsigned) dataTmp->size() - nextResultDataPoint;
 
         for (int i=0; i<numSavedSamples; i++) {
             savedDataArray[i] = (*dataTmp)[i + nextResultDataPoint];
@@ -650,7 +650,7 @@ ComplexVector<T> & RealFirFilter<T>::decimateComplex(ComplexVector<T> & data, in
             }
         }
         int nextResultDataPoint = resultIndex * rate;
-        numSavedSamples = dataTmp->size() - nextResultDataPoint;
+        numSavedSamples = ((int) dataTmp->size()) - nextResultDataPoint;
 
         for (int i=0; i<numSavedSamples; i++) {
             savedDataArray[i] = (*dataTmp)[i + nextResultDataPoint];
@@ -759,7 +759,7 @@ RealVector<T> & RealFirFilter<T>::interp(RealVector<T> & data, int rate, bool tr
             (*dataTmp)[i + numSavedSamples] = data[i];
         }
         
-        data.resize(dataTmp->size() * rate);
+        data.resize((unsigned) dataTmp->size() * rate);
         bool keepGoing = true;
         for (resultIndex=0, dataStart=0, filterStart=phase; keepGoing; ++resultIndex) {
             data[resultIndex] = 0;
@@ -918,7 +918,7 @@ ComplexVector<T> & RealFirFilter<T>::interpComplex(ComplexVector<T> & data, int 
             (*dataTmp)[i + numSavedSamples] = data[i];
         }
         
-        data.resize(dataTmp->size() * rate);
+        data.resize((unsigned) dataTmp->size() * rate);
         bool keepGoing = true;
         for (resultIndex=0, dataStart=0, filterStart=phase; keepGoing; ++resultIndex) {
             data[resultIndex] = 0;
@@ -1078,7 +1078,7 @@ RealVector<T> & RealFirFilter<T>::resample(RealVector<T> & data, int interpRate,
             (*dataTmp)[i + numSavedSamples] = data[i];
         }
         
-        interpLen = dataTmp->size() * interpRate;
+        interpLen = (unsigned) dataTmp->size() * interpRate;
         resampLen = (interpLen + decimateRate - 1) / decimateRate;
         data.resize(resampLen);
         bool keepGoing = true;
@@ -1259,7 +1259,7 @@ ComplexVector<T> & RealFirFilter<T>::resampleComplex(ComplexVector<T> & data, in
             (*dataTmp)[i + numSavedSamples] = data[i];
         }
         
-        interpLen = dataTmp->size() * interpRate;
+        interpLen = (unsigned) dataTmp->size() * interpRate;
         resampLen = (interpLen + decimateRate - 1) / decimateRate;
         data.resize(resampLen);
         bool keepGoing = true;
