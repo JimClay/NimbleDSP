@@ -766,6 +766,22 @@ ComplexVector<T> & ComplexFirFilter<T>::corr(ComplexVector<T> & data) {
     return data;
 }
 
+/**
+ * \brief Correlation function.
+ *
+ * \param data Buffer to operate on.
+ * \param filter The filter that will correlate with "data".
+ * \param trimTails "False" tells the function to return the entire convolution, which is
+ *      the length of "data" plus the length of "filter" - 1.  "True" tells the
+ *      function to retain the size of "data" by trimming the tails at both ends of
+ *      the convolution.
+ * \return Reference to "data", which holds the result of the convolution.
+ */
+template <class T>
+inline ComplexVector<T> & corr(ComplexVector<T> & data, ComplexFirFilter<T> & filter) {
+    return filter.corr(data);
+}
+
 };
 
 

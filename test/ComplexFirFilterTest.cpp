@@ -422,3 +422,22 @@ TEST(ComplexFirFilter, ResampleComplexStream2) {
     numResults += buf.size();
     EXPECT_LE(18*interpRate / decimateRate, numResults);
 }
+
+TEST(ComplexFirFilter, CorrComplexOneShot) {
+    std::complex<double> inputData[] = {std::complex<double>(1, 2), std::complex<double>(0, 3), std::complex<double>(-1, 4), std::complex<double>(-2, 5), std::complex<double>(-3, 6), std::complex<double>(-4, 7), std::complex<double>(-5, 8), std::complex<double>(-6, 9), std::complex<double>(-7, 10)};
+    std::complex<double> filterTaps[] = {1, 2, 3, 4, 5};
+    std::complex<double> expectedData[] = {std::complex<double>(5, 10), std::complex<double>(4, 23), std::complex<double>(-2, 38), std::complex<double>(-12, 54), std::complex<double>(-25, 70), std::complex<double>(-40, 85), std::complex<double>(-55, 100), std::complex<double>(-70, 115), std::complex<double>(-85, 130), std::complex<double>(-60, 90), std::complex<double>(-38, 56), std::complex<double>(-20, 29), std::complex<double>(-7, 10)};
+    unsigned numElements = sizeof(inputData)/sizeof(inputData[0]);
+    NimbleDSP::ComplexVector<double> buf(inputData, numElements);
+    numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    NimbleDSP::ComplexFirFilter<double> filter(filterTaps, numElements);
+    NimbleDSP::ComplexVector<double> input = buf;
+    filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
+    
+    corr(buf, filter);
+    EXPECT_EQ(input.size() + filter.size() - 1, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+}
+
