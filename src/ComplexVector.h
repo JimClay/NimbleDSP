@@ -825,7 +825,10 @@ ComplexVector<T> & saturate(ComplexVector<T> & vector, const std::complex<T> & v
     
 template <class T>
 ComplexVector<T> & ComplexVector<T>::fft() {
+    #ifdef NIMBLEDSP_DOMAIN_CHECKS
     assert(domain == TIME_DOMAIN);
+    #endif
+    
     kissfft<T> fftEngine = kissfft<T>(this->size(), false);
     std::vector< std::complex<T> > fftResults(this->size());
     
@@ -893,7 +896,10 @@ inline ComplexVector<T> & magSq(ComplexVector<T> & buffer) {
 
 template <class T>
 ComplexVector<T> & ComplexVector<T>::ifft() {
+    #ifdef NIMBLEDSP_DOMAIN_CHECKS
     assert(domain == FREQUENCY_DOMAIN);
+    #endif
+    
     kissfft<T> fftEngine = kissfft<T>(this->size(), true);
     std::vector< std::complex<T> > fftResults(this->size());
     
