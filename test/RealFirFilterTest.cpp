@@ -851,3 +851,31 @@ TEST(RealFirFilter, FractionalDelay) {
         EXPECT_TRUE(FloatsEqual(expectedData[i], filter[i]));
     }
 }
+
+TEST(RealFirFilter, CorrOneShot) {
+    double inputData[] = {1, 0, -1, -2, -3, -4, -5, -6, -7};
+    double inputData2[] = {-3, -4, -5, -6, -7, -8, -9};
+    int filterTaps[] = {1, 2, 3, 4, 5};
+    double expectedData[] = {5, 4, -2, -12, -25, -40, -55, -70, -85, -60, -38, -20, -7};
+    double expectedData2[] = {-15, -32, -50, -68, -85, -100, -115, -80, -50, -26, -9};
+    
+    unsigned numElements = sizeof(filterTaps)/sizeof(filterTaps[0]);
+    NimbleDSP::RealFirFilter<double> filter(filterTaps, numElements);
+    filter.filtOperation = ONE_SHOT_RETURN_ALL_RESULTS;
+
+    numElements = sizeof(inputData)/sizeof(inputData[0]);
+    NimbleDSP::RealVector<double> buf(inputData, numElements);
+    corr(buf, filter);
+    EXPECT_EQ(numElements + filter.size() - 1, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData[i], buf[i]);
+    }
+    
+    numElements = sizeof(inputData2)/sizeof(inputData[0]);
+    buf = NimbleDSP::RealVector<double>(inputData2, numElements);
+    corr(buf, filter);
+    EXPECT_EQ(numElements + filter.size() - 1, buf.size());
+    for (unsigned i=0; i<buf.size(); i++) {
+        EXPECT_EQ(expectedData2[i], buf[i]);
+    }
+}

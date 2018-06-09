@@ -293,6 +293,14 @@ class RealFirFilter : public RealVector<T> {
      *          by one tenth of a sample.  "delay" can be positive or negative.
      */
     void fractionalDelayFilter(int numTaps, double bandwidth, double delay);
+    
+    /**
+     * \brief Correlation method.
+     *
+     * \param data The buffer that will be correlated.
+     * \return Reference to "data", which holds the result of the convolution.
+     */
+    virtual RealVector<T> & corr(RealVector<T> & data);
 };
 
 
@@ -1475,6 +1483,26 @@ void RealFirFilter<T>::hamming() {
         (*this)[start] *= hammingVal;
         (*this)[end] *= hammingVal;
     }
+}
+
+template <class T>
+RealVector<T> & RealFirFilter<T>::corr(RealVector<T> & data) {
+    this->reverse();
+    this->conv(data);
+    this->reverse();
+    return data;
+}
+
+/**
+ * \brief Correlation function.
+ *
+ * \param data Buffer to operate on.
+ * \param filter The filter that will correlate with "data".
+ * \return Reference to "data", which holds the result of the convolution.
+ */
+template <class T>
+inline RealVector<T> & corr(RealVector<T> & data, RealFirFilter<T> & filter) {
+    return filter.corr(data);
 }
 
 
