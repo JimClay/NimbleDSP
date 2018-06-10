@@ -306,9 +306,15 @@ class RealFirFilter : public RealVector<T> {
      * \brief Generates a Hamming window.
      *
      * \param len The window length.
-     * \return Reference to "this".
      */
      void hamming(unsigned len);
+    
+    /**
+     * \brief Generates a Hann window.
+     *
+     * \param len The window length.
+     */
+     void hann(unsigned len);
 };
 
 
@@ -1520,6 +1526,16 @@ void RealFirFilter<T>::hamming(unsigned len)
     double N = len - 1;
     for (unsigned index=0; index<len; index++) {
         this->vec[index] = (T) (0.54 - 0.46 * cos(2 * M_PI * ((double) index) / N));
+    }
+}
+
+template <class T>
+void RealFirFilter<T>::hann(unsigned len)
+{
+    this->resize(len);
+    double N = len - 1;
+    for (unsigned index=0; index<len; index++) {
+        this->vec[index] = (T) (0.5 * (1 - cos(2 * M_PI * ((double) index) / N)));
     }
 }
 
