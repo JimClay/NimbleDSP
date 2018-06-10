@@ -301,6 +301,14 @@ class RealFirFilter : public RealVector<T> {
      * \return Reference to "data", which holds the result of the convolution.
      */
     virtual RealVector<T> & corr(RealVector<T> & data);
+    
+    /**
+     * \brief Generates a Hamming window.
+     *
+     * \param len The window length.
+     * \return Reference to "this".
+     */
+     void hamming(unsigned len);
 };
 
 
@@ -1505,6 +1513,15 @@ inline RealVector<T> & corr(RealVector<T> & data, RealFirFilter<T> & filter) {
     return filter.corr(data);
 }
 
+template <class T>
+void RealFirFilter<T>::hamming(unsigned len)
+{
+    this->resize(len);
+    double N = len - 1;
+    for (unsigned index=0; index<len; index++) {
+        this->vec[index] = (T) (0.54 - 0.46 * cos(2 * M_PI * ((double) index) / N));
+    }
+}
 
 };
 
