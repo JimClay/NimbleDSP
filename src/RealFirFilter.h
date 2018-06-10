@@ -315,6 +315,15 @@ class RealFirFilter : public RealVector<T> {
      * \param len The window length.
      */
      void hann(unsigned len);
+    
+    /**
+     * \brief Generates a generalized Hamming window.
+     *
+     * \param len The window length.
+     * \param alpha
+     * \param beta
+     */
+     void generalizedHamming(unsigned len, double alpha, double beta);
 };
 
 
@@ -1522,20 +1531,22 @@ inline RealVector<T> & corr(RealVector<T> & data, RealFirFilter<T> & filter) {
 template <class T>
 void RealFirFilter<T>::hamming(unsigned len)
 {
-    this->resize(len);
-    double N = len - 1;
-    for (unsigned index=0; index<len; index++) {
-        this->vec[index] = (T) (0.54 - 0.46 * cos(2 * M_PI * ((double) index) / N));
-    }
+    generalizedHamming(len, 0.54, 0.46);
 }
 
 template <class T>
 void RealFirFilter<T>::hann(unsigned len)
 {
+    generalizedHamming(len, 0.5, 0.5);
+}
+
+template <class T>
+void RealFirFilter<T>::generalizedHamming(unsigned len, double alpha, double beta)
+{
     this->resize(len);
     double N = len - 1;
     for (unsigned index=0; index<len; index++) {
-        this->vec[index] = (T) (0.5 * (1 - cos(2 * M_PI * ((double) index) / N)));
+        this->vec[index] = (T) (alpha - beta * cos(2 * M_PI * ((double) index) / N));
     }
 }
 
