@@ -324,6 +324,21 @@ class RealFirFilter : public RealVector<T> {
      * \param beta
      */
      void generalizedHamming(unsigned len, double alpha, double beta);
+    
+    /**
+     * \brief Generates a Blackman window.
+     *
+     * \param len The window length.
+     */
+     void blackman(unsigned len);
+    
+    /**
+     * \brief Generates a Blackman-harris window.
+     *
+     * \param len The window length.
+     */
+     void blackmanHarris(unsigned len);
+    
 };
 
 
@@ -1547,6 +1562,32 @@ void RealFirFilter<T>::generalizedHamming(unsigned len, double alpha, double bet
     double N = len - 1;
     for (unsigned index=0; index<len; index++) {
         this->vec[index] = (T) (alpha - beta * cos(2 * M_PI * ((double) index) / N));
+    }
+}
+
+template <class T>
+void RealFirFilter<T>::blackman(unsigned len)
+{
+    const double alpha[] = {0.42, 0.5, 0.08};
+    
+    this->resize(len);
+    double N = len - 1;
+    for (unsigned index=0; index<len; index++) {
+        this->vec[index] = (T) (alpha[0] - alpha[1] * cos(2 * M_PI * ((double) index) / N) +
+                alpha[2] * cos(4 * M_PI * ((double) index) / N));
+    }
+}
+
+template <class T>
+void RealFirFilter<T>::blackmanHarris(unsigned len)
+{
+    const double alpha[] = {0.35875, 0.48829, 0.14128, 0.01168};
+    
+    this->resize(len);
+    double N = len - 1;
+    for (unsigned index=0; index<len; index++) {
+        this->vec[index] = (T) (alpha[0] - alpha[1] * cos(2 * M_PI * ((double) index) / N) +
+                alpha[2] * cos(4 * M_PI * ((double) index) / N) - alpha[3] * cos(6 * M_PI * ((double) index) / N));
     }
 }
 

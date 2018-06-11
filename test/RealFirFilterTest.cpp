@@ -907,3 +907,31 @@ TEST(RealFirFilter, Hann) {
         EXPECT_TRUE(FloatsEqual(expectedData[i], window[i]));
     }
 }
+
+TEST(RealFirFilter, Blackman) {
+    double expectedData[] = {0.00000000, 0.00375165, 0.01563845, 0.03740270, 0.07146461, 0.12028646, 0.18564672, 0.26795497, 0.36573504, 0.47537854, 0.59122860, 0.70600079, 0.81149328, 0.89949043, 0.96273070, 0.99579706, 0.99579706, 0.96273070, 0.89949043, 0.81149328, 0.70600079, 0.59122860, 0.47537854, 0.36573504, 0.26795497, 0.18564672, 0.12028646, 0.07146461, 0.03740270, 0.01563845, 0.00375165, 0.00000000};
+    
+    unsigned windowLen = sizeof(expectedData)/sizeof(expectedData[0]);
+    NimbleDSP::RealFirFilter<double> window;
+    
+    window.blackman(windowLen);
+    EXPECT_EQ(window.size(), windowLen);
+
+    for (unsigned i=0; i<windowLen; i++) {
+        EXPECT_TRUE(FloatsEqual(expectedData[i], window[i]));
+    }
+}
+
+TEST(RealFirFilter, BlackmanHarris) {
+    double expectedData[] = {0.00006000, 0.00030188, 0.00113918, 0.00290634, 0.00615793, 0.01165966, 0.02036792, 0.03339172, 0.05193269, 0.07720064, 0.11030663, 0.15213882, 0.20323136, 0.26363912, 0.33283350, 0.40963421, 0.49219007, 0.57801767, 0.66410116, 0.74704989, 0.82330370, 0.88936977, 0.94207047, 0.97877919, 0.99762146, 0.99762146, 0.97877919, 0.94207047, 0.88936977, 0.82330370, 0.74704989, 0.66410116, 0.57801767, 0.49219007, 0.40963421, 0.33283350, 0.26363912, 0.20323136, 0.15213882, 0.11030663, 0.07720064, 0.05193269, 0.03339172, 0.02036792, 0.01165966, 0.00615793, 0.00290634, 0.00113918, 0.00030188, 0.00006000};
+    
+    unsigned windowLen = sizeof(expectedData)/sizeof(expectedData[0]);
+    NimbleDSP::RealFirFilter<double> window;
+    
+    window.blackmanHarris(windowLen);
+    EXPECT_EQ(window.size(), windowLen);
+
+    for (unsigned i=0; i<windowLen; i++) {
+        EXPECT_TRUE(FloatsEqual(expectedData[i], window[i]));
+    }
+}
