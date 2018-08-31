@@ -157,7 +157,12 @@ class Vector {
      * \brief Copy constructor.
      */
     Vector<T>(const Vector<T>& other) {vec = other.vec; scratchBuf = other.scratchBuf;}
-    
+
+	/**
+	 * \brief Virtual destructor.
+	 */
+	virtual ~Vector() {};
+
     /*****************************************************************************************
                                             Operators
     *****************************************************************************************/
